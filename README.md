@@ -1,55 +1,57 @@
-# Stablecoin Depeg Detector
+# Stablecoin Depeg Detector v2
 
-Real-time monitor for stablecoin prices and volume anomalies. Fires the moment any tracked stablecoin slips outside the safe band (default $0.99–$1.01) or shows a sudden volume spike — the earliest warning of a depeg or liquidity event.
+Real-time stablecoin peg monitor with three signal tiers: price depegs, volume spikes, and cross-source price divergence. Built for funds, prop desks, and fintech treasury teams who need lead time when billions move.
 
-## Why this matters / Sales pitch
+## Why this exists
 
-Stablecoin depegs are the crypto equivalent of a bank run. USDC/SVB (2023) and UST (2022) moved billions in minutes. Funds, prop desks, market makers, and fintech teams that hold or intermediate large stablecoin volume pay for lead time because **minutes matter**. A few hundred dollars per month is cheap insurance against a multi-million-dollar loss. This tool is built for people already swimming in stablecoin flow who need sub-minute detection without building it themselves.
-
-## Features (v2)
-
-- **Coinbase WebSocket** tick-by-tick prices with automatic reconnection
-- **REST fallback** for pairs without a direct WS feed
-- **Volume anomaly detection** — flags when 24h volume exceeds 3× recent average
-- **In-place CLI dashboard** — one line per coin, refreshes every 2s
-- Threshold alerts (console; Telegram/email still supported via config)
-- Unit tests for threshold and volume logic
+Stablecoin depegs cascade into billions in losses within hours (USDC/SVB March 2023, UST May 2022). The free tools are basic. The institutional suites (TRM, Elliptic, Range) are compliance-priced. This sits in the gap: fast, cheap, trader-grade depeg intelligence.
 
 ## Quick start
 
 ```bash
 pip install -r requirements.txt
-python depeg_detector.py
+python depeg_detector.py                      # single snapshot
+python depeg_detector.py --loop 30            # poll every 30 seconds
+python depeg_detector.py --dashboard          # live refreshing CLI board
+python depeg_detector.py --ws                 # Binance WebSocket tick-by-tick (upgrade path)
 ```
 
-Optional config:
+## Signals
 
-```bash
-cp config.json.example config.json
-# edit thresholds / alert channels
-python depeg_detector.py --config config.json
-```
+| Tier | Trigger | Meaning |
+| --- | --- | --- |
+| DEPEG | Price outside $0.99-$1.01 | Peg break - incident mode |
+| VOLUME SPIKE | 24h vol > 3x rolling avg | Liquidity stress building |
+| DIVERGENCE | Cross-venue gap > 50 bps | One source is stale or manipulated |
+
+## Alerts
+
+- Console (always on) + color-coded CLI dashboard
+- Telegram bot
+- Email via SMTP
 
 ## Tracked stablecoins
 
-USDT, USDC, DAI, FDUSD, PYUSD, TUSD (Coinbase pairs where available)
+USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binance pairs ready for WebSocket upgrade.
 
 ## Tests
 
 ```bash
-python -m unittest test_depeg.py
+python tests/test_depeg_logic.py
 ```
+
+8 unit tests covering clean data, depeg up/down, missing data, volume spikes, and divergence.
+
+## Sales pitch
+
+Who to sell to: small funds, prop desks, DeFi treasuries, and fintechs holding stablecoin reserves. Why: minutes matter when a depeg starts - Webacy's monitor flagged USR 2+ hours before it lost 94%. Position this as the $200-500/month tier between free GitHub scripts and $50k+ institutional compliance suites.
 
 ## Upgrade path
 
-- Add Binance combined stream as secondary source
-- On-chain mint/burn monitoring
-- Hosted multi-tenant dashboard + webhook API
-- Historical depeg database
-
-## Config
-
-Copy `config.json.example` to `config.json`.
+1. Live Binance/Coinbase WebSocket with auto-reconnect
+2. On-chain mint/burn monitoring via Alchemy or QuickNode
+3. Hosted dashboard + multi-tenant alerts
+4. Paid tier with custom thresholds per client
 
 ## License
 

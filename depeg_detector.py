@@ -1,183 +1,277 @@
 #!/usr/bin/env python3
 """
 Stablecoin Depeg Detector v2
-============================
-Real-time WebSocket monitor for stablecoin prices + volume anomalies.
-Uses Coinbase Exchange WebSocket for tick-by-tick data with automatic reconnection.
-Falls back to REST for coins without direct USD pairs.
-Threshold logic: $0.99 - $1.01 default. Volume spike > 3x recent average.
-CLI dashboard refreshes in place.
+===========================
+Real-time monitor for stablecoin pegs with three signal tiers:
+  1. Price depeg  - price outside $0.99-$1.01 (or custom band)
+  2. Volume spike - 24h volume > 3x the rolling average
+  3. Cross-source divergence - price gap between venues
+
+Data sources: Binance WebSocket (tick-by-tick) with CoinGecko REST fallback.
+Alert channels: console CLI dashboard, Telegram, email.
+
+Usage:
+    python depeg_detector.py                 # single snapshot
+    python depeg_detector.py --loop 30       # poll every 30s
+    python depeg_detector.py --ws            # live WebSocket stream
+    python depeg_detector.py --dashboard     # refreshing CLI status board
+    python depeg_detector.py --config f.json
 """
 
 import argparse
-import asyncio
 import json
-import os
+import smtplib
 import sys
 import time
-from collections import deque
-from datetime import datetime
-from typing import Dict, List, Optional
+from collections import defaultdict, deque
+from email.mime.text import MIMEText
+from typing import Deque, Dict, List, Optional, Tuple
 
 import requests
-import websockets
+
+try:
+    import websocket  # pip install websocket-client
+    HAS_WS = True
+except ImportError:
+    HAS_WS = False
 
 # ---------------------------------------------------------------------------
-# Config
+# Defaults
 # ---------------------------------------------------------------------------
 DEFAULT_CONFIG = {
     "stablecoins": {
-        "USDT": "USDT-USD",
-        "USDC": "USDC-USD",
-        "DAI": "DAI-USD",
-        "FDUSD": "FDUSD-USD",
-        "PYUSD": "PYUSD-USD",
-        "TUSD": "TUSD-USD",
+        "tether": "USDT", "usd-coin": "USDC", "dai": "DAI",
+        "first-digital-usd": "FDUSD", "paypal-usd": "PYUSD", "true-usd": "TUSD",
+    },
+    "binance_pairs": {  # CoinGecko id -> Binance USD pair
+        "tether": "usdtusdt", "usd-coin": "usdcusdt", "dai": "daiusdt",
+        "first-digital-usd": "fdusdusdt", "paypal-usd": "pyusdusdt", "true-usd": "tusdusdt",
     },
     "lower_bound": 0.99,
     "upper_bound": 1.01,
     "volume_spike_multiplier": 3.0,
-    "volume_window": 20,
+    "volume_window": 20,          # number of 24h-volume samples for rolling avg
+    "divergence_threshold_bps": 50,  # cross-source gap in basis points
     "telegram": {"enabled": False, "bot_token": "", "chat_id": ""},
-    "email": {"enabled": False, "smtp_host": "smtp.gmail.com", "smtp_port": 587,
-              "username": "", "password": "", "to_address": ""},
+    "email": {
+        "enabled": False, "smtp_host": "smtp.gmail.com", "smtp_port": 587,
+        "username": "", "password": "", "to_address": "",
+    },
+    "poll_interval_seconds": 30,
 }
 
-COINBASE_WS = "wss://ws-feed.exchange.coinbase.com"
-COINBASE_REST = "https://api.coinbase.com/v2/prices/{pair}/spot"
+COINGECKO_URL = (
+    "https://api.coingecko.com/api/v3/simple/price"
+    "?ids={ids}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true"
+)
+BINANCE_WS = "wss://stream.binance.com:9443/stream?streams={streams}"
+
 
 # ---------------------------------------------------------------------------
-# State
+# Data fetching
 # ---------------------------------------------------------------------------
-class CoinState:
-    def __init__(self, symbol: str, pair: str):
-        self.symbol = symbol
-        self.pair = pair
-        self.price: Optional[float] = None
-        self.volume_24h: Optional[float] = None
-        self.volumes: deque = deque(maxlen=50)
-        self.last_update: float = 0.0
-        self.status: str = "INIT"
+def fetch_prices_rest(coin_ids: List[str], timeout: int = 20) -> Dict:
+    url = COINGECKO_URL.format(ids=",".join(coin_ids))
+    resp = requests.get(url, timeout=timeout)
+    resp.raise_for_status()
+    return resp.json()
 
-states: Dict[str, CoinState] = {}
 
 # ---------------------------------------------------------------------------
-# Price / volume helpers
+# Signal logic
 # ---------------------------------------------------------------------------
-def check_thresholds(price: float, lower: float, upper: float) -> str:
-    if price < lower:
-        return "DEPEG_DOWN"
-    if price > upper:
-        return "DEPEG_UP"
-    return "OK"
+def check_price_depeg(prices: Dict, symbol_map: Dict[str, str],
+                      lower: float, upper: float) -> List[str]:
+    alerts = []
+    for cg_id, symbol in symbol_map.items():
+        entry = prices.get(cg_id)
+        if not entry or "usd" not in entry:
+            alerts.append(f"NO DATA    {symbol}: price missing from feed")
+            continue
+        price = entry["usd"]
+        chg = entry.get("usd_24h_change")
+        chg_s = f"{chg:+.2f}%" if chg is not None else "n/a"
+        if price < lower:
+            alerts.append(f"DEPEG DOWN {symbol}: ${price:.4f}  24h {chg_s}")
+        elif price > upper:
+            alerts.append(f"DEPEG UP   {symbol}: ${price:.4f}  24h {chg_s}")
+    return alerts
 
-def check_volume_spike(state: CoinState, multiplier: float) -> bool:
-    if len(state.volumes) < 5 or state.volume_24h is None:
-        return False
-    avg = sum(state.volumes) / len(state.volumes)
-    return state.volume_24h > avg * multiplier
 
-def fetch_rest_price(pair: str) -> Optional[float]:
-    try:
-        url = COINBASE_REST.format(pair=pair)
-        r = requests.get(url, timeout=10)
-        if r.status_code == 200:
-            return float(r.json()["data"]["amount"])
-    except Exception:
-        pass
-    return None
+class VolumeTracker:
+    """Rolling 24h-volume samples per symbol; flags spikes > multiplier x avg."""
+    def __init__(self, window: int = 20, multiplier: float = 3.0):
+        self.window = window
+        self.multiplier = multiplier
+        self.samples: Dict[str, Deque[float]] = defaultdict(lambda: deque(maxlen=window))
+
+    def update(self, symbol: str, volume: float) -> Optional[str]:
+        if volume is None or volume <= 0:
+            return None
+        buf = self.samples[symbol]
+        buf.append(volume)
+        if len(buf) < max(5, self.window // 2):
+            return None  # not enough history
+        avg = sum(buf) / len(buf)
+        if volume > avg * self.multiplier:
+            return (f"VOLUME SPIKE {symbol}: 24h vol ${volume/1e6:.1f}M "
+                    f"vs {self.multiplier:.0f}x avg ${avg/1e6:.1f}M")
+        return None
+
+
+def check_divergence(prices_a: Dict, prices_b: Dict, symbol_map: Dict[str, str],
+                     threshold_bps: float) -> List[str]:
+    """Flag when two sources disagree by more than threshold_bps."""
+    alerts = []
+    for cg_id, symbol in symbol_map.items():
+        a = prices_a.get(cg_id, {}).get("usd")
+        b = prices_b.get(cg_id, {}).get("usd")
+        if a is None or b is None or a == 0:
+            continue
+        gap_bps = abs(a - b) / a * 10000
+        if gap_bps > threshold_bps:
+            alerts.append(
+                f"DIVERGENCE {symbol}: CoinGecko ${a:.4f} vs Binance ${b:.4f} "
+                f"({gap_bps:.0f} bps)")
+        return alerts
+
 
 # ---------------------------------------------------------------------------
-# WebSocket client with reconnection
+# Notifications
 # ---------------------------------------------------------------------------
-async def ws_listener(cfg: Dict, product_ids: List[str]):
-    while True:
+def send_telegram(text: str, bot_token: str, chat_id: str) -> None:
+    url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+    requests.post(url, json={"chat_id": chat_id, "text": text}, timeout=15)
+
+
+def send_email(text: str, cfg: Dict) -> None:
+    msg = MIMEText(text)
+    msg["Subject"] = "[DEPEG ALERT] Stablecoin risk detected"
+    msg["From"] = cfg["username"]
+    msg["To"] = cfg["to_address"]
+    with smtplib.SMTP(cfg["smtp_host"], cfg["smtp_port"]) as server:
+        server.starttls()
+        server.login(cfg["username"], cfg["password"])
+        server.send_message(msg)
+
+
+def dispatch_alerts(alerts: List[str], cfg: Dict) -> None:
+    if not alerts:
+        return
+    banner = "=" * 64
+    body = banner + "\n" + "\n".join(alerts) + "\n" + banner
+    print("\n" + body)
+    tg = cfg.get("telegram", {})
+    if tg.get("enabled") and tg.get("bot_token") and tg.get("chat_id"):
         try:
-            async with websockets.connect(COINBASE_WS, ping_interval=20) as ws:
-                sub = {
-                    "type": "subscribe",
-                    "product_ids": product_ids,
-                    "channels": ["ticker"],
-                }
-                await ws.send(json.dumps(sub))
-                print(f"[{datetime.now().strftime('%H:%M:%S')}] WS connected. Subscribed to {product_ids}")
-                async for raw in ws:
-                    msg = json.loads(raw)
-                    if msg.get("type") == "ticker":
-                        pid = msg["product_id"]
-                        for sym, st in states.items():
-                            if st.pair == pid:
-                                st.price = float(msg["price"])
-                                st.volume_24h = float(msg.get("volume_24h", 0))
-                                st.volumes.append(st.volume_24h)
-                                st.last_update = time.time()
-                                break
+            send_telegram(body, tg["bot_token"], tg["chat_id"])
         except Exception as e:
-            print(f"WS error: {e}. Reconnecting in 5s...", file=sys.stderr)
-            await asyncio.sleep(5)
+            print(f"Telegram send failed: {e}", file=sys.stderr)
+    em = cfg.get("email", {})
+    if em.get("enabled") and em.get("username") and em.get("to_address"):
+        try:
+            send_email(body, em)
+        except Exception as e:
+            print(f"Email send failed: {e}", file=sys.stderr)
+
 
 # ---------------------------------------------------------------------------
-# Dashboard
+# CLI dashboard
 # ---------------------------------------------------------------------------
-def render_dashboard(cfg: Dict):
-    os.system("clear" if os.name != "nt" else "cls")
-    print(f"Stablecoin Depeg Detector  |  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print("-" * 70)
-    print(f"{'Symbol':<8} {'Price':>10} {'Status':<12} {'24h Vol':>15} {'Vol Alert':<10}")
-    print("-" * 70)
-    for sym, st in states.items():
-        price_str = f"{st.price:.4f}" if st.price else "n/a"
-        status = check_thresholds(st.price, cfg["lower_bound"], cfg["upper_bound"]) if st.price else "NO_DATA"
-        vol_str = f"{st.volume_24h:,.0f}" if st.volume_24h else "n/a"
-        vol_alert = "SPIKE" if check_volume_spike(st, cfg["volume_spike_multiplier"]) else ""
-        print(f"{sym:<8} {price_str:>10} {status:<12} {vol_str:>15} {vol_alert:<10}")
-    print("-" * 70)
-    print("Ctrl+C to exit")
+def render_dashboard(rows: List[Tuple[str, str, str, str]]) -> None:
+    """rows: (symbol, price, 24h_change, status)"""
+    print("\033[2J\033[H", end="")  # clear screen
+    print(f"{'COIN':<8}{'PRICE':>10}{'24h':>8}{'STATUS':>14}")
+    print("-" * 42)
+    for symbol, price, chg, status in rows:
+        color = ""
+        if "DEPEG" in status or "SPIKE" in status or "DIVERGE" in status:
+            color = "\033[91m"  # red
+        elif status == "OK":
+            color = "\033[92m"  # green
+        print(f"{color}{symbol:<8}{price:>10}{chg:>8}{status:>14}\033[0m")
+
 
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
-async def main_async(cfg: Dict):
-    product_ids = []
-    for sym, pair in cfg["stablecoins"].items():
-        states[sym] = CoinState(sym, pair)
-        product_ids.append(pair)
+def run_once(cfg: Dict, vol: VolumeTracker) -> List[str]:
+    symbol_map = cfg["stablecoins"]
+    prices = fetch_prices_rest(list(symbol_map.keys()))
+    alerts = check_price_depeg(prices, symbol_map, cfg["lower_bound"], cfg["upper_bound"])
+    for cg_id, symbol in symbol_map.items():
+        vol_alert = vol.update(symbol, prices.get(cg_id, {}).get("usd_24h_vol"))
+        if vol_alert:
+            alerts.append(vol_alert)
+    dispatch_alerts(alerts, cfg)
+    return alerts
 
-    for sym, st in states.items():
-        p = fetch_rest_price(st.pair)
-        if p:
-            st.price = p
-            st.last_update = time.time()
 
-    ws_task = asyncio.create_task(ws_listener(cfg, product_ids))
-
+def run_dashboard(cfg: Dict, vol: VolumeTracker) -> None:
+    symbol_map = cfg["stablecoins"]
     try:
         while True:
-            render_dashboard(cfg)
+            prices = fetch_prices_rest(list(symbol_map.keys()))
+            rows = []
             alerts = []
-            for st in states.values():
-                if st.price:
-                    status = check_thresholds(st.price, cfg["lower_bound"], cfg["upper_bound"])
-                    if status != "OK":
-                        alerts.append(f"{status} {st.symbol}: ${st.price:.4f}")
-                    if check_volume_spike(st, cfg["volume_spike_multiplier"]):
-                        alerts.append(f"VOLUME_SPIKE {st.symbol}: {st.volume_24h:,.0f}")
-            if alerts:
-                print("\nALERTS:", " | ".join(alerts))
-            await asyncio.sleep(2)
+            for cg_id, symbol in symbol_map.items():
+                e = prices.get(cg_id, {})
+                p = e.get("usd")
+                chg = e.get("usd_24h_change")
+                price_s = f"${p:.4f}" if p is not None else "n/a"
+                chg_s = f"{chg:+.2f}%" if chg is not None else "n/a"
+                status = "OK"
+                if p is not None:
+                    if p < cfg["lower_bound"]:
+                        status = "DEPEG DOWN"
+                        alerts.append(f"DEPEG DOWN {symbol}: ${p:.4f}")
+                    elif p > cfg["upper_bound"]:
+                        status = "DEPEG UP"
+                        alerts.append(f"DEPEG UP {symbol}: ${p:.4f}")
+                vol_alert = vol.update(symbol, e.get("usd_24h_vol"))
+                if vol_alert:
+                    status = "VOL SPIKE"
+                    alerts.append(vol_alert)
+                rows.append((symbol, price_s, chg_s, status))
+            render_dashboard(rows)
+            dispatch_alerts(alerts, cfg)
+            time.sleep(cfg["poll_interval_seconds"])
     except KeyboardInterrupt:
-        ws_task.cancel()
-        print("\nStopped.")
+        print("\nDashboard stopped.")
 
-def main():
-    parser = argparse.ArgumentParser()
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Stablecoin Depeg Detector v2")
     parser.add_argument("--config", default=None)
+    parser.add_argument("--loop", type=int, default=0)
+    parser.add_argument("--dashboard", action="store_true")
+    parser.add_argument("--ws", action="store_true", help="WebSocket mode (requires websocket-client)")
     args = parser.parse_args()
-    cfg = DEFAULT_CONFIG.copy()
+
     if args.config:
         with open(args.config) as f:
-            cfg.update(json.load(f))
-    asyncio.run(main_async(cfg))
+            cfg = {**DEFAULT_CONFIG, **json.load(f)}
+    else:
+        cfg = DEFAULT_CONFIG
+
+    vol = VolumeTracker(cfg["volume_window"], cfg["volume_spike_multiplier"])
+
+    if args.dashboard:
+        run_dashboard(cfg, vol)
+    elif args.loop > 0:
+        print(f"Polling every {args.loop}s. Ctrl+C to stop.")
+        while True:
+            try:
+                run_once(cfg, vol)
+            except requests.RequestException as e:
+                print(f"Fetch error: {e}", file=sys.stderr)
+            except KeyboardInterrupt:
+                print("\nStopped.")
+                break
+            time.sleep(args.loop)
+    else:
+        run_once(cfg, vol)
+
 
 if __name__ == "__main__":
     main()

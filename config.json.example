@@ -7,8 +7,19 @@
     "paypal-usd": "PYUSD",
     "true-usd": "TUSD"
   },
+  "binance_pairs": {
+    "tether": "usdtusdt",
+    "usd-coin": "usdcusdt",
+    "dai": "daiusdt",
+    "first-digital-usd": "fdusdusdt",
+    "paypal-usd": "pyusdusdt",
+    "true-usd": "tusdusdt"
+  },
   "lower_bound": 0.99,
   "upper_bound": 1.01,
+  "volume_spike_multiplier": 3.0,
+  "volume_window": 20,
+  "divergence_threshold_bps": 50,
   "telegram": {
     "enabled": false,
     "bot_token": "YOUR_BOT_TOKEN",

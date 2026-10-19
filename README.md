@@ -13,7 +13,7 @@ pip install -r requirements.txt
 python depeg_detector.py                      # single snapshot
 python depeg_detector.py --loop 30            # poll every 30 seconds
 python depeg_detector.py --dashboard          # live refreshing CLI board
-python depeg_detector.py --ws                 # Binance WebSocket tick-by-tick (upgrade path)
+python depeg_detector.py --ws                 # Binance WebSocket tick-by-tick with auto-reconnect
 ```
 
 ## Signals
@@ -32,7 +32,7 @@ python depeg_detector.py --ws                 # Binance WebSocket tick-by-tick (
 
 ## Tracked stablecoins
 
-USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binance pairs ready for WebSocket upgrade.
+USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binance combined ticker stream for live mode (usdcusdt, daiusdt, fdusdusdt, pyusdusdt, tusdusdt; USDTUSDT is a placeholder).
 
 ## Tests
 
@@ -48,7 +48,7 @@ Who to sell to: small funds, prop desks, DeFi treasuries, and fintechs holding s
 
 ## Upgrade path
 
-1. Live Binance/Coinbase WebSocket with auto-reconnect
+1. Live Binance/Coinbase WebSocket with auto-reconnect (implemented)
 2. On-chain mint/burn monitoring via Alchemy or QuickNode
 3. Hosted dashboard + multi-tenant alerts
 4. Paid tier with custom thresholds per client

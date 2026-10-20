@@ -39,13 +39,13 @@ USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binanc
 
 ## Verification
 
-Live check (2026-10-20 ~17:05 UTC): CoinGecko returned all six within band:
-- USDT ~$0.9992 OK (vol ~$51.4B)
-- USDC ~$0.9998 OK (vol ~$16.6B)
-- DAI ~$1.0000 OK
-- FDUSD ~$0.9981 OK
-- PYUSD ~$1.0000 OK
-- TUSD ~$0.9988 OK
+Live check (2026-10-20 ~19:03 UTC): CoinGecko returned all six within band:
+- USDT $0.9992 OK (vol ~$50.8B)
+- USDC $0.9998 OK (vol ~$16.2B)
+- DAI $1.0000 OK (vol ~$265M)
+- FDUSD $0.9978 OK (vol ~$106M)
+- PYUSD $1.0000 OK (vol ~$45M)
+- TUSD $0.9986 OK (vol ~$17.5M)
 
 All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase on rate limits. Volume tracker uses pure median for outlier-robust baseline with 5-minute alert cooldown.
 
@@ -60,7 +60,7 @@ All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinb
 
 ## Sales pitch
 
-**Who to sell to:** small funds, prop desks, DeFi treasuries, and fintechs holding stablecoin reserves. Distribution = selling to people already swimming in stablecoin volume. First clients: teams who need reliable, low-latency alerts without enterprise procurement. Target $200-500/month.
+**Who to sell to:** small funds, prop desks, DeFi treasuries, and fintechs holding stablecoin reserves. Distribution = selling to people already swimming in stablecoin volume. First clients: teams who need reliable, low-latency alerts without enterprise procurement. Target a few hundred $/month.
 
 **Why minutes matter:** A depeg can move from 50 bps to 5% in under an hour (see March 2023 USDC). Early detection of volume spikes or price drift gives desks time to rotate or hedge before cascade liquidations. This tool is the trader-grade tier between free GitHub scripts and $50k+ institutional compliance suites. Minutes of lead time prevent millions in losses.
 

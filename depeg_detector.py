@@ -1,1 +1,1 @@
-$(cat /tmp/depeg_detector_updated.py)
+PLACEHOLDER

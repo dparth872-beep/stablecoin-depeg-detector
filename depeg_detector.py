@@ -50,10 +50,10 @@ def check_price_depeg(prices: Dict, symbol_map: Dict, lower: float, upper: float
 
 
 class VolumeTracker:
-    """Rolling volume tracker that flags spikes > multiplier * average.
+    """Rolling volume tracker that flags spikes > multiplier * median baseline.
 
     Ignores zero/negative volumes. Requires a minimum baseline before alerting.
-    Uses median for robustness against outliers in the baseline.
+    Uses median exclusively for robustness against outliers.
     """
 
     def __init__(self, window: int = 20, multiplier: float = 3.0):
@@ -68,12 +68,11 @@ class VolumeTracker:
         if len(hist) >= max(5, self.window // 2):
             sorted_hist = sorted(hist)
             median = sorted_hist[len(sorted_hist)//2]
-            avg = sum(hist) / len(hist)
-            baseline = max(median, avg * 0.8)  # prefer median, floor with avg
+            baseline = median  # pure median for outlier resistance
             if baseline > 0 and volume > self.multiplier * baseline:
                 alert = (
                     f"VOLUME SPIKE {symbol}: ${volume:,.0f} > {self.multiplier}x "
-                    f"baseline ${baseline:,.0f} (med=${median:,.0f}, avg=${avg:,.0f}, n={len(hist)})"
+                    f"median baseline ${baseline:,.0f} (n={len(hist)})"
                 )
                 hist.append(volume)
                 return alert

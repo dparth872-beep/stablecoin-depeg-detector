@@ -14,9 +14,9 @@ cp config.json.example config.json   # optional: enable Telegram/email
 python depeg_detector.py                      # single snapshot (CoinGecko REST)
 python depeg_detector.py --loop 30            # poll every 30 seconds
 python depeg_detector.py --dashboard          # live refreshing CLI board with colors
-python depeg_detector.py --ws                 # Binance WebSocket tick-by-tick with auto-reconnect + heartbeat
+python depeg_detector.py --ws                 # Binance WebSocket tick-by-tick with auto-reconnect + heartbeat + jitter
 python verify_prices.py                       # one-shot verification with 24h vol/change
-python tests/test_depeg_logic.py              # run unit tests (13 cases)
+python tests/test_depeg_logic.py              # run unit tests (14 cases)
 ```
 
 ## Signals
@@ -24,7 +24,7 @@ python tests/test_depeg_logic.py              # run unit tests (13 cases)
 | Tier | Trigger | Meaning |
 | --- | --- | --- |
 | DEPEG | Price outside $0.99-$1.01 | Peg break - incident mode |
-| VOLUME SPIKE | 24h vol > 3x median baseline | Liquidity stress building |
+| VOLUME SPIKE | 24h vol > 3x median baseline (debounced) | Liquidity stress building |
 | DIVERGENCE | Cross-venue gap > 50 bps | One source is stale or manipulated |
 
 ## Alerts
@@ -39,23 +39,23 @@ USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binanc
 
 ## Verification
 
-Live check (2026-10-20): CoinGecko returned all six within band after rate-limit handling:
-- USDT ~$0.9992 OK
-- USDC ~$0.9998 OK
+Live check (2026-10-20 ~17:05 UTC): CoinGecko returned all six within band:
+- USDT ~$0.9992 OK (vol ~$51.4B)
+- USDC ~$0.9998 OK (vol ~$16.6B)
 - DAI ~$1.0000 OK
-- FDUSD ~$0.9982 OK
+- FDUSD ~$0.9981 OK
 - PYUSD ~$1.0000 OK
-- TUSD ~$0.9987 OK
+- TUSD ~$0.9988 OK
 
-All 13 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase on rate limits. Volume tracker uses pure median for outlier-robust baseline.
+All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase on rate limits. Volume tracker uses pure median for outlier-robust baseline with 5-minute alert cooldown.
 
 ## Features
 
 - Robust price verification with CoinGecko retry + Coinbase fallback
-- Binance WebSocket with exponential backoff reconnection (capped at 60s), heartbeat/stale detection, serverShutdown handling, and connection logging
-- Volume anomaly detection using pure median baseline (skips zero volumes, clear spike alerts) as independent alert tier
+- Binance WebSocket with exponential backoff + random jitter reconnection (capped at 60s), heartbeat/stale detection, serverShutdown handling, reconnect counting, and connection logging
+- Volume anomaly detection using pure median baseline (skips zero volumes, clear spike alerts, 300s debounce) as independent alert tier
 - In-place refreshing CLI dashboard with ANSI colors (green OK / red DEPEG), timestamp, volume, and status
-- 13 unit tests covering threshold logic, volume spikes (including median robustness), divergence, multi-coin, and edge cases with synthetic data
+- 14 unit tests covering threshold logic, volume spikes (including median robustness and cooldown), divergence, multi-coin, and edge cases with synthetic data
 - Multi-source REST snapshot with Coinbase fallback for rate-limit resilience
 
 ## Sales pitch
@@ -66,7 +66,7 @@ All 13 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinb
 
 ## Upgrade path
 
-1. Live Binance/Coinbase WebSocket with auto-reconnect and heartbeat (implemented)
+1. Live Binance/Coinbase WebSocket with auto-reconnect, jitter, and heartbeat (implemented)
 2. On-chain mint/burn monitoring via Alchemy or QuickNode
 3. Hosted dashboard + multi-tenant alerts
 4. Paid tier with custom thresholds per client

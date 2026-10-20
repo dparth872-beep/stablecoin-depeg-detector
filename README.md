@@ -10,6 +10,7 @@ Stablecoin depegs cascade into billions in losses within hours (USDC/SVB March 2
 
 ```bash
 pip install -r requirements.txt
+cp config.json.example config.json   # optional: enable Telegram/email
 python depeg_detector.py                      # single snapshot (CoinGecko REST)
 python depeg_detector.py --loop 30            # poll every 30 seconds
 python depeg_detector.py --dashboard          # live refreshing CLI board
@@ -17,8 +18,6 @@ python depeg_detector.py --ws                 # Binance WebSocket tick-by-tick w
 python verify_prices.py                       # one-shot verification with fallbacks
 python tests/test_depeg_logic.py              # run unit tests
 ```
-
-Copy `config.json.example` to `config.json` and fill Telegram/email if desired.
 
 ## Signals
 
@@ -30,7 +29,7 @@ Copy `config.json.example` to `config.json` and fill Telegram/email if desired.
 
 ## Alerts
 
-- Console (always on) + color-coded CLI dashboard (price, 24h change, volume, status)
+- Console (always on) + live CLI dashboard (price, 24h change, volume, status, timestamp)
 - Telegram bot
 - Email via SMTP
 
@@ -40,29 +39,29 @@ USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binanc
 
 ## Verification
 
-Live check (2026-10-20 05:03 UTC / ~23:03 MDT): CoinGecko returned 200. All six within band:
+Live check (2026-10-20 05:03 UTC): CoinGecko returned 200. All six within band:
 - USDT $0.9992 OK (24h vol ~$46.8B)
 - USDC $0.9999 OK (24h vol ~$16.5B)
 - DAI $1.0000 OK (24h vol ~$341M)
 - FDUSD $0.9974 OK (24h vol ~$63M)
 - PYUSD $1.0000 OK (24h vol ~$63M)
 - TUSD $0.9987 OK (24h vol ~$14M)
-All 8 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase on rate limits.
+All 11 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase on rate limits.
 
-## Features added in this build
+## Features
 
 - Robust price verification with CoinGecko retry + Coinbase fallback
-- Binance WebSocket with exponential backoff reconnection (capped at 60s)
-- Volume anomaly detection as independent alert tier
-- In-place refreshing CLI dashboard with volume column
-- 8 unit tests covering all signal logic with synthetic data
-- Full depeg_detector.py implementation matching the above (REST, WS, volume, dashboard)
+- Binance WebSocket with exponential backoff reconnection (capped at 60s) and connection logging
+- Volume anomaly detection (skips zero volumes, clear spike alerts) as independent alert tier
+- In-place refreshing CLI dashboard with timestamp, volume, and status
+- 11 unit tests covering threshold logic, volume spikes, divergence, and edge cases with synthetic data
 - Multi-source REST snapshot with Coinbase fallback for rate-limit resilience
-- Fixed Binance WS symbol mapping
 
 ## Sales pitch
 
-Who to sell to: small funds, prop desks, DeFi treasuries, and fintechs holding stablecoin reserves. Why: minutes matter when a depeg starts - early detection of volume spikes or price drift can prevent cascade losses. Position this as the $200-500/month tier between free GitHub scripts and $50k+ institutional compliance suites. First clients: teams already swimming in stablecoin volume who need reliable, low-latency alerts without enterprise procurement.
+**Who to sell to:** small funds, prop desks, DeFi treasuries, and fintechs holding stablecoin reserves. Distribution = selling to people already swimming in stablecoin volume.
+
+**Why minutes matter:** A depeg can move from 50 bps to 5% in under an hour (see March 2023 USDC). Early detection of volume spikes or price drift gives desks time to rotate or hedge before cascade liquidations. This tool is the $200-500/month tier between free GitHub scripts and $50k+ institutional compliance suites. First clients: teams who need reliable, low-latency alerts without enterprise procurement.
 
 ## Upgrade path
 

@@ -2,7 +2,9 @@
 
 Live status board that refreshes in place (ANSI clear screen).
 
-Columns: Symbol | Price | 24h% | 24h Volume | Status (colored: green OK / red DEPEG)
+Columns: Symbol | Price | 24h% | 24h Volume | Status (colored: green OK / red DEPEG / yellow NO DATA)
+
+Volume spike detection runs in the background; alerts appear in console when thresholds hit.
 
 Run with:
 ```
@@ -13,11 +15,11 @@ Refreshes every poll_interval_seconds (default 30s). Shows timestamp, thresholds
 
 Example output:
 ```
-Stablecoin Depeg Detector  |  Live Dashboard  |  2026-10-20 16:15:00 UTC
+Stablecoin Depeg Detector  |  Live Dashboard  |  2026-10-20 17:05:00 UTC
 ------------------------------------------------------------------------------
 Symbol       Price     24h%      24h Volume Status
 ------------------------------------------------------------------------------
-USDT      $0.9992   -0.01%  $51,080,210,210 OK
-USDC      $0.9998   -0.01%  $17,487,955,931 OK
+USDT      $0.9992   -0.01%  $51,420,246,699 OK
+USDC      $0.9998   -0.01%  $16,621,227,981 OK
 ... 
 ```

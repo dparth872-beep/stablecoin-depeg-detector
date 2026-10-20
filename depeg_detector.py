@@ -43,7 +43,10 @@ def check_price_depeg(prices: Dict, symbol_map: Dict, lower: float, upper: float
 
 
 class VolumeTracker:
-    """Rolling volume tracker that flags spikes > multiplier * average."""
+    """Rolling volume tracker that flags spikes > multiplier * average.
+
+    Ignores zero/negative volumes. Requires a minimum baseline before alerting.
+    """
 
     def __init__(self, window: int = 20, multiplier: float = 3.0):
         self.window = window
@@ -51,11 +54,16 @@ class VolumeTracker:
         self.history: Dict[str, deque] = defaultdict(lambda: deque(maxlen=window))
 
     def update(self, symbol: str, volume: float) -> Optional[str]:
+        if volume is None or volume <= 0:
+            return None
         hist = self.history[symbol]
         if len(hist) >= max(5, self.window // 2):  # need some baseline
             avg = sum(hist) / len(hist)
             if avg > 0 and volume > self.multiplier * avg:
-                alert = f"VOLUME SPIKE {symbol}: {volume:.0f} > {self.multiplier}x avg {avg:.0f}"
+                alert = (
+                    f"VOLUME SPIKE {symbol}: ${volume:,.0f} > {self.multiplier}x "
+                    f"avg ${avg:,.0f} (window={len(hist)})"
+                )
                 hist.append(volume)
                 return alert
         hist.append(volume)

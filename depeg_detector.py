@@ -227,7 +227,7 @@ def snapshot_rest(cfg: dict) -> dict:
 # ---------------------------------------------------------------------------
 
 class BinanceWS:
-    """Combined ticker stream with exponential backoff reconnection.
+    """Combined ticker stream with exponential backoff reconnection and heartbeat.
 
     Note: USDT itself has no USDTUSDT pair; it falls back to REST in other modes.
     Streams: usdcusdt, daiusdt, fdusdusdt, pyusdusdt, tusdusdt @ticker.
@@ -238,6 +238,7 @@ class BinanceWS:
         self.on_ticker = on_ticker
         self.running = False
         self.ws = None
+        self.last_msg = time.time()
         streams = [p for p in cfg["binance_pairs"].values() if p]
         self.url = "wss://stream.binance.com:9443/stream?streams=" + "/".join(
             f"{s}@ticker" for s in streams
@@ -264,6 +265,9 @@ class BinanceWS:
                 print(f"WS error: {e}", file=sys.stderr)
             if not self.running:
                 break
+            # Stale connection check
+            if time.time() - self.last_msg > 60:
+                print("No messages for 60s, forcing reconnect", file=sys.stderr)
             print(f"WS reconnecting in {backoff}s...", file=sys.stderr)
             time.sleep(backoff)
             backoff = min(backoff * 2, 60)
@@ -275,8 +279,10 @@ class BinanceWS:
 
     def _on_open(self, ws):
         print("Binance WS connected.", file=sys.stderr)
+        self.last_msg = time.time()
 
     def _on_message(self, ws, message):
+        self.last_msg = time.time()
         try:
             payload = json.loads(message)
             data = payload.get("data", payload)
@@ -288,8 +294,8 @@ class BinanceWS:
                     vol = float(data.get("q", 0))  # quote volume
                     self.on_ticker(cg_id, price, vol)
                     break
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"Parse error: {e}", file=sys.stderr)
 
     def _on_error(self, ws, error):
         print(f"WS error callback: {error}", file=sys.stderr)

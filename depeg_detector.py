@@ -22,6 +22,13 @@ try:
 except ImportError:
     websocket = None
 
+# ANSI colors
+GREEN = "\033[92m"
+RED = "\033[91m"
+YELLOW = "\033[93m"
+RESET = "\033[0m"
+BOLD = "\033[1m"
+
 # ---------------------------------------------------------------------------
 # Core signal logic (imported by tests)
 # ---------------------------------------------------------------------------
@@ -316,10 +323,18 @@ def clear_screen():
     print("\033[H\033[2J", end="")
 
 
+def color_status(status: str) -> str:
+    if status == "OK":
+        return f"{GREEN}{status}{RESET}"
+    if status == "DEPEG":
+        return f"{RED}{BOLD}{status}{RESET}"
+    return f"{YELLOW}{status}{RESET}"
+
+
 def render_dashboard(cfg: dict, prices: dict, volumes: dict):
     clear_screen()
     now = time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime())
-    print(f"Stablecoin Depeg Detector  |  Live Dashboard  |  {now}")
+    print(f"{BOLD}Stablecoin Depeg Detector  |  Live Dashboard  |  {now}{RESET}")
     print("-" * 78)
     print(f"{'Symbol':<8} {'Price':>10} {'24h%':>8} {'24h Volume':>16} {'Status':<12}")
     print("-" * 78)
@@ -338,9 +353,9 @@ def render_dashboard(cfg: dict, prices: dict, volumes: dict):
         price_s = f"${price:.4f}" if price is not None else "   -"
         chg_s = f"{chg:+.2f}%" if chg else "   -"
         vol_s = f"${vol:,.0f}" if vol else "   -"
-        print(f"{symbol:<8} {price_s:>10} {chg_s:>8} {vol_s:>16} {status:<12}")
+        print(f"{symbol:<8} {price_s:>10} {chg_s:>8} {vol_s:>16} {color_status(status):<20}")
     print("-" * 78)
-    print("Thresholds: $0.99 - $1.01  |  Volume spike > 3x rolling avg  |  Press Ctrl+C to exit")
+    print("Thresholds: $0.99 - $1.01  |  Volume spike > 3x median baseline  |  Press Ctrl+C to exit")
 
 
 # ---------------------------------------------------------------------------

@@ -63,9 +63,9 @@ All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinb
 
 ## Sales pitch
 
-**Who to sell to:** small funds, prop desks, DeFi treasuries, and fintechs holding stablecoin reserves. Distribution = selling to people already swimming in stablecoin volume. First clients: teams who need reliable, low-latency alerts without enterprise procurement. Target a few hundred $/month.
+**Who to sell to:** small funds, prop desks, DeFi treasuries, OTC desks, and fintechs that already hold or clear large stablecoin volumes. Distribution = selling directly to people swimming in USDT/USDC flow. First clients: teams who need reliable sub-minute alerts without enterprise procurement cycles. Price point: a few hundred $/month.
 
-**Why minutes matter:** A depeg can move from 50 bps to 5% in under an hour (see March 2023 USDC). Early detection of volume spikes or price drift gives desks time to rotate or hedge before cascade liquidations. This tool is the trader-grade tier between free GitHub scripts and $50k+ institutional compliance suites. Minutes of lead time prevent millions in losses.
+**Why minutes matter:** USDC moved from ~$1.00 to $0.88 in hours during the March 2023 SVB event; UST collapsed in days. Volume spikes and early price drift give desks lead time to rotate, hedge, or pause transfers before cascade liquidations and redemption queues. This sits in the gap between free polling scripts and $50k+ institutional suites (TRM, Elliptic). Minutes of lead time prevent millions in losses.
 
 ## Upgrade path
 

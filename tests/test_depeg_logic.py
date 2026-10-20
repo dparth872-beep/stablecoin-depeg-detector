@@ -66,7 +66,7 @@ def test_volume_spike():
     # build baseline
     for v in [100, 110, 105, 95, 100, 102, 98, 101, 103, 99]:
         vt.update("USDT", v)
-    alert = vt.update("USDT", 400)  # 4x average
+    alert = vt.update("USDT", 400)  # 4x median
     assert alert is not None and "VOLUME SPIKE" in alert
     print("PASS test_volume_spike")
 
@@ -75,7 +75,7 @@ def test_volume_no_spike():
     vt = VolumeTracker(window=10, multiplier=3.0)
     for v in [100, 110, 105, 95, 100, 102, 98, 101, 103, 99]:
         vt.update("USDT", v)
-    alert = vt.update("USDT", 150)  # 1.5x average
+    alert = vt.update("USDT", 150)  # ~1.5x
     assert alert is None
     print("PASS test_volume_no_spike")
 
@@ -93,10 +93,10 @@ def test_volume_zero_skipped():
 
 def test_volume_median_robust():
     vt = VolumeTracker(window=10, multiplier=3.0)
-    # baseline with outlier
+    # baseline with outlier - median ignores 1000
     for v in [100, 105, 98, 102, 1000, 99, 101, 97, 103, 100]:
         vt.update("USDC", v)
-    # median should ignore the 1000
+    # median ~101, 350 > 3*101
     alert = vt.update("USDC", 350)
     assert alert is not None and "VOLUME SPIKE" in alert
     print("PASS test_volume_median_robust")

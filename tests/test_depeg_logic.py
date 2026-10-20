@@ -3,6 +3,7 @@
 
 import sys
 import os
+import time
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from depeg_detector import check_price_depeg, VolumeTracker, check_divergence
@@ -102,6 +103,20 @@ def test_volume_median_robust():
     print("PASS test_volume_median_robust")
 
 
+def test_volume_cooldown():
+    vt = VolumeTracker(window=10, multiplier=3.0, cooldown=1)
+    for v in [100, 110, 105, 95, 100, 102, 98, 101, 103, 99]:
+        vt.update("USDT", v)
+    alert1 = vt.update("USDT", 400)
+    assert alert1 is not None
+    alert2 = vt.update("USDT", 450)  # within cooldown
+    assert alert2 is None
+    time.sleep(1.1)
+    alert3 = vt.update("USDT", 500)
+    assert alert3 is not None
+    print("PASS test_volume_cooldown")
+
+
 def test_divergence():
     a = {"tether": {"usd": 1.0000}}
     b = {"tether": {"usd": 0.9940}}
@@ -143,7 +158,8 @@ if __name__ == "__main__":
     test_volume_no_spike()
     test_volume_zero_skipped()
     test_volume_median_robust()
+    test_volume_cooldown()
     test_divergence()
     test_divergence_within_band()
     test_multi_coin_depeg()
-    print("\nAll 13 tests passed.")
+    print("\nAll 14 tests passed.")

@@ -36,30 +36,30 @@ python tests/test_depeg_logic.py              # run unit tests (14 cases)
 
 ## Tracked stablecoins
 
-USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binance combined ticker stream for live mode on available pairs. Coinbase Exchange ticker for reliable tick-by-tick where Binance is blocked.
+USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binance combined ticker stream for live mode on available pairs. Coinbase Exchange ticker for reliable tick-by-tick where Binance is blocked. DefiLlama as tertiary fallback for full coverage under rate limits.
 
 ## Verification
 
-Live check (2026-10-20 ~20:05 UTC): CoinGecko returned all six within band:
+Live check (2026-10-20 ~23:05 UTC): CoinGecko returned all six within band:
 
-- USDT $0.9991 OK (vol ~$50.8B)
-- USDC $0.9998 OK (vol ~$16.2B)
-- DAI $1.0000 OK (vol ~$254M)
-- FDUSD $0.9978 OK (vol ~$106M)
-- PYUSD $1.0000 OK (vol ~$48M)
-- TUSD $0.9986 OK (vol ~$17.4M)
+- USDT $0.9993 OK (vol ~$51.8B)
+- USDC $0.9998 OK (vol ~$15.7B)
+- DAI $1.0000 OK (vol ~$201M)
+- FDUSD $0.9980 OK (vol ~$109M)
+- PYUSD $1.0000 OK (vol ~$43M)
+- TUSD $0.9987 OK (vol ~$14.2M)
 
-All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase on rate limits. Volume tracker uses pure median for outlier-robust baseline with 5-minute alert cooldown.
+All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase, then DefiLlama on rate limits. Volume tracker uses pure median for outlier-robust baseline with 5-minute alert cooldown.
 
 ## Features
 
-- Robust price verification with CoinGecko retry + Coinbase fallback
+- Robust price verification with CoinGecko retry + Coinbase + DefiLlama fallback
 - Binance WebSocket with exponential backoff + random jitter reconnection (capped at 60s), heartbeat/stale detection, serverShutdown handling, reconnect counting, and connection logging
 - Coinbase WebSocket alternative for geo-restricted environments
 - Volume anomaly detection using pure median baseline (skips zero volumes, clear spike alerts, 300s debounce) as independent alert tier
 - In-place refreshing CLI dashboard with ANSI colors (green OK / red DEPEG), timestamp, volume, and status
 - 14 unit tests covering threshold logic, volume spikes (including median robustness and cooldown), divergence, multi-coin, and edge cases with synthetic data
-- Multi-source REST snapshot with Coinbase fallback for rate-limit resilience
+- Multi-source REST snapshot with Coinbase + DefiLlama fallback for rate-limit resilience
 
 ## Sales pitch
 

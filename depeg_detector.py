@@ -336,11 +336,13 @@ class BinanceWS:
 
     def run(self):
         if not websocket:
-            print("websocket-client not installed")
+            print("websocket-client not installed; pip install websocket-client")
             return
         backoff = 1
+        reconnects = 0
         while self.running:
             try:
+                print(f"Connecting Binance WS (attempt {reconnects+1})...")
                 self.ws = websocket.WebSocketApp(
                     self.url,
                     on_message=self.on_message,
@@ -348,14 +350,15 @@ class BinanceWS:
                     on_close=self.on_close,
                     on_open=self.on_open,
                 )
-                self.ws.run_forever(ping_interval=30, ping_timeout=10)
+                self.ws.run_forever(ping_interval=20, ping_timeout=10)
             except Exception as e:
                 print(f"Binance WS exception: {e}")
             if not self.running:
                 break
-            jitter = random.uniform(0, 1)
+            reconnects += 1
+            jitter = random.uniform(0, 2)
             wait = min(60, backoff + jitter)
-            print(f"Reconnecting in {wait:.1f}s...")
+            print(f"Binance WS reconnect #{reconnects} in {wait:.1f}s (backoff {backoff}s)")
             time.sleep(wait)
             backoff = min(60, backoff * 2)
 
@@ -396,11 +399,13 @@ class CoinbaseWS:
 
     def run(self):
         if not websocket:
-            print("websocket-client not installed")
+            print("websocket-client not installed; pip install websocket-client")
             return
         backoff = 1
+        reconnects = 0
         while self.running:
             try:
+                print(f"Connecting Coinbase WS (attempt {reconnects+1})...")
                 self.ws = websocket.WebSocketApp(
                     self.url,
                     on_message=self.on_message,
@@ -408,14 +413,15 @@ class CoinbaseWS:
                     on_close=self.on_close,
                     on_open=self.on_open,
                 )
-                self.ws.run_forever(ping_interval=30, ping_timeout=10)
+                self.ws.run_forever(ping_interval=20, ping_timeout=10)
             except Exception as e:
                 print(f"Coinbase WS exception: {e}")
             if not self.running:
                 break
-            jitter = random.uniform(0, 1)
+            reconnects += 1
+            jitter = random.uniform(0, 2)
             wait = min(60, backoff + jitter)
-            print(f"Reconnecting in {wait:.1f}s...")
+            print(f"Coinbase WS reconnect #{reconnects} in {wait:.1f}s (backoff {backoff}s)")
             time.sleep(wait)
             backoff = min(60, backoff * 2)
 

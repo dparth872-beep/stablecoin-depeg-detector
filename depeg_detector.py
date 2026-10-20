@@ -242,6 +242,7 @@ class BinanceWS:
 
     Note: USDT itself has no USDTUSDT pair; it falls back to REST in other modes.
     Streams: usdcusdt, daiusdt, fdusdusdt, pyusdusdt, tusdusdt @ticker.
+    Handles serverShutdown events by forcing reconnect.
     """
 
     def __init__(self, cfg: dict, on_ticker):
@@ -297,6 +298,12 @@ class BinanceWS:
         try:
             payload = json.loads(message)
             data = payload.get("data", payload)
+            # Handle server shutdown notice
+            if data.get("e") == "serverShutdown":
+                print("Binance serverShutdown received, forcing reconnect...", file=sys.stderr)
+                if self.ws:
+                    self.ws.close()
+                return
             symbol = data.get("s", "").upper()
             # map binance symbol (e.g. USDCUSDT) back to cg_id
             for cg_id, pair in self.cfg["binance_pairs"].items():

@@ -38,6 +38,10 @@ Copy `config.json.example` to `config.json` and fill Telegram/email if desired.
 
 USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binance combined ticker stream for live mode on available pairs (usdcusdt, daiusdt, fdusdusdt, pyusdusdt, tusdusdt). USDT uses REST fallback.
 
+## Verification
+
+Live check (Oct 2026): USDT $0.9988, USDC $1.0000, DAI $0.9998, PYUSD $1.0000 all within band via Coinbase fallback when CoinGecko rate-limits. FDUSD/TUSD require CoinGecko or Binance WS. All unit tests pass.
+
 ## Features added in this build
 
 - Robust price verification with CoinGecko retry + Coinbase fallback

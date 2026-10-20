@@ -40,13 +40,13 @@ USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binanc
 
 ## Verification
 
-Live check (19 Oct 2026 22:00 MDT): CoinGecko returned 200. All six within band:
-- USDT $0.9992 OK
-- USDC $0.9999 OK
-- DAI $1.0000 OK
-- FDUSD $0.9975 OK
-- PYUSD $1.0000 OK
-- TUSD $0.9989 OK
+Live check (2026-10-20 05:03 UTC / ~23:03 MDT): CoinGecko returned 200. All six within band:
+- USDT $0.9992 OK (24h vol ~$46.8B)
+- USDC $0.9999 OK (24h vol ~$16.5B)
+- DAI $1.0000 OK (24h vol ~$341M)
+- FDUSD $0.9974 OK (24h vol ~$63M)
+- PYUSD $1.0000 OK (24h vol ~$63M)
+- TUSD $0.9987 OK (24h vol ~$14M)
 All 8 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase on rate limits.
 
 ## Features added in this build

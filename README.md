@@ -14,7 +14,8 @@ cp config.json.example config.json   # optional: enable Telegram/email
 python depeg_detector.py                      # single snapshot (CoinGecko REST)
 python depeg_detector.py --loop 30            # poll every 30 seconds
 python depeg_detector.py --dashboard          # live refreshing CLI board with colors
-python depeg_detector.py --ws                 # Binance WebSocket tick-by-tick with auto-reconnect + heartbeat + jitter
+python depeg_detector.py --ws                 # Binance WebSocket (may be geo-restricted)
+python depeg_detector.py --ws-coinbase        # Coinbase WebSocket (recommended fallback)
 python verify_prices.py                       # one-shot verification with 24h vol/change
 python tests/test_depeg_logic.py              # run unit tests (14 cases)
 ```
@@ -35,17 +36,18 @@ python tests/test_depeg_logic.py              # run unit tests (14 cases)
 
 ## Tracked stablecoins
 
-USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binance combined ticker stream for live mode on available pairs (usdcusdt, daiusdt, fdusdusdt, pyusdusdt, tusdusdt). USDT uses REST fallback.
+USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binance combined ticker stream for live mode on available pairs. Coinbase Exchange ticker for reliable tick-by-tick where Binance is blocked.
 
 ## Verification
 
-Live check (2026-10-20 ~19:03 UTC): CoinGecko returned all six within band:
-- USDT $0.9992 OK (vol ~$50.8B)
+Live check (2026-10-20 ~20:05 UTC): CoinGecko returned all six within band:
+
+- USDT $0.9991 OK (vol ~$50.8B)
 - USDC $0.9998 OK (vol ~$16.2B)
-- DAI $1.0000 OK (vol ~$265M)
+- DAI $1.0000 OK (vol ~$254M)
 - FDUSD $0.9978 OK (vol ~$106M)
-- PYUSD $1.0000 OK (vol ~$45M)
-- TUSD $0.9986 OK (vol ~$17.5M)
+- PYUSD $1.0000 OK (vol ~$48M)
+- TUSD $0.9986 OK (vol ~$17.4M)
 
 All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase on rate limits. Volume tracker uses pure median for outlier-robust baseline with 5-minute alert cooldown.
 
@@ -53,6 +55,7 @@ All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinb
 
 - Robust price verification with CoinGecko retry + Coinbase fallback
 - Binance WebSocket with exponential backoff + random jitter reconnection (capped at 60s), heartbeat/stale detection, serverShutdown handling, reconnect counting, and connection logging
+- Coinbase WebSocket alternative for geo-restricted environments
 - Volume anomaly detection using pure median baseline (skips zero volumes, clear spike alerts, 300s debounce) as independent alert tier
 - In-place refreshing CLI dashboard with ANSI colors (green OK / red DEPEG), timestamp, volume, and status
 - 14 unit tests covering threshold logic, volume spikes (including median robustness and cooldown), divergence, multi-coin, and edge cases with synthetic data

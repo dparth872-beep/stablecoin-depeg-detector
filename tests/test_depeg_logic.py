@@ -45,6 +45,22 @@ def test_missing_data():
     print("PASS test_missing_data")
 
 
+def test_boundary_lower():
+    prices = {"tether": {"usd": 0.99}}
+    symbol_map = {"tether": "USDT"}
+    alerts = check_price_depeg(prices, symbol_map, 0.99, 1.01)
+    assert alerts == [], "Exactly lower bound should be OK"
+    print("PASS test_boundary_lower")
+
+
+def test_boundary_upper():
+    prices = {"dai": {"usd": 1.01}}
+    symbol_map = {"dai": "DAI"}
+    alerts = check_price_depeg(prices, symbol_map, 0.99, 1.01)
+    assert alerts == [], "Exactly upper bound should be OK"
+    print("PASS test_boundary_upper")
+
+
 def test_volume_spike():
     vt = VolumeTracker(window=10, multiplier=3.0)
     # build baseline
@@ -62,6 +78,17 @@ def test_volume_no_spike():
     alert = vt.update("USDT", 150)  # 1.5x average
     assert alert is None
     print("PASS test_volume_no_spike")
+
+
+def test_volume_zero_skipped():
+    vt = VolumeTracker(window=10, multiplier=3.0)
+    for v in [100, 110, 105, 95, 100]:
+        vt.update("USDT", v)
+    alert = vt.update("USDT", 0)
+    assert alert is None
+    alert2 = vt.update("USDT", -10)
+    assert alert2 is None
+    print("PASS test_volume_zero_skipped")
 
 
 def test_divergence():
@@ -87,8 +114,11 @@ if __name__ == "__main__":
     test_depeg_down()
     test_depeg_up()
     test_missing_data()
+    test_boundary_lower()
+    test_boundary_upper()
     test_volume_spike()
     test_volume_no_spike()
+    test_volume_zero_skipped()
     test_divergence()
     test_divergence_within_band()
-    print("\nAll 8 tests passed.")
+    print("\nAll 11 tests passed.")

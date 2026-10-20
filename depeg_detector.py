@@ -192,10 +192,22 @@ def fetch_coinbase_spot(symbol, pairs):
         pass
     return None
 
+def fetch_defillama(ids):
+    llama_ids = ",".join(f"coingecko:{i}" for i in ids)
+    try:
+        r = requests.get(f"https://coins.llama.fi/prices/current/{llama_ids}", timeout=15)
+        if r.status_code == 200:
+            return r.json().get("coins", {})
+    except Exception:
+        pass
+    return {}
+
 def rest_snapshot(cfg):
-    """Fetch prices, prefer CoinGecko, fallback Coinbase."""
+    """Fetch prices, prefer CoinGecko, fallback Coinbase then DefiLlama."""
     symbols = cfg["stablecoins"]
-    cg = fetch_coingecko(list(symbols.keys()))
+    ids = list(symbols.keys())
+    cg = fetch_coingecko(ids)
+    llama = fetch_defillama(ids)
     prices = {}
     for cg_id, symbol in symbols.items():
         data = {}
@@ -205,6 +217,10 @@ def rest_snapshot(cfg):
             cb = fetch_coinbase_spot(symbol, cfg.get("coinbase_pairs", {}))
             if cb is not None:
                 data = {"usd": cb}
+        if "usd" not in data:
+            llama_key = f"coingecko:{cg_id}"
+            if llama_key in llama and "price" in llama[llama_key]:
+                data = {"usd": llama[llama_key]["price"]}
         prices[cg_id] = data
     return prices
 

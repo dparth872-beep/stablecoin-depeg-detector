@@ -9,6 +9,7 @@ and a live CLI dashboard.
 import argparse
 import json
 import os
+import random
 import smtplib
 import sys
 import time
@@ -242,6 +243,7 @@ class BinanceWS:
     Note: USDT itself has no USDTUSDT pair; it falls back to REST in other modes.
     Streams: usdcusdt, daiusdt, fdusdusdt, pyusdusdt, tusdusdt @ticker.
     Handles serverShutdown events by forcing reconnect.
+    Improved reconnection with jitter and reconnect counting.
     """
 
     def __init__(self, cfg: dict, on_ticker):
@@ -261,9 +263,10 @@ class BinanceWS:
             return
         self.running = True
         backoff = 1
+        reconnects = 0
         while self.running:
             try:
-                print(f"Connecting to Binance WS...", file=sys.stderr)
+                print(f"Connecting to Binance WS (attempt {reconnects + 1})...", file=sys.stderr)
                 self.ws = websocket.WebSocketApp(
                     self.url,
                     on_message=self._on_message,
@@ -276,11 +279,14 @@ class BinanceWS:
                 print(f"WS error: {e}", file=sys.stderr)
             if not self.running:
                 break
+            reconnects += 1
             # Stale connection check
             if time.time() - self.last_msg > 60:
                 print("No messages for 60s, forcing reconnect", file=sys.stderr)
-            print(f"WS reconnecting in {backoff}s...", file=sys.stderr)
-            time.sleep(backoff)
+            jitter = random.uniform(0.7, 1.3)
+            sleep_time = min(backoff * jitter, 60)
+            print(f"WS reconnecting in {sleep_time:.1f}s (total reconnects={reconnects})...", file=sys.stderr)
+            time.sleep(sleep_time)
             backoff = min(backoff * 2, 60)
 
     def stop(self):

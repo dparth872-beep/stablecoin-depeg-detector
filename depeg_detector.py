@@ -44,8 +44,8 @@ DEFAULT_CONFIG = {
         "tether": "USDT", "usd-coin": "USDC", "dai": "DAI",
         "first-digital-usd": "FDUSD", "paypal-usd": "PYUSD", "true-usd": "TUSD",
     },
-    "binance_pairs": {  # CoinGecko id -> Binance symbol (lowercase)
-        "tether": "usdtusdt", "usd-coin": "usdcusdt", "dai": "daiusdt",
+    "binance_pairs": {  # CoinGecko id -> Binance symbol (lowercase). Empty string skips WS for that coin.
+        "tether": "", "usd-coin": "usdcusdt", "dai": "daiusdt",
         "first-digital-usd": "fdusdusdt", "paypal-usd": "pyusdusdt", "true-usd": "tusdusdt",
     },
     "lower_bound": 0.99,
@@ -203,7 +203,7 @@ class BinanceWSClient:
         self.cfg = cfg
         self.vol = vol
         self.symbol_map = cfg["stablecoins"]
-        self.pair_to_cg = {v: k for k, v in cfg["binance_pairs"].items()}
+        self.pair_to_cg = {v: k for k, v in cfg["binance_pairs"].items() if v}
         self.latest: Dict[str, Dict] = {}
         self.ws = None
         self.running = False
@@ -211,21 +211,21 @@ class BinanceWSClient:
 
     def _streams(self) -> str:
         pairs = [p for p in self.cfg["binance_pairs"].values() if p]
+        if not pairs:
+            return ""
         return "/".join(f"{p}@ticker" for p in pairs)
 
     def on_message(self, ws, message):
         try:
             msg = json.loads(message)
             data = msg.get("data", {})
-            stream = msg.get("stream", "")
             symbol = data.get("s", "").lower()
             cg_id = self.pair_to_cg.get(symbol)
             if not cg_id:
                 return
             price = float(data.get("c", 0))
-            vol_24h = float(data.get("q", 0) or data.get("v", 0))  # quote or base volume
+            vol_24h = float(data.get("q", 0) or data.get("v", 0))
             self.latest[cg_id] = {"usd": price, "usd_24h_vol": vol_24h}
-            # check immediately
             alerts = []
             if price < self.cfg["lower_bound"]:
                 alerts.append(f"DEPEG DOWN {self.symbol_map[cg_id]}: ${price:.4f}")
@@ -245,19 +245,25 @@ class BinanceWSClient:
     def on_close(self, ws, close_status_code, close_msg):
         print(f"WS closed: {close_status_code} {close_msg}")
         if self.running:
+            print(f"Reconnecting in {self.reconnect_delay}s...")
             time.sleep(self.reconnect_delay)
             self.reconnect_delay = min(self.reconnect_delay * 2, 60)
             self._connect()
 
     def on_open(self, ws):
-        print("Binance WS connected.")
+        print("Binance WS connected. Listening for ticker updates.")
         self.reconnect_delay = 1
 
     def _connect(self):
         if not HAS_WS:
             print("websocket-client not installed. pip install websocket-client", file=sys.stderr)
             return
-        url = BINANCE_WS.format(streams=self._streams())
+        streams = self._streams()
+        if not streams:
+            print("No valid Binance pairs configured for WebSocket.", file=sys.stderr)
+            return
+        url = BINANCE_WS.format(streams=streams)
+        print(f"Connecting to {url}")
         self.ws = websocket.WebSocketApp(
             url,
             on_message=self.on_message,
@@ -269,7 +275,8 @@ class BinanceWSClient:
 
     def start(self):
         self.running = True
-        print(f"Starting Binance WS for {len(self.cfg['binance_pairs'])} pairs...")
+        n_pairs = len([p for p in self.cfg["binance_pairs"].values() if p])
+        print(f"Starting Binance WS for {n_pairs} pairs...")
         self._connect()
 
     def stop(self):

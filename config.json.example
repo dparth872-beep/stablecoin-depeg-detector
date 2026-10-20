@@ -8,7 +8,7 @@
     "true-usd": "TUSD"
   },
   "binance_pairs": {
-    "tether": "usdtusdt",
+    "tether": "",
     "usd-coin": "usdcusdt",
     "dai": "daiusdt",
     "first-digital-usd": "fdusdusdt",

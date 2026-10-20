@@ -219,7 +219,11 @@ def snapshot_rest(cfg: dict) -> dict:
 # ---------------------------------------------------------------------------
 
 class BinanceWS:
-    """Combined ticker stream with exponential backoff reconnection."""
+    """Combined ticker stream with exponential backoff reconnection.
+
+    Note: USDT itself has no USDTUSDT pair; it falls back to REST in other modes.
+    Streams: usdcusdt, daiusdt, fdusdusdt, pyusdusdt, tusdusdt @ticker.
+    """
 
     def __init__(self, cfg: dict, on_ticker):
         self.cfg = cfg
@@ -239,11 +243,13 @@ class BinanceWS:
         backoff = 1
         while self.running:
             try:
+                print(f"Connecting to Binance WS...", file=sys.stderr)
                 self.ws = websocket.WebSocketApp(
                     self.url,
                     on_message=self._on_message,
                     on_error=self._on_error,
                     on_close=self._on_close,
+                    on_open=self._on_open,
                 )
                 self.ws.run_forever(ping_interval=20, ping_timeout=10)
             except Exception as e:
@@ -258,6 +264,9 @@ class BinanceWS:
         self.running = False
         if self.ws:
             self.ws.close()
+
+    def _on_open(self, ws):
+        print("Binance WS connected.", file=sys.stderr)
 
     def _on_message(self, ws, message):
         try:
@@ -275,10 +284,10 @@ class BinanceWS:
             pass
 
     def _on_error(self, ws, error):
-        pass
+        print(f"WS error callback: {error}", file=sys.stderr)
 
     def _on_close(self, ws, code, msg):
-        pass
+        print(f"WS closed: code={code} msg={msg}", file=sys.stderr)
 
 
 # ---------------------------------------------------------------------------

@@ -182,18 +182,18 @@ def dispatch_alerts(alerts: List[str], cfg: Dict) -> None:
 # ---------------------------------------------------------------------------
 # CLI dashboard
 # ---------------------------------------------------------------------------
-def render_dashboard(rows: List[Tuple[str, str, str, str]]) -> None:
-    """rows: (symbol, price, 24h_change, status)"""
+def render_dashboard(rows: List[Tuple[str, str, str, str, str]]) -> None:
+    """rows: (symbol, price, 24h_change, vol_status, status)"""
     print("\033[2J\033[H", end="")  # clear screen
-    print(f"{'COIN':<8}{'PRICE':>10}{'24h':>8}{'STATUS':>14}")
-    print("-" * 42)
-    for symbol, price, chg, status in rows:
+    print(f"{'COIN':<8}{'PRICE':>10}{'24h':>8}{'VOL':>12}{'STATUS':>14}")
+    print("-" * 54)
+    for symbol, price, chg, vol_s, status in rows:
         color = ""
         if "DEPEG" in status or "SPIKE" in status or "DIVERGE" in status:
             color = "\033[91m"  # red
         elif status == "OK":
             color = "\033[92m"  # green
-        print(f"{color}{symbol:<8}{price:>10}{chg:>8}{status:>14}\033[0m")
+        print(f"{color}{symbol:<8}{price:>10}{chg:>8}{vol_s:>12}{status:>14}\033[0m")
 
 
 # ---------------------------------------------------------------------------
@@ -323,8 +323,10 @@ def run_dashboard(cfg: Dict, vol: VolumeTracker) -> None:
                 e = prices.get(cg_id, {})
                 p = e.get("usd")
                 chg = e.get("usd_24h_change")
+                vol_raw = e.get("usd_24h_vol")
                 price_s = f"${p:.4f}" if p is not None else "n/a"
                 chg_s = f"{chg:+.2f}%" if chg is not None else "n/a"
+                vol_s = f"${vol_raw/1e6:.0f}M" if vol_raw else "n/a"
                 status = "OK"
                 if p is not None:
                     if p < cfg["lower_bound"]:
@@ -333,11 +335,11 @@ def run_dashboard(cfg: Dict, vol: VolumeTracker) -> None:
                     elif p > cfg["upper_bound"]:
                         status = "DEPEG UP"
                         alerts.append(f"DEPEG UP {symbol}: ${p:.4f}")
-                vol_alert = vol.update(symbol, e.get("usd_24h_vol"))
+                vol_alert = vol.update(symbol, vol_raw)
                 if vol_alert:
                     status = "VOL SPIKE"
                     alerts.append(vol_alert)
-                rows.append((symbol, price_s, chg_s, status))
+                rows.append((symbol, price_s, chg_s, vol_s, status))
             render_dashboard(rows)
             dispatch_alerts(alerts, cfg)
             time.sleep(cfg["poll_interval_seconds"])

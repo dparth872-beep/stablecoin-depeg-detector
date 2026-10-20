@@ -55,28 +55,35 @@ class VolumeTracker:
 
     Ignores zero/negative volumes. Requires a minimum baseline before alerting.
     Uses median exclusively for robustness against outliers.
+    Debounces alerts to avoid spam (default 300s cooldown per symbol).
     """
 
-    def __init__(self, window: int = 20, multiplier: float = 3.0):
+    def __init__(self, window: int = 20, multiplier: float = 3.0, cooldown: int = 300):
         self.window = window
         self.multiplier = multiplier
+        self.cooldown = cooldown
         self.history: Dict[str, deque] = defaultdict(lambda: deque(maxlen=window))
+        self.last_alert: Dict[str, float] = {}
 
     def update(self, symbol: str, volume: float) -> Optional[str]:
         if volume is None or volume <= 0:
             return None
         hist = self.history[symbol]
+        now = time.time()
         if len(hist) >= max(5, self.window // 2):
             sorted_hist = sorted(hist)
             median = sorted_hist[len(sorted_hist)//2]
             baseline = median  # pure median for outlier resistance
             if baseline > 0 and volume > self.multiplier * baseline:
-                alert = (
-                    f"VOLUME SPIKE {symbol}: ${volume:,.0f} > {self.multiplier}x "
-                    f"median baseline ${baseline:,.0f} (n={len(hist)})"
-                )
-                hist.append(volume)
-                return alert
+                last = self.last_alert.get(symbol, 0)
+                if now - last >= self.cooldown:
+                    alert = (
+                        f"VOLUME SPIKE {symbol}: ${volume:,.0f} > {self.multiplier}x "
+                        f"median baseline ${baseline:,.0f} (n={len(hist)})"
+                    )
+                    self.last_alert[symbol] = now
+                    hist.append(volume)
+                    return alert
         hist.append(volume)
         return None
 

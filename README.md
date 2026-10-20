@@ -40,7 +40,7 @@ USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binanc
 
 ## Verification
 
-Live check (Oct 2026): USDT $0.9988, USDC $1.0000, DAI $0.9998, PYUSD $1.0000 all within band via Coinbase fallback when CoinGecko rate-limits. FDUSD/TUSD require CoinGecko or Binance WS. All unit tests pass.
+Live check (20 Oct 2026): All six OK via CoinGecko — USDT $0.9992, USDC $0.9999, DAI $1.0000, FDUSD $0.9974, PYUSD $1.0000, TUSD $0.9987. All within $0.99-$1.01 band. All 8 unit tests pass.
 
 ## Features added in this build
 
@@ -49,6 +49,7 @@ Live check (Oct 2026): USDT $0.9988, USDC $1.0000, DAI $0.9998, PYUSD $1.0000 al
 - Volume anomaly detection as independent alert tier
 - In-place refreshing CLI dashboard with volume column
 - 8 unit tests covering all signal logic with synthetic data
+- Full depeg_detector.py implementation matching the above (REST, WS, volume, dashboard)
 
 ## Sales pitch
 

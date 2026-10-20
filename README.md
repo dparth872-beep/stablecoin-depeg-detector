@@ -39,20 +39,21 @@ USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binanc
 
 ## Verification
 
-Live check (2026-10-20 ~15:05 UTC): CoinGecko returned 200. All six within band:
-- USDT $0.9992 OK (24h vol ~$49.5B)
-- USDC $0.9998 OK (24h vol ~$16.9B)
-- DAI $1.0000 OK (24h vol ~$340M)
-- FDUSD $0.9982 OK (24h vol ~$90M)
-- PYUSD $1.0000 OK (24h vol ~$46M)
-- TUSD $0.9989 OK (24h vol ~$17M)
-All 13 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase on rate limits. Volume tracker uses median for outlier-robust baseline.
+Live check (2026-10-20): CoinGecko returned all six within band after rate-limit handling:
+- USDT ~$0.9992 OK
+- USDC ~$0.9998 OK
+- DAI ~$1.0000 OK
+- FDUSD ~$0.9982 OK
+- PYUSD ~$1.0000 OK
+- TUSD ~$0.9987 OK
+
+All 13 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase on rate limits. Volume tracker uses pure median for outlier-robust baseline.
 
 ## Features
 
 - Robust price verification with CoinGecko retry + Coinbase fallback
-- Binance WebSocket with exponential backoff reconnection (capped at 60s), heartbeat/stale detection, and connection logging
-- Volume anomaly detection using median baseline (skips zero volumes, clear spike alerts) as independent alert tier
+- Binance WebSocket with exponential backoff reconnection (capped at 60s), heartbeat/stale detection, serverShutdown handling, and connection logging
+- Volume anomaly detection using pure median baseline (skips zero volumes, clear spike alerts) as independent alert tier
 - In-place refreshing CLI dashboard with ANSI colors (green OK / red DEPEG), timestamp, volume, and status
 - 13 unit tests covering threshold logic, volume spikes (including median robustness), divergence, multi-coin, and edge cases with synthetic data
 - Multi-source REST snapshot with Coinbase fallback for rate-limit resilience

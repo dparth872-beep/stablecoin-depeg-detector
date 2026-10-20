@@ -91,6 +91,17 @@ def test_volume_zero_skipped():
     print("PASS test_volume_zero_skipped")
 
 
+def test_volume_median_robust():
+    vt = VolumeTracker(window=10, multiplier=3.0)
+    # baseline with outlier
+    for v in [100, 105, 98, 102, 1000, 99, 101, 97, 103, 100]:
+        vt.update("USDC", v)
+    # median should ignore the 1000
+    alert = vt.update("USDC", 350)
+    assert alert is not None and "VOLUME SPIKE" in alert
+    print("PASS test_volume_median_robust")
+
+
 def test_divergence():
     a = {"tether": {"usd": 1.0000}}
     b = {"tether": {"usd": 0.9940}}
@@ -109,6 +120,18 @@ def test_divergence_within_band():
     print("PASS test_divergence_within_band")
 
 
+def test_multi_coin_depeg():
+    prices = {
+        "tether": {"usd": 0.98},
+        "usd-coin": {"usd": 1.02},
+        "dai": {"usd": 1.00},
+    }
+    symbol_map = {"tether": "USDT", "usd-coin": "USDC", "dai": "DAI"}
+    alerts = check_price_depeg(prices, symbol_map, 0.99, 1.01)
+    assert len(alerts) == 2
+    print("PASS test_multi_coin_depeg")
+
+
 if __name__ == "__main__":
     test_clean_prices_no_alerts()
     test_depeg_down()
@@ -119,6 +142,8 @@ if __name__ == "__main__":
     test_volume_spike()
     test_volume_no_spike()
     test_volume_zero_skipped()
+    test_volume_median_robust()
     test_divergence()
     test_divergence_within_band()
-    print("\nAll 11 tests passed.")
+    test_multi_coin_depeg()
+    print("\nAll 13 tests passed.")

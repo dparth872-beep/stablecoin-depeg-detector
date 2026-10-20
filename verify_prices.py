@@ -20,7 +20,7 @@ COINBASE_PAIRS = {
 LOWER, UPPER = 0.99, 1.01
 
 def fetch_coingecko(ids):
-    url = f"https://api.coingecko.com/api/v3/simple/price?ids={','.join(ids)}&vs_currencies=usd"
+    url = f"https://api.coingecko.com/api/v3/simple/price?ids={','.join(ids)}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true"
     for attempt in range(4):
         try:
             r = requests.get(url, timeout=15)
@@ -53,13 +53,16 @@ def fetch_coinbase(sym):
 
 def main():
     print("Stablecoin Depeg Detector - Price Verification")
-    print("=" * 60)
+    print("=" * 70)
     cg = fetch_coingecko(list(STABLES.keys()))
     for cg_id, symbol in STABLES.items():
         price = None
         source = "none"
+        vol = chg = None
         if cg and cg_id in cg and "usd" in cg[cg_id]:
             price = cg[cg_id]["usd"]
+            vol = cg[cg_id].get("usd_24h_vol")
+            chg = cg[cg_id].get("usd_24h_change")
             source = "CoinGecko"
         if price is None:
             price = fetch_coinbase(symbol)
@@ -77,8 +80,10 @@ def main():
         else:
             status = "OK"
             note = "within band"
-        print(f"{status:6} {symbol}: ${price:.4f}  ({note}) [{source}]")
-    print("=" * 60)
+        vol_s = f" vol=${vol:,.0f}" if vol else ""
+        chg_s = f" 24h={chg:+.2f}%" if chg is not None else ""
+        print(f"{status:6} {symbol}: ${price:.4f}  ({note}) [{source}]{vol_s}{chg_s}")
+    print("=" * 70)
     print("Verification complete. All reachable prices checked against $0.99-$1.01.")
 
 if __name__ == "__main__":

@@ -46,6 +46,7 @@ class VolumeTracker:
     """Rolling volume tracker that flags spikes > multiplier * average.
 
     Ignores zero/negative volumes. Requires a minimum baseline before alerting.
+    Uses median for robustness against outliers in the baseline.
     """
 
     def __init__(self, window: int = 20, multiplier: float = 3.0):
@@ -57,12 +58,15 @@ class VolumeTracker:
         if volume is None or volume <= 0:
             return None
         hist = self.history[symbol]
-        if len(hist) >= max(5, self.window // 2):  # need some baseline
+        if len(hist) >= max(5, self.window // 2):
+            sorted_hist = sorted(hist)
+            median = sorted_hist[len(sorted_hist)//2]
             avg = sum(hist) / len(hist)
-            if avg > 0 and volume > self.multiplier * avg:
+            baseline = max(median, avg * 0.8)  # prefer median, floor with avg
+            if baseline > 0 and volume > self.multiplier * baseline:
                 alert = (
                     f"VOLUME SPIKE {symbol}: ${volume:,.0f} > {self.multiplier}x "
-                    f"avg ${avg:,.0f} (window={len(hist)})"
+                    f"baseline ${baseline:,.0f} (med=${median:,.0f}, avg=${avg:,.0f}, n={len(hist)})"
                 )
                 hist.append(volume)
                 return alert

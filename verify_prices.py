@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verification script: fetch prices from CoinGecko with retry + Coinbase fallback and print OK/ALERT."""
+"""Verification script: fetch prices from CoinGecko with retry + Coinbase + DefiLlama fallback and print OK/ALERT."""
 import time
 import requests
 
@@ -51,10 +51,21 @@ def fetch_coinbase(sym):
         pass
     return None
 
+def fetch_defillama():
+    ids = ",".join(f"coingecko:{cg}" for cg in STABLES.keys())
+    try:
+        r = requests.get(f"https://coins.llama.fi/prices/current/{ids}", timeout=15)
+        if r.status_code == 200:
+            return r.json().get("coins", {})
+    except Exception:
+        pass
+    return {}
+
 def main():
     print("Stablecoin Depeg Detector - Price Verification")
     print("=" * 70)
     cg = fetch_coingecko(list(STABLES.keys()))
+    llama = fetch_defillama()
     for cg_id, symbol in STABLES.items():
         price = None
         source = "none"
@@ -68,6 +79,12 @@ def main():
             price = fetch_coinbase(symbol)
             if price is not None:
                 source = "Coinbase"
+        if price is None:
+            llama_key = f"coingecko:{cg_id}"
+            if llama_key in llama:
+                price = llama[llama_key].get("price")
+                if price is not None:
+                    source = "DefiLlama"
         if price is None:
             print(f"NO DATA  {symbol}: unable to fetch")
             continue

@@ -10,11 +10,15 @@ Stablecoin depegs cascade into billions in losses within hours (USDC/SVB March 2
 
 ```bash
 pip install -r requirements.txt
-python depeg_detector.py                      # single snapshot
+python depeg_detector.py                      # single snapshot (CoinGecko REST)
 python depeg_detector.py --loop 30            # poll every 30 seconds
 python depeg_detector.py --dashboard          # live refreshing CLI board
 python depeg_detector.py --ws                 # Binance WebSocket tick-by-tick with auto-reconnect
+python verify_prices.py                       # one-shot verification with fallbacks
+python tests/test_depeg_logic.py              # run unit tests
 ```
+
+Copy `config.json.example` to `config.json` and fill Telegram/email if desired.
 
 ## Signals
 
@@ -26,25 +30,25 @@ python depeg_detector.py --ws                 # Binance WebSocket tick-by-tick w
 
 ## Alerts
 
-- Console (always on) + color-coded CLI dashboard
+- Console (always on) + color-coded CLI dashboard (price, 24h change, volume, status)
 - Telegram bot
 - Email via SMTP
 
 ## Tracked stablecoins
 
-USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binance combined ticker stream for live mode (usdcusdt, daiusdt, fdusdusdt, pyusdusdt, tusdusdt; USDTUSDT is a placeholder).
+USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binance combined ticker stream for live mode on available pairs (usdcusdt, daiusdt, fdusdusdt, pyusdusdt, tusdusdt). USDT uses REST fallback.
 
-## Tests
+## Features added in this build
 
-```bash
-python tests/test_depeg_logic.py
-```
-
-8 unit tests covering clean data, depeg up/down, missing data, volume spikes, and divergence.
+- Robust price verification with CoinGecko retry + Coinbase fallback
+- Binance WebSocket with exponential backoff reconnection (capped at 60s)
+- Volume anomaly detection as independent alert tier
+- In-place refreshing CLI dashboard with volume column
+- 8 unit tests covering all signal logic with synthetic data
 
 ## Sales pitch
 
-Who to sell to: small funds, prop desks, DeFi treasuries, and fintechs holding stablecoin reserves. Why: minutes matter when a depeg starts - Webacy's monitor flagged USR 2+ hours before it lost 94%. Position this as the $200-500/month tier between free GitHub scripts and $50k+ institutional compliance suites.
+Who to sell to: small funds, prop desks, DeFi treasuries, and fintechs holding stablecoin reserves. Why: minutes matter when a depeg starts - early detection of volume spikes or price drift can prevent cascade losses. Position this as the $200-500/month tier between free GitHub scripts and $50k+ institutional compliance suites. First clients: teams already swimming in stablecoin volume who need reliable, low-latency alerts without enterprise procurement.
 
 ## Upgrade path
 

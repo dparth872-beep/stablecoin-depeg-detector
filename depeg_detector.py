@@ -308,10 +308,11 @@ def clear_screen():
 
 def render_dashboard(cfg: dict, prices: dict, volumes: dict):
     clear_screen()
-    print("Stablecoin Depeg Detector  |  Live Dashboard")
-    print("-" * 72)
-    print(f"{'Symbol':<8} {'Price':>10} {'24h%':>8} {'Volume':>14} {'Status':<12}")
-    print("-" * 72)
+    now = time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime())
+    print(f"Stablecoin Depeg Detector  |  Live Dashboard  |  {now}")
+    print("-" * 78)
+    print(f"{'Symbol':<8} {'Price':>10} {'24h%':>8} {'24h Volume':>16} {'Status':<12}")
+    print("-" * 78)
     lower, upper = cfg["lower_bound"], cfg["upper_bound"]
     for cg_id, symbol in cfg["stablecoins"].items():
         p = prices.get(cg_id, {})
@@ -326,10 +327,10 @@ def render_dashboard(cfg: dict, prices: dict, volumes: dict):
             status = "OK"
         price_s = f"${price:.4f}" if price is not None else "   -"
         chg_s = f"{chg:+.2f}%" if chg else "   -"
-        vol_s = f"{vol:,.0f}" if vol else "   -"
-        print(f"{symbol:<8} {price_s:>10} {chg_s:>8} {vol_s:>14} {status:<12}")
-    print("-" * 72)
-    print("Press Ctrl+C to exit")
+        vol_s = f"${vol:,.0f}" if vol else "   -"
+        print(f"{symbol:<8} {price_s:>10} {chg_s:>8} {vol_s:>16} {status:<12}")
+    print("-" * 78)
+    print("Thresholds: $0.99 - $1.01  |  Volume spike > 3x rolling avg  |  Press Ctrl+C to exit")
 
 
 # ---------------------------------------------------------------------------

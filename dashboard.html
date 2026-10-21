@@ -6,226 +6,162 @@
 <title>Stablecoin Depeg Intelligence</title>
 <style>
   :root {
-    --bg: #030712;
-    --card-bg: #0a0f1c;
-    --card-border: #1a2332;
-    --text: #f8fafc;
+    --bg: #020617;
+    --card-bg: #0f172a;
+    --card-border: #1e293b;
+    --text: #f1f5f9;
     --muted: #94a3b8;
-    --green: #10b981;
+    --green: #22c55e;
     --red: #ef4444;
     --amber: #f59e0b;
     --gray: #64748b;
     --accent: #3b82f6;
-    --surface: #111827;
-    --glow: rgba(59, 130, 246, 0.15);
+    --surface: #1e293b;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Inter, system-ui, sans-serif;
-    background: radial-gradient(circle at 50% 0%, #0f172a 0%, var(--bg) 55%);
+    background: radial-gradient(ellipse at top, #0f172a 0%, #020617 70%);
     color: var(--text);
     min-height: 100vh;
-    padding: 24px 16px 110px;
-    line-height: 1.45;
+    padding: 20px 16px 100px;
+    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
   }
   header {
     text-align: center;
-    margin-bottom: 32px;
+    margin-bottom: 28px;
   }
   header h1 {
-    font-size: 2.4rem;
+    font-size: 2.5rem;
     font-weight: 700;
-    letter-spacing: -0.8px;
-    background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #ffffff, #cbd5e1);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   header p.tagline {
     color: var(--muted);
-    font-size: 1.05rem;
-    margin-top: 6px;
-    font-weight: 400;
+    font-size: 1.1rem;
+    margin-top: 8px;
   }
+  .controls {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .refresh-btn {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--card-border);
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .refresh-btn:hover { background: #334155; }
   .health-bar {
-    max-width: 1120px;
-    margin: 0 auto 28px;
-    background: rgba(17, 24, 39, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    max-width: 1100px;
+    margin: 0 auto 24px;
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(16px);
     border: 1px solid var(--card-border);
     border-radius: 16px;
-    padding: 16px 24px;
+    padding: 18px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.95rem;
-    font-weight: 500;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    font-weight: 600;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
   }
-  .health-bar .status-pill {
-    padding: 6px 16px;
+  .status-pill {
+    padding: 8px 18px;
     border-radius: 999px;
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.5px;
   }
   .banner {
-    background: linear-gradient(90deg, #7c2d12, #9a3412);
+    background: linear-gradient(90deg, #7c2d12, #c2410c);
     color: #fed7aa;
-    padding: 16px 20px;
-    border-radius: 14px;
-    margin: 0 auto 22px;
-    max-width: 1120px;
+    padding: 14px 20px;
+    border-radius: 12px;
+    margin: 0 auto 20px;
+    max-width: 1100px;
     text-align: center;
     font-weight: 600;
-    font-size: 0.95rem;
     display: none;
-    animation: pulse 2.2s ease-in-out infinite;
-    border: 1px solid rgba(254, 215, 170, 0.3);
-    box-shadow: 0 4px 20px rgba(154, 52, 18, 0.3);
+    animation: pulse 2s infinite;
+    border: 1px solid rgba(254, 215, 170, 0.4);
   }
   .banner.show { display: block; }
   .banner.divergence {
-    background: linear-gradient(90deg, #1e3a8a, #1d4ed8);
+    background: linear-gradient(90deg, #1e40af, #3b82f6);
     color: #dbeafe;
-    border-color: rgba(219, 234, 254, 0.25);
   }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 22px;
-    max-width: 1200px;
-    margin: 0 auto 48px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+    max-width: 1180px;
+    margin: 0 auto 40px;
   }
   .card {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    border-radius: 18px;
-    padding: 24px 22px;
-    transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.22s ease;
+    border-radius: 16px;
+    padding: 22px;
     position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
     overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
   }
   .card::before {
     content: "";
     position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 5px;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
     background: var(--gray);
-    border-radius: 18px 0 0 18px;
   }
   .card.ok::before { background: var(--green); }
   .card.depeg-down::before { background: var(--red); }
   .card.depeg-up::before { background: var(--amber); }
-  .card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.45);
-  }
-  .card.status-changed {
-    animation: statusFlash 0.6s ease;
-  }
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-  }
-  .coin-name { font-size: 1.12rem; font-weight: 600; letter-spacing: -0.2px; }
-  .symbol {
-    font-size: 0.75rem;
-    color: var(--muted);
-    background: #1e293b;
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-  }
-  .price {
-    font-size: 2.65rem;
-    font-weight: 700;
-    letter-spacing: -1.2px;
-    margin: 6px 0 8px;
-    font-variant-numeric: tabular-nums;
-    line-height: 1;
-  }
-  .change {
-    font-size: 0.98rem;
-    margin-bottom: 14px;
-    font-variant-numeric: tabular-nums;
-    font-weight: 500;
-  }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,0.4); }
+  .card.status-changed { animation: flash 0.5s; }
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .coin-name { font-size: 1.1rem; font-weight: 600; }
+  .symbol { font-size: 0.75rem; color: var(--muted); background: #1e293b; padding: 4px 10px; border-radius: 6px; font-weight: 600; }
+  .price { font-size: 2.5rem; font-weight: 700; letter-spacing: -1px; margin: 4px 0; font-variant-numeric: tabular-nums; }
+  .change { font-size: 0.95rem; margin-bottom: 12px; font-variant-numeric: tabular-nums; }
   .change.positive { color: var(--green); }
   .change.negative { color: var(--red); }
-  .status {
-    display: inline-block;
-    padding: 6px 16px;
-    border-radius: 999px;
-    font-size: 0.74rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-  }
-  .status.ok { background: rgba(16,185,129,0.18); color: var(--green); }
-  .status.depeg-down { background: rgba(239,68,68,0.18); color: var(--red); }
-  .status.depeg-up { background: rgba(245,158,11,0.18); color: var(--amber); }
-  .status.no-data { background: rgba(100,116,139,0.18); color: var(--gray); }
-  .vol {
-    font-size: 0.84rem;
-    color: var(--muted);
-    margin-top: 12px;
-    font-variant-numeric: tabular-nums;
-  }
-  .footer {
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.88rem;
-    max-width: 720px;
-    margin: 20px auto 0;
-    line-height: 1.65;
-    padding: 0 8px;
-  }
-  .footer h3 {
-    color: var(--text);
-    margin-bottom: 10px;
-    font-size: 1.05rem;
-    font-weight: 600;
-  }
+  .status { display: inline-block; padding: 6px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+  .status.ok { background: rgba(34,197,94,0.15); color: var(--green); }
+  .status.depeg-down { background: rgba(239,68,68,0.15); color: var(--red); }
+  .status.depeg-up { background: rgba(245,158,11,0.15); color: var(--amber); }
+  .status.no-data { background: rgba(100,116,139,0.15); color: var(--gray); }
+  .vol { font-size: 0.82rem; color: var(--muted); margin-top: 10px; font-variant-numeric: tabular-nums; }
+  .peg-bar { height: 4px; background: #1e293b; border-radius: 2px; margin-top: 12px; overflow: hidden; }
+  .peg-fill { height: 100%; background: var(--green); width: 100%; transition: width 0.3s; }
+  .footer { text-align: center; color: var(--muted); font-size: 0.85rem; max-width: 680px; margin: 0 auto; line-height: 1.6; }
+  .footer h3 { color: var(--text); margin-bottom: 8px; font-size: 1rem; }
   .last-updated {
-    position: fixed;
-    bottom: 18px;
-    right: 18px;
-    background: rgba(10, 15, 28, 0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    padding: 10px 14px;
-    border-radius: 10px;
-    font-size: 0.75rem;
-    color: var(--muted);
-    border: 1px solid var(--card-border);
-    font-variant-numeric: tabular-nums;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    position: fixed; bottom: 16px; right: 16px;
+    background: rgba(15,23,42,0.95); backdrop-filter: blur(12px);
+    padding: 8px 12px; border-radius: 8px; font-size: 0.72rem; color: var(--muted);
+    border: 1px solid var(--card-border); font-variant-numeric: tabular-nums;
   }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.82; }
-  }
-  @keyframes statusFlash {
-    0% { box-shadow: 0 0 0 0 rgba(59,130,246,0.5); }
-    100% { box-shadow: 0 0 0 12px rgba(59,130,246,0); }
-  }
-  @media (max-width: 680px) {
-    header h1 { font-size: 1.75rem; }
-    .price { font-size: 2.2rem; }
-    .grid { grid-template-columns: 1fr; gap: 16px; }
-    body { padding: 16px 12px 100px; }
-    .health-bar { flex-direction: column; gap: 10px; text-align: center; padding: 14px; }
-    .last-updated { bottom: 12px; right: 12px; font-size: 0.7rem; }
+  .error-banner { background: #7f1d1d; color: #fecaca; padding: 12px; border-radius: 8px; margin: 0 auto 16px; max-width: 1100px; display: none; text-align: center; }
+  .error-banner.show { display: block; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.85; } }
+  @keyframes flash { 0% { box-shadow: 0 0 0 0 rgba(59,130,246,0.6); } 100% { box-shadow: 0 0 0 10px transparent; } }
+  @media (max-width: 640px) {
+    header h1 { font-size: 1.8rem; }
+    .price { font-size: 2.1rem; }
+    .grid { grid-template-columns: 1fr; }
+    .health-bar { flex-direction: column; gap: 8px; text-align: center; }
   }
 </style>
 </head>
@@ -235,19 +171,26 @@
   <p class="tagline">Real-time peg monitoring for funds, desks, and treasuries</p>
 </header>
 
+<div class="controls">
+  <button class="refresh-btn" id="refresh-btn">Refresh now</button>
+</div>
+
+<div class="error-banner" id="error-banner">Unable to fetch live prices (rate limit or network). Showing last known or no data. Retry in a moment.</div>
+
 <div class="health-bar" id="health-bar">
   <span>Overall Peg Health</span>
   <span class="status-pill" id="overall-status">Loading…</span>
 </div>
 
 <div id="volume-banner" class="banner">VOLUME SPIKE detected</div>
-<div id="divergence-banner" class="banner divergence">CROSS-SOURCE DIVERGENCE detected</div>
+<div id="divergence-banner" class="banner divergence">CROSS-SOURCE DIVERGENCE (client-side note: multi-source requires backend)</div>
 
 <div class="grid" id="cards"></div>
 
 <div class="footer">
   <h3>How to use</h3>
-  <p>Open this single file in any browser — Safari on iPhone, Chrome, or Firefox. No install, no account, no code to run. Prices refresh automatically every 30 seconds from CoinGecko’s free API. Green left border and badge means the coin is pegged between $0.99 and $1.01. Red means depegged down (below $0.99). Amber means depegged up (above $1.01). Gray means no data. Volume spike banners appear when 24-hour volume exceeds 2.5× the recent median stored in your browser. Bookmark the page for daily monitoring. Data is public and free; this is informational only.</p>
+  <p>Open this file in any browser — works perfectly on iPhone Safari, Chrome, or desktop. No install, no login, no code. Prices auto-refresh every 30 seconds from CoinGecko’s free API. Green left border + badge = pegged ($0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data. Volume spike banner appears when 24h volume > 2.5× recent median (stored locally in your browser). Bookmark for instant access. Informational only; not financial advice.</p>
+  <p style="margin-top:12px; font-size:0.75rem;">Data via CoinGecko free API · Last known good data persists in browser</p>
 </div>
 
 <div class="last-updated" id="last-updated">Last updated: —</div>
@@ -265,51 +208,44 @@ const COINS = [
 const LOWER = 0.99;
 const UPPER = 1.01;
 const VOL_MULT = 2.5;
-const HISTORY_KEY = "depeg_vol_history_v3";
+const HISTORY_KEY = "depeg_vol_history_v4";
 const MAX_HISTORY = 48;
 
 function loadHistory() {
-  try {
-    const raw = localStorage.getItem(HISTORY_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch { return {}; }
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || "{}"); } catch { return {}; }
 }
-
 function saveHistory(h) {
   try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch {}
 }
-
 function median(arr) {
   if (!arr.length) return 0;
-  const s = [...arr].sort((a, b) => a - b);
-  const m = Math.floor(s.length / 2);
-  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+  const s = [...arr].sort((a,b) => a-b);
+  const m = Math.floor(s.length/2);
+  return s.length % 2 ? s[m] : (s[m-1]+s[m])/2;
 }
-
-function formatPrice(p) {
-  if (p == null || isNaN(p)) return "—";
-  return "$" + Number(p).toFixed(4);
-}
-
+function formatPrice(p) { return (p == null || isNaN(p)) ? "—" : "$" + Number(p).toFixed(4); }
 function formatChange(c) {
   if (c == null || isNaN(c)) return "—";
-  const sign = c >= 0 ? "+" : "";
-  return sign + Number(c).toFixed(2) + "%";
+  return (c >= 0 ? "+" : "") + Number(c).toFixed(2) + "%";
 }
-
 function formatVol(v) {
   if (v == null || isNaN(v)) return "—";
-  if (v >= 1e9) return "$" + (v / 1e9).toFixed(2) + "B";
-  if (v >= 1e6) return "$" + (v / 1e6).toFixed(1) + "M";
-  if (v >= 1e3) return "$" + (v / 1e3).toFixed(0) + "K";
+  if (v >= 1e9) return "$" + (v/1e9).toFixed(2) + "B";
+  if (v >= 1e6) return "$" + (v/1e6).toFixed(1) + "M";
+  if (v >= 1e3) return "$" + (v/1e3).toFixed(0) + "K";
   return "$" + Math.round(v).toLocaleString();
 }
-
 function getStatus(price) {
   if (price == null || isNaN(price)) return { text: "NO DATA", cls: "no-data", cardCls: "" };
   if (price < LOWER) return { text: "DEPEG DOWN", cls: "depeg-down", cardCls: "depeg-down" };
   if (price > UPPER) return { text: "DEPEG UP", cls: "depeg-up", cardCls: "depeg-up" };
   return { text: "OK", cls: "ok", cardCls: "ok" };
+}
+function pegDeviation(price) {
+  if (price == null) return 0;
+  const mid = 1.0;
+  const dev = Math.abs(price - mid);
+  return Math.min(100, (dev / 0.02) * 100);
 }
 
 async function fetchPrices() {
@@ -318,9 +254,11 @@ async function fetchPrices() {
   try {
     const res = await fetch(url);
     if (!res.ok) throw new Error("HTTP " + res.status);
+    document.getElementById("error-banner").classList.remove("show");
     return await res.json();
   } catch (e) {
-    console.error("Fetch failed:", e);
+    console.error(e);
+    document.getElementById("error-banner").classList.add("show");
     return null;
   }
 }
@@ -334,24 +272,22 @@ function updateVolumeHistory(symbol, vol) {
   if (arr.length > MAX_HISTORY) arr.shift();
   hist[symbol] = arr;
   saveHistory(hist);
-
-  if (arr.length < 8) return false;
+  if (arr.length < 6) return false;
   const baseline = median(arr.slice(0, -1));
   return baseline > 0 && vol > VOL_MULT * baseline;
 }
 
 function render(data) {
   const container = document.getElementById("cards");
-  const prevStatuses = {};
-  Array.from(container.children).forEach(card => {
-    const sym = card.dataset.symbol;
-    const st = card.querySelector(".status");
-    if (sym && st) prevStatuses[sym] = st.textContent;
+  const prev = {};
+  Array.from(container.children).forEach(c => {
+    const s = c.dataset.symbol;
+    const st = c.querySelector(".status");
+    if (s && st) prev[s] = st.textContent;
   });
-
   container.innerHTML = "";
-  let volumeAlerts = [];
-  let okCount = 0, depegCount = 0, noDataCount = 0;
+  let volAlerts = [];
+  let ok = 0, depeg = 0, nodata = 0;
 
   COINS.forEach(coin => {
     const d = data ? data[coin.id] : null;
@@ -359,24 +295,21 @@ function render(data) {
     const change = d ? d.usd_24h_change : null;
     const vol = d ? d.usd_24h_vol : null;
     const status = getStatus(price);
-
-    if (status.cls === "ok") okCount++;
-    else if (status.cls.includes("depeg")) depegCount++;
-    else noDataCount++;
+    if (status.cls === "ok") ok++;
+    else if (status.cls.includes("depeg")) depeg++;
+    else nodata++;
 
     if (vol) {
-      const spiked = updateVolumeHistory(coin.symbol, vol);
-      if (spiked) volumeAlerts.push(coin.symbol);
+      if (updateVolumeHistory(coin.symbol, vol)) volAlerts.push(coin.symbol);
     }
 
     const card = document.createElement("div");
     card.className = "card " + status.cardCls;
     card.dataset.symbol = coin.symbol;
-    if (prevStatuses[coin.symbol] && prevStatuses[coin.symbol] !== status.text) {
-      card.classList.add("status-changed");
-    }
+    if (prev[coin.symbol] && prev[coin.symbol] !== status.text) card.classList.add("status-changed");
 
-    const changeClass = (change != null && change >= 0) ? "positive" : "negative";
+    const chgCls = (change != null && change >= 0) ? "positive" : "negative";
+    const pegW = 100 - pegDeviation(price);
 
     card.innerHTML = `
       <div class="card-header">
@@ -384,41 +317,39 @@ function render(data) {
         <span class="symbol">${coin.symbol}</span>
       </div>
       <div class="price">${formatPrice(price)}</div>
-      <div class="change ${changeClass}">${formatChange(change)} 24h</div>
+      <div class="change ${chgCls}">${formatChange(change)} 24h</div>
       <div class="status ${status.cls}">${status.text}</div>
       <div class="vol">24h Volume: ${formatVol(vol)}</div>
+      <div class="peg-bar"><div class="peg-fill" style="width:${pegW}%"></div></div>
     `;
     container.appendChild(card);
   });
 
-  const volBanner = document.getElementById("volume-banner");
-  if (volumeAlerts.length) {
-    volBanner.textContent = `VOLUME SPIKE — elevated 24h volume on: ${volumeAlerts.join(", ")}`;
-    volBanner.classList.add("show");
-  } else {
-    volBanner.classList.remove("show");
-  }
+  const vb = document.getElementById("volume-banner");
+  if (volAlerts.length) {
+    vb.textContent = `VOLUME SPIKE — ${volAlerts.join(", ")}`;
+    vb.classList.add("show");
+  } else vb.classList.remove("show");
 
   document.getElementById("divergence-banner").classList.remove("show");
 
   const overall = document.getElementById("overall-status");
-  if (depegCount > 0) {
-    overall.textContent = `${depegCount} DEPEG`;
-    overall.style.background = "rgba(239,68,68,0.22)";
+  if (depeg > 0) {
+    overall.textContent = `${depeg} DEPEG`;
+    overall.style.background = "rgba(239,68,68,0.2)";
     overall.style.color = "#ef4444";
-  } else if (noDataCount > 0) {
-    overall.textContent = `${okCount} OK · ${noDataCount} NO DATA`;
-    overall.style.background = "rgba(100,116,139,0.22)";
+  } else if (nodata > 0) {
+    overall.textContent = `${ok} OK · ${nodata} NO DATA`;
+    overall.style.background = "rgba(100,116,139,0.2)";
     overall.style.color = "#94a3b8";
   } else {
     overall.textContent = "ALL PEGGED";
-    overall.style.background = "rgba(16,185,129,0.22)";
-    overall.style.color = "#10b981";
+    overall.style.background = "rgba(34,197,94,0.2)";
+    overall.style.color = "#22c55e";
   }
 
-  const now = new Date();
   document.getElementById("last-updated").textContent =
-    "Last updated: " + now.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit", second: "2-digit"});
+    "Last updated: " + new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit", second:"2-digit"});
 }
 
 async function refresh() {
@@ -426,6 +357,7 @@ async function refresh() {
   render(data);
 }
 
+document.getElementById("refresh-btn").addEventListener("click", refresh);
 refresh();
 setInterval(refresh, 30000);
 </script>

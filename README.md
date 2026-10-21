@@ -42,21 +42,21 @@ USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binanc
 
 ## Verification
 
-Live check (2026-10-21, multi-source fallback under CoinGecko 429):
+Live check (2026-10-21, CoinGecko direct):
 
-- USDT $0.9989 OK [Coinbase]
-- USDC $1.0000 OK [Coinbase]
-- DAI $0.9997 OK [Coinbase]
-- FDUSD $0.9981 OK [DefiLlama]
-- PYUSD $1.0000 OK [Coinbase]
-- TUSD $0.9987 OK [DefiLlama]
+- USDT $0.9991 OK [CoinGecko] vol=$50.99B 24h=-0.01%
+- USDC $0.9997 OK [CoinGecko] vol=$15.04B 24h=-0.03%
+- DAI $1.0000 OK [CoinGecko] vol=$160.9M 24h=-0.04%
+- FDUSD $0.9980 OK [CoinGecko] vol=$103.8M 24h=+0.07%
+- PYUSD $1.0010 OK [CoinGecko] vol=$50.8M 24h=+0.06%
+- TUSD $0.9986 OK [CoinGecko] vol=$6.1M 24h=-0.01%
 
-All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase, then DefiLlama on rate limits. Volume tracker uses pure median for outlier-robust baseline with 5-minute alert cooldown. JSON snapshot mode confirmed.
+All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase, then DefiLlama on rate limits. Volume tracker uses pure median for outlier-robust baseline with 5-minute alert cooldown. JSON snapshot mode confirmed. WebSocket reconnection with exponential backoff + jitter operational.
 
 ## Features
 
 - Robust price verification with CoinGecko retry + Coinbase + DefiLlama fallback
-- Binance WebSocket with exponential backoff + random jitter reconnection (capped at 60s), heartbeat/stale detection, serverShutdown handling, reconnect counting, and connection logging
+- Binance WebSocket with exponential backoff + random jitter reconnection (capped at 60s), heartbeat, reconnect counting, and connection logging
 - Coinbase WebSocket alternative for geo-restricted environments
 - Volume anomaly detection using pure median baseline (skips zero volumes, clear spike alerts, 300s debounce) as independent alert tier
 - In-place refreshing CLI dashboard with ANSI colors (green OK / red DEPEG), timestamp, volume, and status

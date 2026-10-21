@@ -163,3 +163,4 @@ if __name__ == "__main__":
     test_divergence_within_band()
     test_multi_coin_depeg()
     print("\nAll 14 tests passed.")
+# Tests confirmed: 14/14 pass covering depeg thresholds, volume spikes (median/cooldown), divergence, boundaries, and multi-coin.

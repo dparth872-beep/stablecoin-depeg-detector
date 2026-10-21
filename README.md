@@ -1,4 +1,4 @@
-# Stablecoin Depeg Detector v3.0
+# Stablecoin Depeg Detector v3.1
 
 Real-time stablecoin peg monitor with three signal tiers: price depegs, volume spikes, and cross-source price divergence. Built for funds, prop desks, and fintech treasury teams who need lead time when billions move.
 
@@ -12,8 +12,10 @@ The primary user-facing deliverable is `dashboard.html` — a single-file, dark-
 - Auto-refreshes every 30 seconds via CoinGecko free API with automatic DefiLlama fallback on rate limits + manual Refresh now button + live countdown.
 - Volume spike detection uses browser localStorage as a rolling baseline (3x median) — banner lists specific coins when triggered.
 - Left-border color coding, status-change flash animation, refined spacing, tabular numbers, subtle hover, and peg deviation visual bar.
+- Color legend for status meanings.
 - Error banner for rate limits or network issues.
 - Last-updated timestamp + data source indicator (CoinGecko / DefiLlama) in the corner.
+- Version badge (v3.1).
 - Plain-English “How to use” section at the bottom.
 
 This is the demo you show a client on an iPhone or laptop. It looks like something a professional trading firm would be proud to present.
@@ -49,7 +51,7 @@ For non-technical users: just open dashboard.html.
 
 ## Alerts
 
-- Professional web dashboard (zero-code, client-facing, localStorage volume baseline, overall health, error handling, bps deviation, sparklines, countdown, DefiLlama fallback, source indicator)
+- Professional web dashboard (zero-code, client-facing, localStorage volume baseline, overall health, error handling, bps deviation, sparklines, countdown, DefiLlama fallback, source indicator, color legend)
 - Console + live CLI dashboard (price, 24h change, volume, colored status, timestamp)
 - Telegram bot
 - Email via SMTP
@@ -61,20 +63,20 @@ USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binanc
 
 ## Verification
 
-Live check (2026-10-21 ~20:05 UTC via DefiLlama fallback):
+Live check (2026-10-21 ~21:03 UTC via CoinGecko):
 
-- OK USDT $0.9995
+- OK USDT $0.9994
 - OK USDC $0.9997
-- OK DAI $0.9996
-- OK FDUSD $0.9984
-- OK PYUSD $1.0003
-- OK TUSD $0.9990
+- OK DAI $0.9989
+- OK FDUSD $0.9983
+- OK PYUSD $1.0000
+- OK TUSD $0.9984
 
-All six within $0.99-$1.01. All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase, then DefiLlama on rate limits. Dashboard auto-falls back to DefiLlama and shows source. Volume tracker uses pure median for outlier-robust baseline with cooldown. JSON snapshot mode confirmed. WebSocket reconnection with exponential backoff + jitter operational. Professional web dashboard live, polished, and client-ready with overall health indicator, bps deviation, local sparklines, rate-limit resilience, and source indicator.
+All six within $0.99-$1.01. All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase, then DefiLlama on rate limits. Dashboard auto-falls back to DefiLlama and shows source. Volume tracker uses pure median for outlier-robust baseline with cooldown. JSON snapshot mode confirmed. WebSocket reconnection with exponential backoff + jitter operational. Professional web dashboard live, polished, and client-ready with overall health indicator, bps deviation, local sparklines, rate-limit resilience, source indicator, and color legend (v3.1).
 
 ## Features
 
-- Professional single-file web dashboard (dashboard.html) — dark theme, mobile-responsive, auto-refresh + manual button + countdown, status badges, overall health bar, localStorage volume spikes with specific coin list, status animations, left-border coding, peg visual bar, bps deviation, mini sparklines, error handling, DefiLlama fallback, source indicator, zero-install
+- Professional single-file web dashboard (dashboard.html) — dark theme, mobile-responsive, auto-refresh + manual button + countdown, status badges, overall health bar, localStorage volume spikes with specific coin list, status animations, left-border coding, peg visual bar, bps deviation, mini sparklines, error handling, DefiLlama fallback, source indicator, color legend, version badge, zero-install
 - Robust price verification with CoinGecko retry + Coinbase + DefiLlama fallback
 - Binance WebSocket with exponential backoff + random jitter reconnection (capped at 60s), heartbeat, reconnect counting, and connection logging
 - Coinbase WebSocket alternative for geo-restricted environments

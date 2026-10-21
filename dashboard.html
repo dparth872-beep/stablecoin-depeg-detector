@@ -2,202 +2,238 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Stablecoin Depeg Intelligence</title>
 <style>
   :root {
-    --bg: #05070c;
-    --card-bg: #0f1623;
-    --card-border: #1e293b;
-    --text: #f8fafc;
+    --bg: #05080f;
+    --card-bg: #0d1420;
+    --card-border: #1c2a3e;
+    --text: #f1f5f9;
     --muted: #94a3b8;
-    --green: #22c55e;
-    --red: #ef4444;
+    --green: #10b981;
+    --red: #f43f5e;
     --amber: #f59e0b;
     --gray: #64748b;
-    --accent: #60a5fa;
+    --accent: #3b82f6;
+    --surface: #111827;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Segoe UI", Roboto, sans-serif;
+    background: radial-gradient(ellipse at top, #0f172a 0%, var(--bg) 70%);
     color: var(--text);
     min-height: 100vh;
-    padding: 24px 16px 80px;
-    line-height: 1.45;
+    padding: 20px 16px 100px;
+    line-height: 1.5;
   }
   header {
     text-align: center;
-    margin-bottom: 36px;
+    margin-bottom: 28px;
   }
   header h1 {
-    font-size: 2.4rem;
+    font-size: 2.25rem;
     font-weight: 700;
-    letter-spacing: -0.8px;
-    background: linear-gradient(90deg, #f8fafc, #cbd5e1);
+    letter-spacing: -0.6px;
+    background: linear-gradient(90deg, #f8fafc, #94a3b8);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   header p {
     color: var(--muted);
-    font-size: 1.05rem;
-    margin-top: 6px;
+    font-size: 1rem;
+    margin-top: 4px;
     font-weight: 400;
+  }
+  .health-bar {
+    max-width: 1100px;
+    margin: 0 auto 24px;
+    background: var(--surface);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .health-bar .status-pill {
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
   .banner {
     background: linear-gradient(90deg, #7c2d12, #9a3412);
     color: #fed7aa;
     padding: 14px 18px;
     border-radius: 12px;
-    margin: 0 auto 28px;
-    max-width: 900px;
+    margin: 0 auto 20px;
+    max-width: 1100px;
     text-align: center;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     display: none;
-    animation: pulse 2.2s ease-in-out infinite;
-    border: 1px solid rgba(254, 215, 170, 0.2);
+    animation: pulse 2s ease-in-out infinite;
+    border: 1px solid rgba(254, 215, 170, 0.25);
   }
   .banner.show { display: block; }
   .banner.divergence {
     background: linear-gradient(90deg, #1e3a8a, #1d4ed8);
     color: #dbeafe;
-    border-color: rgba(219, 234, 254, 0.2);
   }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 22px;
-    max-width: 1280px;
-    margin: 0 auto 48px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto 40px;
   }
   .card {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    border-radius: 18px;
-    padding: 26px 24px;
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s;
+    border-radius: 16px;
+    padding: 22px 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
     position: relative;
     overflow: hidden;
   }
+  .card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--gray);
+  }
+  .card.ok::before { background: var(--green); }
+  .card.depeg-down::before { background: var(--red); }
+  .card.depeg-up::before { background: var(--amber); }
   .card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.45);
-    border-color: #334155;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.4);
   }
   .card.status-changed {
-    animation: statusFlash 0.6s ease;
+    animation: statusFlash 0.5s ease;
   }
   .card-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
+    align-items: flex-start;
+    margin-bottom: 12px;
   }
-  .coin-name { font-size: 1.15rem; font-weight: 600; letter-spacing: -0.2px; }
+  .coin-name { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.1px; }
   .symbol {
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     color: var(--muted);
     background: #1e293b;
-    padding: 3px 9px;
-    border-radius: 8px;
+    padding: 2px 8px;
+    border-radius: 6px;
     font-weight: 600;
-    letter-spacing: 0.3px;
   }
   .price {
-    font-size: 2.6rem;
+    font-size: 2.4rem;
     font-weight: 700;
-    letter-spacing: -1.2px;
-    margin: 6px 0 4px;
+    letter-spacing: -1px;
+    margin: 4px 0;
     font-variant-numeric: tabular-nums;
   }
   .change {
-    font-size: 0.98rem;
-    margin-bottom: 14px;
+    font-size: 0.92rem;
+    margin-bottom: 12px;
     font-variant-numeric: tabular-nums;
   }
   .change.positive { color: var(--green); }
   .change.negative { color: var(--red); }
   .status {
     display: inline-block;
-    padding: 7px 16px;
+    padding: 5px 14px;
     border-radius: 999px;
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
-    transition: background 0.3s, color 0.3s;
+    letter-spacing: 0.5px;
   }
-  .status.ok { background: rgba(34,197,94,0.18); color: var(--green); }
-  .status.depeg-down { background: rgba(239,68,68,0.18); color: var(--red); }
-  .status.depeg-up { background: rgba(245,158,11,0.18); color: var(--amber); }
-  .status.no-data { background: rgba(100,116,139,0.18); color: var(--gray); }
+  .status.ok { background: rgba(16,185,129,0.15); color: var(--green); }
+  .status.depeg-down { background: rgba(244,63,94,0.15); color: var(--red); }
+  .status.depeg-up { background: rgba(245,158,11,0.15); color: var(--amber); }
+  .status.no-data { background: rgba(100,116,139,0.15); color: var(--gray); }
   .vol {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     color: var(--muted);
-    margin-top: 12px;
+    margin-top: 10px;
     font-variant-numeric: tabular-nums;
   }
   .footer {
     text-align: center;
     color: var(--muted);
-    font-size: 0.88rem;
-    max-width: 680px;
-    margin: 20px auto 0;
-    line-height: 1.55;
+    font-size: 0.85rem;
+    max-width: 700px;
+    margin: 16px auto 0;
+    line-height: 1.6;
   }
   .footer h3 {
     color: var(--text);
-    margin-bottom: 10px;
-    font-size: 1.05rem;
+    margin-bottom: 8px;
+    font-size: 1rem;
     font-weight: 600;
   }
   .last-updated {
     position: fixed;
-    bottom: 18px;
-    right: 18px;
-    background: rgba(15,22,35,0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    padding: 9px 14px;
-    border-radius: 10px;
-    font-size: 0.75rem;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(13,20,32,0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.72rem;
     color: var(--muted);
     border: 1px solid var(--card-border);
     font-variant-numeric: tabular-nums;
   }
   @keyframes pulse {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.82; }
+    50% { opacity: 0.85; }
   }
   @keyframes statusFlash {
-    0% { box-shadow: 0 0 0 0 rgba(96,165,250,0.5); }
-    100% { box-shadow: 0 0 0 12px rgba(96,165,250,0); }
+    0% { box-shadow: 0 0 0 0 rgba(59,130,246,0.4); }
+    100% { box-shadow: 0 0 0 10px rgba(59,130,246,0); }
   }
   @media (max-width: 640px) {
-    header h1 { font-size: 1.75rem; }
-    .price { font-size: 2.15rem; }
-    .grid { grid-template-columns: 1fr; gap: 16px; }
-    body { padding: 16px 12px 90px; }
-    .last-updated { bottom: 12px; right: 12px; font-size: 0.7rem; }
+    header h1 { font-size: 1.6rem; }
+    .price { font-size: 2rem; }
+    .grid { grid-template-columns: 1fr; gap: 14px; }
+    body { padding: 12px 10px 90px; }
+    .health-bar { flex-direction: column; gap: 8px; text-align: center; }
+    .last-updated { bottom: 10px; right: 10px; }
   }
 </style>
 </head>
 <body>
 <header>
   <h1>Stablecoin Depeg Intelligence</h1>
-  <p>Real-time peg monitoring for USDT · USDC · DAI · FDUSD · PYUSD · TUSD</p>
+  <p>Real-time peg monitoring · USDT · USDC · DAI · FDUSD · PYUSD · TUSD</p>
 </header>
 
-<div id="volume-banner" class="banner">VOLUME SPIKE — 24h volume significantly above recent baseline on one or more coins</div>
-<div id="divergence-banner" class="banner divergence">CROSS-SOURCE DIVERGENCE — prices differ by more than 50 bps across venues</div>
+<div class="health-bar" id="health-bar">
+  <span>Overall Status</span>
+  <span class="status-pill" id="overall-status">Loading…</span>
+</div>
+
+<div id="volume-banner" class="banner">VOLUME SPIKE detected on one or more coins</div>
+<div id="divergence-banner" class="banner divergence">CROSS-SOURCE DIVERGENCE — prices differ significantly across venues</div>
 
 <div class="grid" id="cards"></div>
 
 <div class="footer">
   <h3>How to use</h3>
-  <p>Open this file in any browser on phone or computer. Prices refresh automatically every 30 seconds from CoinGecko. No install, no login, no terminal. Green = peg healthy. Red = depeg down (price below $0.99). Amber = depeg up (above $1.01). Gray = no data. Volume spikes use your browser’s recent history as a baseline. Last update appears bottom-right. Bookmark this page for daily checks.</p>
+  <p>Open this file in any browser (Safari, Chrome, Firefox) on phone or desktop. Prices refresh automatically every 30 seconds from CoinGecko. No install, no login, no terminal required. Green left border and badge = peg healthy. Red = depeg down (below $0.99). Amber = depeg up (above $1.01). Gray = no data. Volume spikes compare against your browser’s recent history. Bookmark this page for daily monitoring. Data source: CoinGecko free API.</p>
 </div>
 
 <div class="last-updated" id="last-updated">Last updated: —</div>
@@ -215,8 +251,8 @@ const COINS = [
 const LOWER = 0.99;
 const UPPER = 1.01;
 const VOL_MULT = 2.5;
-const HISTORY_KEY = "depeg_vol_history_v1";
-const MAX_HISTORY = 48; // ~24h at 30s intervals, but keep reasonable
+const HISTORY_KEY = "depeg_vol_history_v2";
+const MAX_HISTORY = 40;
 
 function loadHistory() {
   try {
@@ -256,10 +292,10 @@ function formatVol(v) {
 }
 
 function getStatus(price) {
-  if (price == null || isNaN(price)) return { text: "NO DATA", cls: "no-data" };
-  if (price < LOWER) return { text: "DEPEG DOWN", cls: "depeg-down" };
-  if (price > UPPER) return { text: "DEPEG UP", cls: "depeg-up" };
-  return { text: "OK", cls: "ok" };
+  if (price == null || isNaN(price)) return { text: "NO DATA", cls: "no-data", cardCls: "" };
+  if (price < LOWER) return { text: "DEPEG DOWN", cls: "depeg-down", cardCls: "depeg-down" };
+  if (price > UPPER) return { text: "DEPEG UP", cls: "depeg-up", cardCls: "depeg-up" };
+  return { text: "OK", cls: "ok", cardCls: "ok" };
 }
 
 async function fetchPrices() {
@@ -300,8 +336,8 @@ function render(data) {
   });
 
   container.innerHTML = "";
-  let volumeAlert = false;
-  let divergenceAlert = false; // client-side only has one source; reserved for future multi-source
+  let volumeAlerts = [];
+  let okCount = 0, depegCount = 0, noDataCount = 0;
 
   COINS.forEach(coin => {
     const d = data ? data[coin.id] : null;
@@ -310,13 +346,17 @@ function render(data) {
     const vol = d ? d.usd_24h_vol : null;
     const status = getStatus(price);
 
+    if (status.cls === "ok") okCount++;
+    else if (status.cls.includes("depeg")) depegCount++;
+    else noDataCount++;
+
     if (vol) {
       const spiked = updateVolumeHistory(coin.symbol, vol);
-      if (spiked) volumeAlert = true;
+      if (spiked) volumeAlerts.push(coin.symbol);
     }
 
     const card = document.createElement("div");
-    card.className = "card";
+    card.className = "card " + status.cardCls;
     card.dataset.symbol = coin.symbol;
     if (prevStatuses[coin.symbol] && prevStatuses[coin.symbol] !== status.text) {
       card.classList.add("status-changed");
@@ -337,8 +377,30 @@ function render(data) {
     container.appendChild(card);
   });
 
-  document.getElementById("volume-banner").classList.toggle("show", volumeAlert);
-  document.getElementById("divergence-banner").classList.toggle("show", divergenceAlert);
+  const volBanner = document.getElementById("volume-banner");
+  if (volumeAlerts.length) {
+    volBanner.textContent = `VOLUME SPIKE — elevated 24h volume on: ${volumeAlerts.join(", ")}`;
+    volBanner.classList.add("show");
+  } else {
+    volBanner.classList.remove("show");
+  }
+
+  document.getElementById("divergence-banner").classList.remove("show");
+
+  const overall = document.getElementById("overall-status");
+  if (depegCount > 0) {
+    overall.textContent = `${depegCount} DEPEG`;
+    overall.style.background = "rgba(244,63,94,0.2)";
+    overall.style.color = "#f43f5e";
+  } else if (noDataCount > 0) {
+    overall.textContent = `${okCount} OK / ${noDataCount} NO DATA`;
+    overall.style.background = "rgba(100,116,139,0.2)";
+    overall.style.color = "#94a3b8";
+  } else {
+    overall.textContent = "ALL PEGGED";
+    overall.style.background = "rgba(16,185,129,0.2)";
+    overall.style.color = "#10b981";
+  }
 
   const now = new Date();
   document.getElementById("last-updated").textContent =

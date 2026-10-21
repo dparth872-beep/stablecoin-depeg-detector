@@ -401,7 +401,7 @@ class BinanceWS:
             reconnects += 1
             jitter = random.uniform(0, 2)
             wait = min(60, backoff + jitter)
-            print(f"Binance WS reconnect #{reconnects} in {wait:.1f}s (backoff {backoff}s)")
+            print(f"[WS] Binance reconnect #{reconnects} in {wait:.1f}s (backoff {backoff}s)")
             time.sleep(wait)
             backoff = min(60, backoff * 2)
 
@@ -464,7 +464,7 @@ class CoinbaseWS:
             reconnects += 1
             jitter = random.uniform(0, 2)
             wait = min(60, backoff + jitter)
-            print(f"Coinbase WS reconnect #{reconnects} in {wait:.1f}s (backoff {backoff}s)")
+            print(f"[WS] Coinbase reconnect #{reconnects} in {wait:.1f}s (backoff {backoff}s)")
             time.sleep(wait)
             backoff = min(60, backoff * 2)
 

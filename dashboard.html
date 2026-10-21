@@ -24,7 +24,7 @@
     background: radial-gradient(ellipse at top, #0f172a 0%, #020617 70%);
     color: var(--text);
     min-height: 100vh;
-    padding: 20px 16px 100px;
+    padding: 20px 16px 120px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
   }
@@ -49,6 +49,10 @@
   .controls {
     text-align: center;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    align-items: center;
   }
   .refresh-btn {
     background: var(--surface);
@@ -61,6 +65,11 @@
     transition: all 0.2s;
   }
   .refresh-btn:hover { background: #334155; }
+  .countdown {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+  }
   .health-bar {
     max-width: 1100px;
     margin: 0 auto 24px;
@@ -134,9 +143,10 @@
   .coin-name { font-size: 1.1rem; font-weight: 600; }
   .symbol { font-size: 0.75rem; color: var(--muted); background: #1e293b; padding: 4px 10px; border-radius: 6px; font-weight: 600; }
   .price { font-size: 2.5rem; font-weight: 700; letter-spacing: -1px; margin: 4px 0; font-variant-numeric: tabular-nums; }
-  .change { font-size: 0.95rem; margin-bottom: 12px; font-variant-numeric: tabular-nums; }
+  .change { font-size: 0.95rem; margin-bottom: 8px; font-variant-numeric: tabular-nums; }
   .change.positive { color: var(--green); }
   .change.negative { color: var(--red); }
+  .deviation { font-size: 0.8rem; color: var(--muted); margin-bottom: 10px; font-variant-numeric: tabular-nums; }
   .status { display: inline-block; padding: 6px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
   .status.ok { background: rgba(34,197,94,0.15); color: var(--green); }
   .status.depeg-down { background: rgba(239,68,68,0.15); color: var(--red); }
@@ -145,6 +155,7 @@
   .vol { font-size: 0.82rem; color: var(--muted); margin-top: 10px; font-variant-numeric: tabular-nums; }
   .peg-bar { height: 4px; background: #1e293b; border-radius: 2px; margin-top: 12px; overflow: hidden; }
   .peg-fill { height: 100%; background: var(--green); width: 100%; transition: width 0.3s; }
+  .spark { height: 30px; margin-top: 8px; }
   .footer { text-align: center; color: var(--muted); font-size: 0.85rem; max-width: 680px; margin: 0 auto; line-height: 1.6; }
   .footer h3 { color: var(--text); margin-bottom: 8px; font-size: 1rem; }
   .last-updated {
@@ -173,6 +184,7 @@
 
 <div class="controls">
   <button class="refresh-btn" id="refresh-btn">Refresh now</button>
+  <span class="countdown" id="countdown">Next: 30s</span>
 </div>
 
 <div class="error-banner" id="error-banner">Unable to fetch live prices (rate limit or network). Showing last known or no data. Retry in a moment.</div>
@@ -189,8 +201,8 @@
 
 <div class="footer">
   <h3>How to use</h3>
-  <p>Open this file in any browser — works perfectly on iPhone Safari, Chrome, or desktop. No install, no login, no code. Prices auto-refresh every 30 seconds from CoinGecko’s free API. Green left border + badge = pegged ($0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data. Volume spike banner appears when 24h volume > 3× recent median (stored locally in your browser). Bookmark for instant access. Informational only; not financial advice.</p>
-  <p style="margin-top:12px; font-size:0.75rem;">Data via CoinGecko free API · Last known good data persists in browser</p>
+  <p>Open this file in any browser — works perfectly on iPhone Safari, Chrome, or desktop. No install, no login, no code. Prices auto-refresh every 30 seconds from CoinGecko’s free API. Green left border + badge = pegged ($0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data. Volume spike banner appears when 24h volume > 3× recent median (stored locally in your browser). Deviation shows basis points from $1.00. Bookmark for instant access. Informational only; not financial advice.</p>
+  <p style="margin-top:12px; font-size:0.75rem;">Data via CoinGecko free API · Last known good data persists in browser · Mini sparklines from local history</p>
 </div>
 
 <div class="last-updated" id="last-updated">Last updated: —</div>
@@ -208,14 +220,25 @@ const COINS = [
 const LOWER = 0.99;
 const UPPER = 1.01;
 const VOL_MULT = 3.0;
-const HISTORY_KEY = "depeg_vol_history_v5";
+const HISTORY_KEY = "depeg_vol_history_v6";
+const PRICE_HISTORY_KEY = "depeg_price_history_v1";
 const MAX_HISTORY = 48;
+const MAX_PRICE_POINTS = 12;
+
+let countdown = 30;
+let countdownInterval;
 
 function loadHistory() {
   try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || "{}"); } catch { return {}; }
 }
 function saveHistory(h) {
   try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch {}
+}
+function loadPriceHistory() {
+  try { return JSON.parse(localStorage.getItem(PRICE_HISTORY_KEY) || "{}"); } catch { return {}; }
+}
+function savePriceHistory(h) {
+  try { localStorage.setItem(PRICE_HISTORY_KEY, JSON.stringify(h)); } catch {}
 }
 function median(arr) {
   if (!arr.length) return 0;
@@ -235,6 +258,11 @@ function formatVol(v) {
   if (v >= 1e3) return "$" + (v/1e3).toFixed(0) + "K";
   return "$" + Math.round(v).toLocaleString();
 }
+function formatBps(price) {
+  if (price == null || isNaN(price)) return "—";
+  const bps = (price - 1.0) * 10000;
+  return (bps >= 0 ? "+" : "") + bps.toFixed(1) + " bps";
+}
 function getStatus(price) {
   if (price == null || isNaN(price)) return { text: "NO DATA", cls: "no-data", cardCls: "" };
   if (price < LOWER) return { text: "DEPEG DOWN", cls: "depeg-down", cardCls: "depeg-down" };
@@ -246,6 +274,35 @@ function pegDeviation(price) {
   const mid = 1.0;
   const dev = Math.abs(price - mid);
   return Math.min(100, (dev / 0.02) * 100);
+}
+function updatePriceHistory(symbol, price) {
+  if (price == null || isNaN(price)) return [];
+  const hist = loadPriceHistory();
+  if (!hist[symbol]) hist[symbol] = [];
+  hist[symbol].push(price);
+  if (hist[symbol].length > MAX_PRICE_POINTS) hist[symbol].shift();
+  savePriceHistory(hist);
+  return hist[symbol];
+}
+function drawSparkline(canvas, prices) {
+  if (!canvas || !prices || prices.length < 2) return;
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width = canvas.offsetWidth;
+  const h = canvas.height = 30;
+  ctx.clearRect(0, 0, w, h);
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  const range = max - min || 0.001;
+  ctx.beginPath();
+  ctx.strokeStyle = "#3b82f6";
+  ctx.lineWidth = 1.5;
+  prices.forEach((p, i) => {
+    const x = (i / (prices.length - 1)) * w;
+    const y = h - ((p - min) / range) * (h - 4) - 2;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
 }
 
 async function fetchPrices() {
@@ -302,6 +359,7 @@ function render(data) {
     if (vol) {
       if (updateVolumeHistory(coin.symbol, vol)) volAlerts.push(coin.symbol);
     }
+    const priceHist = updatePriceHistory(coin.symbol, price);
 
     const card = document.createElement("div");
     card.className = "card " + status.cardCls;
@@ -318,11 +376,15 @@ function render(data) {
       </div>
       <div class="price">${formatPrice(price)}</div>
       <div class="change ${chgCls}">${formatChange(change)} 24h</div>
+      <div class="deviation">Deviation: ${formatBps(price)}</div>
       <div class="status ${status.cls}">${status.text}</div>
       <div class="vol">24h Volume: ${formatVol(vol)}</div>
+      <canvas class="spark" width="280" height="30"></canvas>
       <div class="peg-bar"><div class="peg-fill" style="width:${pegW}%"></div></div>
     `;
     container.appendChild(card);
+    const canvas = card.querySelector(".spark");
+    setTimeout(() => drawSparkline(canvas, priceHist), 10);
   });
 
   const vb = document.getElementById("volume-banner");
@@ -352,14 +414,30 @@ function render(data) {
     "Last updated: " + new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit", second:"2-digit"});
 }
 
+function startCountdown() {
+  clearInterval(countdownInterval);
+  countdown = 30;
+  countdownInterval = setInterval(() => {
+    countdown--;
+    document.getElementById("countdown").textContent = `Next: ${countdown}s`;
+    if (countdown <= 0) {
+      clearInterval(countdownInterval);
+      refresh();
+    }
+  }, 1000);
+}
+
 async function refresh() {
   const data = await fetchPrices();
   render(data);
+  startCountdown();
 }
 
-document.getElementById("refresh-btn").addEventListener("click", refresh);
+document.getElementById("refresh-btn").addEventListener("click", () => {
+  clearInterval(countdownInterval);
+  refresh();
+});
 refresh();
-setInterval(refresh, 30000);
 </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-# Stablecoin Depeg Detector v2.2
+# Stablecoin Depeg Detector v2.3
 
 Real-time stablecoin peg monitor with three signal tiers: price depegs, volume spikes, and cross-source price divergence. Built for funds, prop desks, and fintech treasury teams who need lead time when billions move.
 
@@ -8,9 +8,10 @@ The primary user-facing deliverable is `dashboard.html` — a single-file, dark-
 
 - Open `dashboard.html` in any browser (Safari, Chrome, Firefox). No install, no login, no terminal.
 - Six large cards (USDT, USDC, DAI, FDUSD, PYUSD, TUSD) showing live price (big bold), 24h change, volume, and color-coded status badges (OK / DEPEG DOWN / DEPEG UP / NO DATA).
+- Overall health bar at the top (ALL PEGGED / DEPEG count).
 - Auto-refreshes every 30 seconds via CoinGecko free API.
-- Volume spike detection uses browser localStorage as a rolling baseline (2.5x median) — no false positives on normal USDT volume.
-- Status-change flash animation, refined spacing, tabular numbers, and subtle hover effects.
+- Volume spike detection uses browser localStorage as a rolling baseline (2.5x median) — banner lists specific coins when triggered.
+- Left-border color coding, status-change flash animation, refined spacing, tabular numbers, and subtle hover effects.
 - Last-updated timestamp in the corner.
 - Plain-English “How to use” section at the bottom.
 
@@ -47,7 +48,7 @@ For non-technical users: just open dashboard.html.
 
 ## Alerts
 
-- Professional web dashboard (zero-code, client-facing, localStorage volume baseline)
+- Professional web dashboard (zero-code, client-facing, localStorage volume baseline, overall health)
 - Console + live CLI dashboard (price, 24h change, volume, colored status, timestamp)
 - Telegram bot
 - Email via SMTP
@@ -59,20 +60,20 @@ USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binanc
 
 ## Verification
 
-Live check (2026-10-21 ~05:00 UTC, CoinGecko direct):
+Live check (2026-10-21 ~07:00 UTC, CoinGecko direct):
 
-- OK USDT $0.9991 vol~$49.4B 24h=-0.02%
-- OK USDC $0.9995 vol~$18.9B 24h=-0.05%
-- OK DAI $1.0000 vol~$0.13B 24h=-0.02%
+- OK USDT $0.9990 vol~$49.28B 24h=-0.02%
+- OK USDC $0.9995 vol~$18.65B 24h=-0.05%
+- OK DAI $0.9999 vol~$0.12B 24h=-0.03%
 - OK FDUSD $0.9979 vol~$0.10B 24h=+0.04%
-- OK PYUSD $0.9993 vol~$0.05B 24h=-0.09%
-- OK TUSD $0.9986 vol~$0.01B 24h=-0.01%
+- OK PYUSD $1.0000 vol~$0.06B 24h=-0.08%
+- OK TUSD $0.9986 vol~$0.01B 24h=-0.02%
 
-All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase, then DefiLlama on rate limits. Volume tracker uses pure median for outlier-robust baseline with cooldown. JSON snapshot mode confirmed. WebSocket reconnection with exponential backoff + jitter operational. Professional web dashboard live, polished, and client-ready.
+All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase, then DefiLlama on rate limits. Volume tracker uses pure median for outlier-robust baseline with cooldown. JSON snapshot mode confirmed. WebSocket reconnection with exponential backoff + jitter operational. Professional web dashboard live, polished, and client-ready with overall health indicator.
 
 ## Features
 
-- Professional single-file web dashboard (dashboard.html) — dark theme, mobile-responsive, auto-refresh, status badges, localStorage volume spikes, status animations, zero-install
+- Professional single-file web dashboard (dashboard.html) — dark theme, mobile-responsive, auto-refresh, status badges, overall health bar, localStorage volume spikes with specific coin list, status animations, left-border coding, zero-install
 - Robust price verification with CoinGecko retry + Coinbase + DefiLlama fallback
 - Binance WebSocket with exponential backoff + random jitter reconnection (capped at 60s), heartbeat, reconnect counting, and connection logging
 - Coinbase WebSocket alternative for geo-restricted environments

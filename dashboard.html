@@ -31,6 +31,7 @@
   header {
     text-align: center;
     margin-bottom: 24px;
+    position: relative;
   }
   header h1 {
     font-size: 2.4rem;
@@ -45,6 +46,17 @@
     color: var(--muted);
     font-size: 1.05rem;
     margin-top: 6px;
+  }
+  .version {
+    position: absolute;
+    top: 0;
+    right: 16px;
+    background: var(--surface);
+    color: var(--muted);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
   }
   .controls {
     text-align: center;
@@ -157,6 +169,18 @@
   .peg-bar { height: 3px; background: #1e293b; border-radius: 2px; margin-top: 10px; overflow: hidden; }
   .peg-fill { height: 100%; background: var(--green); width: 100%; transition: width 0.3s; }
   .spark { height: 28px; margin-top: 6px; width: 100%; }
+  .legend {
+    max-width: 700px;
+    margin: 0 auto 24px;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
   .footer { text-align: center; color: var(--muted); font-size: 0.82rem; max-width: 700px; margin: 0 auto; line-height: 1.55; }
   .footer h3 { color: var(--text); margin-bottom: 6px; font-size: 0.95rem; }
   .last-updated {
@@ -176,11 +200,13 @@
     .grid { grid-template-columns: 1fr; gap: 14px; }
     .health-bar { flex-direction: column; gap: 6px; text-align: center; padding: 14px; }
     .last-updated { bottom: 10px; right: 10px; font-size: 0.65rem; }
+    .version { position: static; display: inline-block; margin-bottom: 8px; }
   }
 </style>
 </head>
 <body>
 <header>
+  <div class="version">v3.1</div>
   <h1>Stablecoin Depeg Intelligence</h1>
   <p class="tagline">Real-time peg monitoring for funds, desks, and treasuries</p>
 </header>
@@ -200,12 +226,19 @@
 <div id="volume-banner" class="banner">VOLUME SPIKE detected</div>
 <div id="divergence-banner" class="banner divergence">CROSS-SOURCE DIVERGENCE requires backend multi-feed</div>
 
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div> OK (pegged)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div> DEPEG DOWN</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div> DEPEG UP</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#64748b"></div> NO DATA</div>
+</div>
+
 <div class="grid" id="cards"></div>
 
 <div class="footer">
   <h3>How to use</h3>
   <p>Open this file in any browser — works on iPhone Safari, Chrome, or desktop. No install, no login, no terminal. Prices auto-refresh every 30 seconds from CoinGecko free API (DefiLlama fallback on rate limits). Green left border + badge = pegged ($0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data. Volume spike banner appears when 24h volume > 3× recent median (stored in browser). Deviation in basis points from $1.00. Bookmark for instant access. Informational only; not financial advice.</p>
-  <p style="margin-top:10px; font-size:0.72rem;">Data via CoinGecko free API with DefiLlama fallback · Source shown in corner · Mini sparklines from local history</p>
+  <p style="margin-top:10px; font-size:0.72rem;">Data via CoinGecko free API with DefiLlama fallback · Source shown in corner · Mini sparklines from local history · v3.1</p>
 </div>
 
 <div class="last-updated" id="last-updated">Last updated: —</div>

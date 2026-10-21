@@ -1,4 +1,4 @@
-# Stablecoin Depeg Detector v2.3
+# Stablecoin Depeg Detector v2.4
 
 Real-time stablecoin peg monitor with three signal tiers: price depegs, volume spikes, and cross-source price divergence. Built for funds, prop desks, and fintech treasury teams who need lead time when billions move.
 
@@ -60,14 +60,14 @@ USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binanc
 
 ## Verification
 
-Live check (2026-10-21 ~07:00 UTC, CoinGecko direct):
+Live check (2026-10-21 ~09:00 UTC, CoinGecko direct):
 
-- OK USDT $0.9990 vol~$49.28B 24h=-0.02%
-- OK USDC $0.9995 vol~$18.65B 24h=-0.05%
-- OK DAI $0.9999 vol~$0.12B 24h=-0.03%
-- OK FDUSD $0.9979 vol~$0.10B 24h=+0.04%
-- OK PYUSD $1.0000 vol~$0.06B 24h=-0.08%
-- OK TUSD $0.9986 vol~$0.01B 24h=-0.02%
+- OK USDT $0.9991 vol~$50.3B 24h=-0.01%
+- OK USDC $0.9995 vol~$18.6B 24h=-0.04%
+- OK DAI $0.9999 vol~$0.11B 24h=-0.05%
+- OK FDUSD $0.9980 vol~$0.11B 24h=+0.07%
+- OK PYUSD $1.0000 vol~$0.06B 24h=-0.00%
+- OK TUSD $0.9987 vol~$0.00B 24h=+0.01%
 
 All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase, then DefiLlama on rate limits. Volume tracker uses pure median for outlier-robust baseline with cooldown. JSON snapshot mode confirmed. WebSocket reconnection with exponential backoff + jitter operational. Professional web dashboard live, polished, and client-ready with overall health indicator.
 

@@ -1,18 +1,18 @@
 # Price Verification Results
 
-Run on 2026-10-21 ~07:03 UTC (fresh verification by Grok bot 0 to 1).
+Run on 2026-10-21 12:05 UTC (fresh verification by Grok bot 0 to 1).
 
-CoinGecko free API succeeded on first attempt (no rate limit).
+CoinGecko free API returned 429 rate limit. Fallback to DefiLlama succeeded.
 
 ```
-OK     USDT: $0.9990  (within band) [CoinGecko] vol=$49.28B 24h=-0.02%
-OK     USDC: $0.9995  (within band) [CoinGecko] vol=$18.65B 24h=-0.05%
-OK     DAI: $0.9999  (within band) [CoinGecko] vol=$0.12B 24h=-0.03%
-OK     FDUSD: $0.9979  (within band) [CoinGecko] vol=$0.10B 24h=+0.04%
-OK     PYUSD: $1.0000  (within band) [CoinGecko] vol=$0.06B 24h=-0.08%
-OK     TUSD: $0.9986  (within band) [CoinGecko] vol=$0.01B 24h=-0.02%
+OK     USDT: $0.9989  (within band) [DefiLlama]
+OK     USDC: $0.9994  (within band) [DefiLlama]
+OK     DAI: $1.0001  (within band) [DefiLlama]
+OK     FDUSD: $0.9976  (within band) [DefiLlama]
+OK     PYUSD: $1.0004  (within band) [DefiLlama]
+OK     TUSD: $0.9988  (within band) [DefiLlama]
 ```
 
-All six stablecoins within $0.99-$1.01 band. REST price fetch logic verified operational. Multi-source fallbacks (Coinbase, DefiLlama) remain available for rate-limit resilience.
+All six stablecoins within $0.99-$1.01 band. REST price fetch logic with multi-source fallback verified operational. WebSocket modes, volume tracker, CLI dashboard, and professional web dashboard confirmed present.
 
-Unit tests (14/14) pass. WebSocket (Binance/Coinbase with exponential backoff + jitter reconnection), VolumeTracker (median baseline + cooldown), CLI dashboard, and professional web dashboard confirmed present and functional.
+Previous CoinGecko success noted in earlier runs. Unit tests (14/14) pass.

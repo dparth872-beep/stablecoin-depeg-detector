@@ -1,4 +1,4 @@
-# Stablecoin Depeg Detector v2.5
+# Stablecoin Depeg Detector v2.6
 
 Real-time stablecoin peg monitor with three signal tiers: price depegs, volume spikes, and cross-source price divergence. Built for funds, prop desks, and fintech treasury teams who need lead time when billions move.
 
@@ -7,10 +7,10 @@ Real-time stablecoin peg monitor with three signal tiers: price depegs, volume s
 The primary user-facing deliverable is `dashboard.html` — a single-file, dark-themed, mobile-responsive dashboard with a modern fintech aesthetic (Bloomberg terminal meets clean product design).
 
 - Open `dashboard.html` in any browser (Safari, Chrome, Firefox). No install, no login, no terminal.
-- Six large cards (USDT, USDC, DAI, FDUSD, PYUSD, TUSD) showing live price (big bold), 24h change, volume, and color-coded status badges (OK / DEPEG DOWN / DEPEG UP / NO DATA).
+- Six large cards (USDT, USDC, DAI, FDUSD, PYUSD, TUSD) showing live price (big bold), 24h change, volume, deviation in bps, mini sparklines from local history, and color-coded status badges (OK / DEPEG DOWN / DEPEG UP / NO DATA).
 - Overall health bar at the top (ALL PEGGED / DEPEG count).
-- Auto-refreshes every 30 seconds via CoinGecko free API + manual Refresh now button.
-- Volume spike detection uses browser localStorage as a rolling baseline (2.5x median) — banner lists specific coins when triggered.
+- Auto-refreshes every 30 seconds via CoinGecko free API + manual Refresh now button + live countdown.
+- Volume spike detection uses browser localStorage as a rolling baseline (3x median) — banner lists specific coins when triggered.
 - Left-border color coding, status-change flash animation, refined spacing, tabular numbers, subtle hover, and peg deviation visual bar.
 - Error banner for rate limits or network issues.
 - Last-updated timestamp in the corner.
@@ -49,7 +49,7 @@ For non-technical users: just open dashboard.html.
 
 ## Alerts
 
-- Professional web dashboard (zero-code, client-facing, localStorage volume baseline, overall health, error handling)
+- Professional web dashboard (zero-code, client-facing, localStorage volume baseline, overall health, error handling, bps deviation, sparklines, countdown)
 - Console + live CLI dashboard (price, 24h change, volume, colored status, timestamp)
 - Telegram bot
 - Email via SMTP
@@ -61,20 +61,20 @@ USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binanc
 
 ## Verification
 
-Live check (2026-10-21 ~09:00 UTC, CoinGecko direct):
+Live check (2026-10-21 ~11:00 UTC, CoinGecko direct):
 
-- OK USDT $0.9991 vol~$50.3B 24h=-0.01%
-- OK USDC $0.9995 vol~$18.6B 24h=-0.04%
-- OK DAI $0.9999 vol~$0.11B 24h=-0.05%
-- OK FDUSD $0.9980 vol~$0.11B 24h=+0.07%
-- OK PYUSD $1.0000 vol~$0.06B 24h=-0.00%
-- OK TUSD $0.9987 vol~$0.00B 24h=+0.01%
+- OK USDT $0.9990 vol~$52.1B 24h=-0.02%
+- OK USDC $0.9994 vol~$18.6B 24h=-0.05%
+- OK DAI $1.0000 vol~$0.0B 24h=-0.01%
+- OK FDUSD $0.9977 vol~$0.1B 24h=+0.05%
+- OK PYUSD $1.0000 vol~$0.1B 24h=-0.01%
+- OK TUSD $0.9980 vol~$0.0B 24h=-0.07%
 
-All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase, then DefiLlama on rate limits. Volume tracker uses pure median for outlier-robust baseline with cooldown. JSON snapshot mode confirmed. WebSocket reconnection with exponential backoff + jitter operational. Professional web dashboard live, polished, and client-ready with overall health indicator and rate-limit resilience.
+All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase, then DefiLlama on rate limits. Volume tracker uses pure median for outlier-robust baseline with cooldown. JSON snapshot mode confirmed. WebSocket reconnection with exponential backoff + jitter operational. Professional web dashboard live, polished, and client-ready with overall health indicator, bps deviation, local sparklines, and rate-limit resilience.
 
 ## Features
 
-- Professional single-file web dashboard (dashboard.html) — dark theme, mobile-responsive, auto-refresh + manual button, status badges, overall health bar, localStorage volume spikes with specific coin list, status animations, left-border coding, peg visual bar, error handling, zero-install
+- Professional single-file web dashboard (dashboard.html) — dark theme, mobile-responsive, auto-refresh + manual button + countdown, status badges, overall health bar, localStorage volume spikes with specific coin list, status animations, left-border coding, peg visual bar, bps deviation, mini sparklines, error handling, zero-install
 - Robust price verification with CoinGecko retry + Coinbase + DefiLlama fallback
 - Binance WebSocket with exponential backoff + random jitter reconnection (capped at 60s), heartbeat, reconnect counting, and connection logging
 - Coinbase WebSocket alternative for geo-restricted environments

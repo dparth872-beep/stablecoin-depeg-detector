@@ -40,14 +40,14 @@ USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binanc
 
 ## Verification
 
-Live check (2026-10-20 ~23:05 UTC): CoinGecko returned all six within band:
+Live check (2026-10-20, multi-source fallback):
 
-- USDT $0.9993 OK (vol ~$51.8B)
-- USDC $0.9998 OK (vol ~$15.7B)
-- DAI $1.0000 OK (vol ~$201M)
-- FDUSD $0.9980 OK (vol ~$109M)
-- PYUSD $1.0000 OK (vol ~$43M)
-- TUSD $0.9987 OK (vol ~$14.2M)
+- USDT $0.9989 OK [Coinbase]
+- USDC $1.0000 OK [Coinbase]
+- DAI $0.9997 OK [Coinbase]
+- FDUSD $0.9980 OK [DefiLlama]
+- PYUSD $1.0000 OK [Coinbase]
+- TUSD $0.9989 OK [DefiLlama]
 
 All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase, then DefiLlama on rate limits. Volume tracker uses pure median for outlier-robust baseline with 5-minute alert cooldown.
 

@@ -224,8 +224,35 @@ def rest_snapshot(cfg):
         prices[cg_id] = data
     return prices
 
-def print_snapshot(cfg):
+def snapshot_to_json(cfg, prices):
+    """Structured JSON output for integration."""
+    lower, upper = cfg["lower_bound"], cfg["upper_bound"]
+    result = {
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "thresholds": {"lower": lower, "upper": upper},
+        "coins": []
+    }
+    for cg_id, symbol in cfg["stablecoins"].items():
+        data = prices.get(cg_id, {})
+        price = data.get("usd")
+        status = "NO_DATA"
+        if price is not None:
+            status = "OK" if lower <= price <= upper else "DEPEG"
+        result["coins"].append({
+            "symbol": symbol,
+            "cg_id": cg_id,
+            "price": price,
+            "usd_24h_vol": data.get("usd_24h_vol"),
+            "usd_24h_change": data.get("usd_24h_change"),
+            "status": status,
+        })
+    return result
+
+def print_snapshot(cfg, as_json=False):
     prices = rest_snapshot(cfg)
+    if as_json:
+        print(json.dumps(snapshot_to_json(cfg, prices), indent=2))
+        return prices
     lower, upper = cfg["lower_bound"], cfg["upper_bound"]
     print("Stablecoin Depeg Detector - Snapshot")
     print("=" * 70)
@@ -475,6 +502,7 @@ def main():
     parser.add_argument("--dashboard", action="store_true", help="Live CLI dashboard")
     parser.add_argument("--ws", action="store_true", help="Binance WebSocket")
     parser.add_argument("--ws-coinbase", action="store_true", help="Coinbase WebSocket")
+    parser.add_argument("--json", action="store_true", help="Output snapshot as JSON")
     args = parser.parse_args()
     cfg = load_config()
 
@@ -485,7 +513,7 @@ def main():
     elif args.loop:
         run_loop(cfg, args.loop)
     else:
-        print_snapshot(cfg)
+        print_snapshot(cfg, as_json=args.json)
 
 if __name__ == "__main__":
     main()

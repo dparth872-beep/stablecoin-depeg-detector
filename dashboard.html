@@ -189,7 +189,7 @@
 
 <div class="footer">
   <h3>How to use</h3>
-  <p>Open this file in any browser — works perfectly on iPhone Safari, Chrome, or desktop. No install, no login, no code. Prices auto-refresh every 30 seconds from CoinGecko’s free API. Green left border + badge = pegged ($0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data. Volume spike banner appears when 24h volume > 2.5× recent median (stored locally in your browser). Bookmark for instant access. Informational only; not financial advice.</p>
+  <p>Open this file in any browser — works perfectly on iPhone Safari, Chrome, or desktop. No install, no login, no code. Prices auto-refresh every 30 seconds from CoinGecko’s free API. Green left border + badge = pegged ($0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data. Volume spike banner appears when 24h volume > 3× recent median (stored locally in your browser). Bookmark for instant access. Informational only; not financial advice.</p>
   <p style="margin-top:12px; font-size:0.75rem;">Data via CoinGecko free API · Last known good data persists in browser</p>
 </div>
 
@@ -207,8 +207,8 @@ const COINS = [
 
 const LOWER = 0.99;
 const UPPER = 1.01;
-const VOL_MULT = 2.5;
-const HISTORY_KEY = "depeg_vol_history_v4";
+const VOL_MULT = 3.0;
+const HISTORY_KEY = "depeg_vol_history_v5";
 const MAX_HISTORY = 48;
 
 function loadHistory() {

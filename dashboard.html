@@ -24,16 +24,16 @@
     background: radial-gradient(ellipse at top, #0f172a 0%, #020617 70%);
     color: var(--text);
     min-height: 100vh;
-    padding: 20px 16px 120px;
+    padding: 20px 16px 140px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
   }
   header {
     text-align: center;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   }
   header h1 {
-    font-size: 2.5rem;
+    font-size: 2.4rem;
     font-weight: 700;
     letter-spacing: -1px;
     background: linear-gradient(135deg, #ffffff, #cbd5e1);
@@ -43,16 +43,17 @@
   }
   header p.tagline {
     color: var(--muted);
-    font-size: 1.1rem;
-    margin-top: 8px;
+    font-size: 1.05rem;
+    margin-top: 6px;
   }
   .controls {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     display: flex;
     justify-content: center;
     gap: 12px;
     align-items: center;
+    flex-wrap: wrap;
   }
   .refresh-btn {
     background: var(--surface);
@@ -72,12 +73,12 @@
   }
   .health-bar {
     max-width: 1100px;
-    margin: 0 auto 24px;
+    margin: 0 auto 20px;
     background: rgba(15, 23, 42, 0.9);
     backdrop-filter: blur(16px);
     border: 1px solid var(--card-border);
     border-radius: 16px;
-    padding: 18px 24px;
+    padding: 16px 22px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -95,9 +96,9 @@
   .banner {
     background: linear-gradient(90deg, #7c2d12, #c2410c);
     color: #fed7aa;
-    padding: 14px 20px;
+    padding: 12px 18px;
     border-radius: 12px;
-    margin: 0 auto 20px;
+    margin: 0 auto 16px;
     max-width: 1100px;
     text-align: center;
     font-weight: 600;
@@ -112,16 +113,16 @@
   }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 18px;
     max-width: 1180px;
-    margin: 0 auto 40px;
+    margin: 0 auto 36px;
   }
   .card {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: 16px;
-    padding: 22px;
+    padding: 20px;
     position: relative;
     transition: transform 0.2s, box-shadow 0.2s;
     box-shadow: 0 4px 20px rgba(0,0,0,0.25);
@@ -137,42 +138,44 @@
   .card.ok::before { background: var(--green); }
   .card.depeg-down::before { background: var(--red); }
   .card.depeg-up::before { background: var(--amber); }
-  .card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,0.4); }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(0,0,0,0.4); }
   .card.status-changed { animation: flash 0.5s; }
-  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .coin-name { font-size: 1.1rem; font-weight: 600; }
-  .symbol { font-size: 0.75rem; color: var(--muted); background: #1e293b; padding: 4px 10px; border-radius: 6px; font-weight: 600; }
-  .price { font-size: 2.5rem; font-weight: 700; letter-spacing: -1px; margin: 4px 0; font-variant-numeric: tabular-nums; }
-  .change { font-size: 0.95rem; margin-bottom: 8px; font-variant-numeric: tabular-nums; }
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .coin-name { font-size: 1.05rem; font-weight: 600; }
+  .symbol { font-size: 0.72rem; color: var(--muted); background: #1e293b; padding: 3px 9px; border-radius: 6px; font-weight: 600; }
+  .price { font-size: 2.4rem; font-weight: 700; letter-spacing: -1px; margin: 2px 0; font-variant-numeric: tabular-nums; }
+  .change { font-size: 0.9rem; margin-bottom: 6px; font-variant-numeric: tabular-nums; }
   .change.positive { color: var(--green); }
   .change.negative { color: var(--red); }
-  .deviation { font-size: 0.8rem; color: var(--muted); margin-bottom: 10px; font-variant-numeric: tabular-nums; }
-  .status { display: inline-block; padding: 6px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+  .deviation { font-size: 0.78rem; color: var(--muted); margin-bottom: 8px; font-variant-numeric: tabular-nums; }
+  .status { display: inline-block; padding: 5px 12px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
   .status.ok { background: rgba(34,197,94,0.15); color: var(--green); }
   .status.depeg-down { background: rgba(239,68,68,0.15); color: var(--red); }
   .status.depeg-up { background: rgba(245,158,11,0.15); color: var(--amber); }
   .status.no-data { background: rgba(100,116,139,0.15); color: var(--gray); }
-  .vol { font-size: 0.82rem; color: var(--muted); margin-top: 10px; font-variant-numeric: tabular-nums; }
-  .peg-bar { height: 4px; background: #1e293b; border-radius: 2px; margin-top: 12px; overflow: hidden; }
+  .vol { font-size: 0.8rem; color: var(--muted); margin-top: 8px; font-variant-numeric: tabular-nums; }
+  .peg-bar { height: 3px; background: #1e293b; border-radius: 2px; margin-top: 10px; overflow: hidden; }
   .peg-fill { height: 100%; background: var(--green); width: 100%; transition: width 0.3s; }
-  .spark { height: 30px; margin-top: 8px; }
-  .footer { text-align: center; color: var(--muted); font-size: 0.85rem; max-width: 680px; margin: 0 auto; line-height: 1.6; }
-  .footer h3 { color: var(--text); margin-bottom: 8px; font-size: 1rem; }
+  .spark { height: 28px; margin-top: 6px; width: 100%; }
+  .footer { text-align: center; color: var(--muted); font-size: 0.82rem; max-width: 700px; margin: 0 auto; line-height: 1.55; }
+  .footer h3 { color: var(--text); margin-bottom: 6px; font-size: 0.95rem; }
   .last-updated {
-    position: fixed; bottom: 16px; right: 16px;
+    position: fixed; bottom: 14px; right: 14px;
     background: rgba(15,23,42,0.95); backdrop-filter: blur(12px);
-    padding: 8px 12px; border-radius: 8px; font-size: 0.72rem; color: var(--muted);
+    padding: 7px 11px; border-radius: 8px; font-size: 0.7rem; color: var(--muted);
     border: 1px solid var(--card-border); font-variant-numeric: tabular-nums;
+    max-width: 280px; text-align: right;
   }
-  .error-banner { background: #7f1d1d; color: #fecaca; padding: 12px; border-radius: 8px; margin: 0 auto 16px; max-width: 1100px; display: none; text-align: center; }
+  .error-banner { background: #7f1d1d; color: #fecaca; padding: 10px; border-radius: 8px; margin: 0 auto 12px; max-width: 1100px; display: none; text-align: center; font-size: 0.85rem; }
   .error-banner.show { display: block; }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.85; } }
   @keyframes flash { 0% { box-shadow: 0 0 0 0 rgba(59,130,246,0.6); } 100% { box-shadow: 0 0 0 10px transparent; } }
   @media (max-width: 640px) {
-    header h1 { font-size: 1.8rem; }
-    .price { font-size: 2.1rem; }
-    .grid { grid-template-columns: 1fr; }
-    .health-bar { flex-direction: column; gap: 8px; text-align: center; }
+    header h1 { font-size: 1.75rem; }
+    .price { font-size: 2rem; }
+    .grid { grid-template-columns: 1fr; gap: 14px; }
+    .health-bar { flex-direction: column; gap: 6px; text-align: center; padding: 14px; }
+    .last-updated { bottom: 10px; right: 10px; font-size: 0.65rem; }
   }
 </style>
 </head>
@@ -195,14 +198,14 @@
 </div>
 
 <div id="volume-banner" class="banner">VOLUME SPIKE detected</div>
-<div id="divergence-banner" class="banner divergence">CROSS-SOURCE DIVERGENCE (client-side note: multi-source requires backend)</div>
+<div id="divergence-banner" class="banner divergence">CROSS-SOURCE DIVERGENCE requires backend multi-feed</div>
 
 <div class="grid" id="cards"></div>
 
 <div class="footer">
   <h3>How to use</h3>
-  <p>Open this file in any browser — works perfectly on iPhone Safari, Chrome, or desktop. No install, no login, no code. Prices auto-refresh every 30 seconds from CoinGecko’s free API (with DefiLlama fallback). Green left border + badge = pegged ($0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data. Volume spike banner appears when 24h volume > 3× recent median (stored locally in your browser). Deviation shows basis points from $1.00. Bookmark for instant access. Informational only; not financial advice.</p>
-  <p style="margin-top:12px; font-size:0.75rem;">Data via CoinGecko free API with DefiLlama fallback · Last known good data persists in browser · Mini sparklines from local history</p>
+  <p>Open this file in any browser — works on iPhone Safari, Chrome, or desktop. No install, no login, no terminal. Prices auto-refresh every 30 seconds from CoinGecko free API (DefiLlama fallback on rate limits). Green left border + badge = pegged ($0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data. Volume spike banner appears when 24h volume > 3× recent median (stored in browser). Deviation in basis points from $1.00. Bookmark for instant access. Informational only; not financial advice.</p>
+  <p style="margin-top:10px; font-size:0.72rem;">Data via CoinGecko free API with DefiLlama fallback · Source shown in corner · Mini sparklines from local history</p>
 </div>
 
 <div class="last-updated" id="last-updated">Last updated: —</div>
@@ -227,6 +230,7 @@ const MAX_PRICE_POINTS = 12;
 
 let countdown = 30;
 let countdownInterval;
+let lastSource = "—";
 
 function loadHistory() {
   try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || "{}"); } catch { return {}; }
@@ -287,8 +291,8 @@ function updatePriceHistory(symbol, price) {
 function drawSparkline(canvas, prices) {
   if (!canvas || !prices || prices.length < 2) return;
   const ctx = canvas.getContext("2d");
-  const w = canvas.width = canvas.offsetWidth;
-  const h = canvas.height = 30;
+  const w = canvas.width = canvas.offsetWidth || 280;
+  const h = canvas.height = 28;
   ctx.clearRect(0, 0, w, h);
   const min = Math.min(...prices);
   const max = Math.max(...prices);
@@ -312,12 +316,12 @@ async function fetchPrices() {
     const res = await fetch(cgUrl);
     if (res.ok) {
       document.getElementById("error-banner").classList.remove("show");
+      lastSource = "CoinGecko";
       return await res.json();
     }
   } catch (e) {
     console.warn("CoinGecko failed, trying DefiLlama");
   }
-  // Fallback to DefiLlama
   try {
     const llamaIds = COINS.map(c => `coingecko:${c.id}`).join(",");
     const llamaUrl = `https://coins.llama.fi/prices/current/${llamaIds}`;
@@ -332,12 +336,14 @@ async function fetchPrices() {
         }
       });
       document.getElementById("error-banner").classList.remove("show");
+      lastSource = "DefiLlama";
       return mapped;
     }
   } catch (e) {
     console.error(e);
   }
   document.getElementById("error-banner").classList.add("show");
+  lastSource = "unavailable";
   return null;
 }
 
@@ -400,7 +406,7 @@ function render(data) {
       <div class="deviation">Deviation: ${formatBps(price)}</div>
       <div class="status ${status.cls}">${status.text}</div>
       <div class="vol">24h Volume: ${formatVol(vol)}</div>
-      <canvas class="spark" width="280" height="30"></canvas>
+      <canvas class="spark"></canvas>
       <div class="peg-bar"><div class="peg-fill" style="width:${pegW}%"></div></div>
     `;
     container.appendChild(card);
@@ -431,8 +437,8 @@ function render(data) {
     overall.style.color = "#22c55e";
   }
 
-  document.getElementById("last-updated").textContent =
-    "Last updated: " + new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit", second:"2-digit"});
+  const now = new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit", second:"2-digit"});
+  document.getElementById("last-updated").textContent = `Last: ${now} · ${lastSource}`;
 }
 
 function startCountdown() {

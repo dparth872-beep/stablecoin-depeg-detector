@@ -61,16 +61,16 @@ USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binanc
 
 ## Verification
 
-Live check (2026-10-21 ~16:05 UTC):
+Live check (2026-10-21 ~18:05 UTC):
 
-- OK USDT $0.9993 (vol $51.7B, 24h +0.01%)
-- OK USDC $0.9996 (vol $17.7B, 24h -0.02%)
-- OK DAI $0.9996 (vol $6.9M, 24h -0.06%)
-- OK FDUSD $0.9989 (vol $111.7M, 24h +0.07%)
-- OK PYUSD $1.0010 (vol $61.9M, 24h +0.08%)
-- OK TUSD $0.9987 (vol $7.9M, 24h -0.01%)
+- OK USDT $0.9995 (DefiLlama)
+- OK USDC $0.9997 (DefiLlama)
+- OK DAI $1.0000 (DefiLlama)
+- OK FDUSD $0.9983 (DefiLlama)
+- OK PYUSD $1.0006 (DefiLlama)
+- OK TUSD $0.9987 (DefiLlama)
 
-All six within $0.99-$1.01. All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase, then DefiLlama on rate limits. Dashboard auto-falls back to DefiLlama. Volume tracker uses pure median for outlier-robust baseline with cooldown. JSON snapshot mode confirmed. WebSocket reconnection with exponential backoff + jitter operational. Professional web dashboard live, polished, and client-ready with overall health indicator, bps deviation, local sparklines, and rate-limit resilience.
+All six within $0.99-$1.01. CoinGecko free API rate-limited (429); fallbacks operational. All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase, then DefiLlama on rate limits. Dashboard auto-falls back to DefiLlama. Volume tracker uses pure median for outlier-robust baseline with cooldown. JSON snapshot mode confirmed. WebSocket reconnection with exponential backoff + jitter operational. Professional web dashboard live, polished, and client-ready with overall health indicator, bps deviation, local sparklines, and rate-limit resilience.
 
 ## Features
 

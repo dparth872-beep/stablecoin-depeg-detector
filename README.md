@@ -12,6 +12,7 @@ Stablecoin depegs cascade into billions in losses within hours (USDC/SVB March 2
 pip install -r requirements.txt
 cp config.json.example config.json   # optional: enable Telegram/email
 python depeg_detector.py                      # single snapshot (CoinGecko REST)
+python depeg_detector.py --json               # structured JSON snapshot for integration
 python depeg_detector.py --loop 30            # poll every 30 seconds
 python depeg_detector.py --dashboard          # live refreshing CLI board with colors
 python depeg_detector.py --ws                 # Binance WebSocket (may be geo-restricted)
@@ -33,6 +34,7 @@ python tests/test_depeg_logic.py              # run unit tests (14 cases)
 - Console (always on) + live CLI dashboard (price, 24h change, volume, colored status, timestamp)
 - Telegram bot
 - Email via SMTP
+- JSON output (`--json`) for piping into dashboards, monitoring systems, or trading bots
 
 ## Tracked stablecoins
 
@@ -58,6 +60,7 @@ All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinb
 - Coinbase WebSocket alternative for geo-restricted environments
 - Volume anomaly detection using pure median baseline (skips zero volumes, clear spike alerts, 300s debounce) as independent alert tier
 - In-place refreshing CLI dashboard with ANSI colors (green OK / red DEPEG), timestamp, volume, and status
+- Structured JSON snapshot mode (`--json`) for easy integration into external systems
 - 14 unit tests covering threshold logic, volume spikes (including median robustness and cooldown), divergence, multi-coin, and edge cases with synthetic data
 - Multi-source REST snapshot with Coinbase + DefiLlama fallback for rate-limit resilience
 

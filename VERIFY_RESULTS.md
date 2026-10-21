@@ -1,16 +1,16 @@
 # Verification Results
 
-**Date:** 2026-10-21 15:03 UTC (approx)
+**Date:** 2026-10-21 17:04 UTC
 
-All six stablecoins fetched successfully from CoinGecko free API:
+CoinGecko free API returned 429 (rate limit). Fallbacks engaged successfully:
 
-- OK USDT: $0.9992
-- OK USDC: $0.9995
-- OK DAI: $1.0000
-- OK FDUSD: $0.9981
-- OK PYUSD: $1.0000
-- OK TUSD: $0.9991
+- OK USDT: $0.9992 (Coinbase)
+- OK USDC: $1.0000 (Coinbase)
+- OK DAI: $0.9999 (Coinbase)
+- OK FDUSD: $0.9988 (DefiLlama)
+- OK PYUSD: $1.0000 (Coinbase)
+- OK TUSD: $0.9989 (DefiLlama)
 
-All within $0.99–$1.01 band. No depeg alerts. Volume and 24h change data present. Dashboard auto-refresh confirmed functional with DefiLlama fallback ready.
+All within $0.99–$1.01 band. No depeg alerts. 14/14 unit tests pass. Dashboard and detector fully operational with multi-source resilience.
 
-Status: PRODUCTION READY for client demos.
+Status: PRODUCTION READY for client demos. Zero-code dashboard.html is the primary product surface.

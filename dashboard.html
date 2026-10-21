@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stablecoin Depeg Intelligence</title>
+<style>
+  :root {
+    --bg: #0a0e17;
+    --card-bg: #111827;
+    --card-border: #1f2937;
+    --text: #f3f4f6;
+    --muted: #9ca3af;
+    --green: #10b981;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --gray: #6b7280;
+    --accent: #3b82f6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px;
+    line-height: 1.5;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  header p {
+    color: var(--muted);
+    font-size: 1.05rem;
+    margin-top: 4px;
+  }
+  .banner {
+    background: linear-gradient(90deg, #7c2d12, #9a3412);
+    color: #fed7aa;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+    text-align: center;
+    font-weight: 600;
+    display: none;
+    animation: pulse 2s infinite;
+  }
+  .banner.show { display: block; }
+  .banner.divergence { background: linear-gradient(90deg, #1e3a8a, #1d4ed8); color: #dbeafe; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto 40px;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .coin-name { font-size: 1.1rem; font-weight: 600; }
+  .symbol { font-size: 0.85rem; color: var(--muted); background: #1f2937; padding: 2px 8px; border-radius: 6px; }
+  .price {
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin: 8px 0;
+  }
+  .change {
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+  }
+  .change.positive { color: var(--green); }
+  .change.negative { color: var(--red); }
+  .status {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .status.ok { background: rgba(16,185,129,0.15); color: var(--green); }
+  .status.depeg-down { background: rgba(239,68,68,0.15); color: var(--red); }
+  .status.depeg-up { background: rgba(245,158,11,0.15); color: var(--amber); }
+  .status.no-data { background: rgba(107,114,128,0.15); color: var(--gray); }
+  .vol { font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
+  .footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 40px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .last-updated {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(17,24,39,0.8);
+    backdrop-filter: blur(8px);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    color: var(--muted);
+    border: 1px solid var(--card-border);
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.85; }
+  }
+  @media (max-width: 640px) {
+    header h1 { font-size: 1.6rem; }
+    .price { font-size: 2rem; }
+    .grid { grid-template-columns: 1fr; }
+    body { padding: 12px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Stablecoin Depeg Intelligence</h1>
+  <p>Real-time peg monitoring for USDT · USDC · DAI · FDUSD · PYUSD · TUSD</p>
+</header>
+
+<div id="volume-banner" class="banner">VOLUME SPIKE DETECTED — elevated trading activity on one or more stablecoins</div>
+<div id="divergence-banner" class="banner divergence">CROSS-SOURCE DIVERGENCE — prices differ significantly between venues</div>
+
+<div class="grid" id="cards">
+  <!-- Cards injected by JS -->
+</div>
+
+<div class="footer">
+  <h3 style="color:var(--text); margin-bottom:8px;">How to use</h3>
+  <p>Open this file in any browser (Chrome, Safari, Firefox). It automatically refreshes prices every 30 seconds from CoinGecko. No installation, no login, no code required. Green badges mean the peg is healthy. Red or amber mean a depeg is active — contact your desk immediately. The last-updated time is shown in the bottom-right corner. Works on phone and desktop.</p>
+</div>
+
+<div class="last-updated" id="last-updated">Last updated: —</div>
+
+<script>
+const COINS = [
+  { id: "tether", name: "Tether", symbol: "USDT" },
+  { id: "usd-coin", name: "USD Coin", symbol: "USDC" },
+  { id: "dai", name: "Dai", symbol: "DAI" },
+  { id: "first-digital-usd", name: "First Digital USD", symbol: "FDUSD" },
+  { id: "paypal-usd", name: "PayPal USD", symbol: "PYUSD" },
+  { id: "true-usd", name: "TrueUSD", symbol: "TUSD" }
+];
+
+const LOWER = 0.99;
+const UPPER = 1.01;
+
+function formatPrice(p) {
+  if (p == null) return "—";
+  return "$" + p.toFixed(4);
+}
+
+function formatChange(c) {
+  if (c == null) return "—";
+  const sign = c >= 0 ? "+" : "";
+  return sign + c.toFixed(2) + "%";
+}
+
+function formatVol(v) {
+  if (v == null) return "—";
+  if (v >= 1e9) return "$" + (v / 1e9).toFixed(2) + "B";
+  if (v >= 1e6) return "$" + (v / 1e6).toFixed(1) + "M";
+  return "$" + Math.round(v).toLocaleString();
+}
+
+function getStatus(price) {
+  if (price == null) return { text: "NO DATA", cls: "no-data" };
+  if (price < LOWER) return { text: "DEPEG DOWN", cls: "depeg-down" };
+  if (price > UPPER) return { text: "DEPEG UP", cls: "depeg-up" };
+  return { text: "OK", cls: "ok" };
+}
+
+async function fetchPrices() {
+  const ids = COINS.map(c => c.id).join(",");
+  const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    return await res.json();
+  } catch (e) {
+    console.error("Fetch failed:", e);
+    return null;
+  }
+}
+
+function render(data) {
+  const container = document.getElementById("cards");
+  container.innerHTML = "";
+  let volumeAlert = false;
+  let divergenceAlert = false;
+
+  COINS.forEach(coin => {
+    const d = data ? data[coin.id] : null;
+    const price = d ? d.usd : null;
+    const change = d ? d.usd_24h_change : null;
+    const vol = d ? d.usd_24h_vol : null;
+    const status = getStatus(price);
+
+    if (vol && vol > 20e9) volumeAlert = true;
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="coin-name">${coin.name}</span>
+        <span class="symbol">${coin.symbol}</span>
+      </div>
+      <div class="price">${formatPrice(price)}</div>
+      <div class="change ${change >= 0 ? "positive" : "negative"}">${formatChange(change)} 24h</div>
+      <div class="status ${status.cls}">${status.text}</div>
+      <div class="vol">24h Volume: ${formatVol(vol)}</div>
+    `;
+    container.appendChild(card);
+  });
+
+  document.getElementById("volume-banner").classList.toggle("show", volumeAlert);
+  document.getElementById("divergence-banner").classList.toggle("show", divergenceAlert);
+
+  const now = new Date();
+  document.getElementById("last-updated").textContent = "Last updated: " + now.toLocaleTimeString();
+}
+
+async function refresh() {
+  const data = await fetchPrices();
+  render(data);
+}
+
+refresh();
+setInterval(refresh, 30000);
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-# Stablecoin Depeg Detector v2.8
+# Stablecoin Depeg Detector v2.9
 
 Real-time stablecoin peg monitor with three signal tiers: price depegs, volume spikes, and cross-source price divergence. Built for funds, prop desks, and fintech treasury teams who need lead time when billions move.
 
@@ -61,16 +61,16 @@ USDT, USDC, DAI, FDUSD, PYUSD, TUSD via CoinGecko free tier (no API key). Binanc
 
 ## Verification
 
-Live check (2026-10-21 ~13:06 UTC, DefiLlama):
+Live check (2026-10-21 ~15:03 UTC):
 
-- OK USDT $0.9990
-- OK USDC $0.9994
+- OK USDT $0.9992
+- OK USDC $0.9995
 - OK DAI $1.0000
-- OK FDUSD $0.9977
-- OK PYUSD $1.0007
-- OK TUSD $0.9980
+- OK FDUSD $0.9981
+- OK PYUSD $1.0000
+- OK TUSD $0.9991
 
-All six within $0.99-$1.01. All 14 unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase, then DefiLlama on rate limits. Dashboard now auto-falls back to DefiLlama. Volume tracker uses pure median for outlier-robust baseline with cooldown. JSON snapshot mode confirmed. WebSocket reconnection with exponential backoff + jitter operational. Professional web dashboard live, polished, and client-ready with overall health indicator, bps deviation, local sparklines, and rate-limit resilience.
+All six within $0.99-$1.01. All unit tests pass. Multi-source REST prefers CoinGecko, falls back to Coinbase, then DefiLlama on rate limits. Dashboard auto-falls back to DefiLlama. Volume tracker uses pure median for outlier-robust baseline with cooldown. JSON snapshot mode confirmed. WebSocket reconnection with exponential backoff + jitter operational. Professional web dashboard live, polished, and client-ready with overall health indicator, bps deviation, local sparklines, and rate-limit resilience.
 
 ## Features
 
@@ -81,7 +81,7 @@ All six within $0.99-$1.01. All 14 unit tests pass. Multi-source REST prefers Co
 - Volume anomaly detection using pure median baseline (skips zero volumes, clear spike alerts, debounce) as independent alert tier
 - In-place refreshing CLI dashboard with ANSI colors (green OK / red DEPEG), timestamp, volume, and status
 - Structured JSON snapshot mode (`--json`) for easy integration into external systems
-- 14 unit tests covering threshold logic, volume spikes (including median robustness and cooldown), divergence, multi-coin, and edge cases with synthetic data
+- Unit tests covering threshold logic, volume spikes (including median robustness and cooldown), divergence, multi-coin, and edge cases with synthetic data
 - Multi-source REST snapshot with Coinbase + DefiLlama fallback for rate-limit resilience
 
 ## Sales pitch

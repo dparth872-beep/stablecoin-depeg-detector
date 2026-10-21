@@ -1,18 +1,18 @@
 # Price Verification Results
 
-Run on 2026-10-21 ~02:04 UTC (fresh verification by builder agent).
+Run on 2026-10-21 ~03:05 UTC (fresh verification by builder agent).
 
-CoinGecko free API returned 429 rate limit after retries; used Coinbase + DefiLlama fallbacks successfully.
+CoinGecko free API succeeded on first attempt (no rate limit).
 
 ```
-OK     USDT: $0.9989  (within band) [Coinbase]
-OK     USDC: $1.0000  (within band) [Coinbase]
-OK     DAI: $0.9997  (within band) [Coinbase]
-OK     FDUSD: $0.9981  (within band) [DefiLlama]
-OK     PYUSD: $1.0000  (within band) [Coinbase]
-OK     TUSD: $0.9987  (within band) [DefiLlama]
+OK     USDT: $0.9991  (within band) [CoinGecko] vol=$50,986,817,708 24h=-0.01%
+OK     USDC: $0.9997  (within band) [CoinGecko] vol=$15,041,079,823 24h=-0.03%
+OK     DAI: $1.0000  (within band) [CoinGecko] vol=$160,902,699 24h=-0.04%
+OK     FDUSD: $0.9980  (within band) [CoinGecko] vol=$103,772,189 24h=+0.07%
+OK     PYUSD: $1.0010  (within band) [CoinGecko] vol=$50,757,523 24h=+0.06%
+OK     TUSD: $0.9986  (within band) [CoinGecko] vol=$6,128,570 24h=-0.01%
 ```
 
-All six stablecoins within $0.99-$1.01 band. Multi-source REST logic verified operational under rate limits. JSON snapshot mode also confirmed clean.
+All six stablecoins within $0.99-$1.01 band. REST price fetch logic verified operational. Multi-source fallbacks remain available for rate-limit resilience.
 
-Unit tests (14/14) pass. WebSocket classes (Binance + Coinbase with exponential backoff + jitter reconnection), VolumeTracker (median baseline, 3x spike, cooldown), and CLI dashboard confirmed present and functional.
+Unit tests (14/14) pass. WebSocket, VolumeTracker, and CLI dashboard confirmed present.

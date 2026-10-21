@@ -201,8 +201,8 @@
 
 <div class="footer">
   <h3>How to use</h3>
-  <p>Open this file in any browser — works perfectly on iPhone Safari, Chrome, or desktop. No install, no login, no code. Prices auto-refresh every 30 seconds from CoinGecko’s free API. Green left border + badge = pegged ($0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data. Volume spike banner appears when 24h volume > 3× recent median (stored locally in your browser). Deviation shows basis points from $1.00. Bookmark for instant access. Informational only; not financial advice.</p>
-  <p style="margin-top:12px; font-size:0.75rem;">Data via CoinGecko free API · Last known good data persists in browser · Mini sparklines from local history</p>
+  <p>Open this file in any browser — works perfectly on iPhone Safari, Chrome, or desktop. No install, no login, no code. Prices auto-refresh every 30 seconds from CoinGecko’s free API (with DefiLlama fallback). Green left border + badge = pegged ($0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data. Volume spike banner appears when 24h volume > 3× recent median (stored locally in your browser). Deviation shows basis points from $1.00. Bookmark for instant access. Informational only; not financial advice.</p>
+  <p style="margin-top:12px; font-size:0.75rem;">Data via CoinGecko free API with DefiLlama fallback · Last known good data persists in browser · Mini sparklines from local history</p>
 </div>
 
 <div class="last-updated" id="last-updated">Last updated: —</div>
@@ -307,17 +307,38 @@ function drawSparkline(canvas, prices) {
 
 async function fetchPrices() {
   const ids = COINS.map(c => c.id).join(",");
-  const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`;
+  const cgUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`;
   try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    document.getElementById("error-banner").classList.remove("show");
-    return await res.json();
+    const res = await fetch(cgUrl);
+    if (res.ok) {
+      document.getElementById("error-banner").classList.remove("show");
+      return await res.json();
+    }
+  } catch (e) {
+    console.warn("CoinGecko failed, trying DefiLlama");
+  }
+  // Fallback to DefiLlama
+  try {
+    const llamaIds = COINS.map(c => `coingecko:${c.id}`).join(",");
+    const llamaUrl = `https://coins.llama.fi/prices/current/${llamaIds}`;
+    const res2 = await fetch(llamaUrl);
+    if (res2.ok) {
+      const data = await res2.json();
+      const mapped = {};
+      COINS.forEach(c => {
+        const key = `coingecko:${c.id}`;
+        if (data.coins && data.coins[key]) {
+          mapped[c.id] = { usd: data.coins[key].price };
+        }
+      });
+      document.getElementById("error-banner").classList.remove("show");
+      return mapped;
+    }
   } catch (e) {
     console.error(e);
-    document.getElementById("error-banner").classList.add("show");
-    return null;
   }
+  document.getElementById("error-banner").classList.add("show");
+  return null;
 }
 
 function updateVolumeHistory(symbol, vol) {

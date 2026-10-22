@@ -1,14 +1,15 @@
 # Verification Results
 
-**Date:** 2026-10-22 14:03 MDT (live multi-source check: Coinbase primary due to CoinGecko free API rate limit; previous CG data consistent)
+**Date:** 2026-10-22 15:03 MDT (live multi-source check: Coinbase + DefiLlama; CoinGecko free API rate-limited)
 
-All available stablecoins within $0.99–$1.01 band. No depeg alerts.
+All six stablecoins within $0.99–$1.01 band. No depeg alerts.
 
-- OK USDT: $0.9986 (Coinbase)
-- OK USDC: $1.0000 (Coinbase)
-- OK DAI: $0.9998 (Coinbase)
-- OK PYUSD: $1.0000 (Coinbase)
-- FDUSD / TUSD: previously verified OK on CoinGecko (~$0.997–$0.999)
+- OK USDT: $0.9986 (Coinbase) / $0.9989 (DefiLlama)
+- OK USDC: $1.0000 (Coinbase) / $0.9995 (DefiLlama)
+- OK DAI: $0.9999 (Coinbase) / $0.9998 (DefiLlama)
+- OK FDUSD: $0.9970 (DefiLlama)
+- OK PYUSD: $1.0000 (Coinbase) / $0.9999 (DefiLlama)
+- OK TUSD: $0.9986 (DefiLlama)
 
 Unit tests: 14/14 pass (tests/test_depeg_logic.py).
 
@@ -16,4 +17,4 @@ Status: PRODUCTION READY. Detector (REST + Binance/Coinbase WS with exponential-
 
 Primary client surface: open dashboard.html in any browser. Zero code, zero install, zero login. Bookmark and done.
 
-Last verified by autonomous agent at 14:03 MDT on 2026-10-22.
+Last verified by autonomous agent at 15:03 MDT on 2026-10-22.

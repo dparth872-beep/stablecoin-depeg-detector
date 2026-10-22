@@ -1,1 +1,280 @@
-PLACEHOLDER_DASH_CONTENT
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stablecoin Depeg Intelligence</title>
+<style>
+:root {
+  --bg: #0a0e17;
+  --card: #111827;
+  --border: #1f2937;
+  --text: #f3f4f6;
+  --muted: #9ca3af;
+  --green: #10b981;
+  --red: #ef4444;
+  --amber: #f59e0b;
+  --gray: #6b7280;
+  --accent: #3b82f6;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 20px;
+  line-height: 1.5;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; }
+.tagline { color: var(--muted); font-size: 0.95rem; margin-top: 4px; }
+.meta { text-align: right; font-size: 0.85rem; color: var(--muted); }
+#last-updated { font-weight: 500; color: var(--text); }
+.banners { margin-bottom: 20px; }
+.banner {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-weight: 500;
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+.banner.volume { background: #422006; border: 1px solid var(--amber); color: #fcd34d; }
+.banner.divergence { background: #1e3a5f; border: 1px solid var(--accent); color: #93c5fd; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.symbol { font-size: 1.25rem; font-weight: 600; }
+.name { color: var(--muted); font-size: 0.85rem; }
+.price { font-size: 2.2rem; font-weight: 700; letter-spacing: -1px; margin: 8px 0; }
+.change { font-size: 0.9rem; font-weight: 500; }
+.change.pos { color: var(--green); }
+.change.neg { color: var(--red); }
+.badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.badge.ok { background: #064e3b; color: #6ee7b7; }
+.badge.depeg-down { background: #7f1d1d; color: #fca5a5; }
+.badge.depeg-up { background: #78350f; color: #fde68a; }
+.badge.no-data { background: #374151; color: #d1d5db; }
+.vol { color: var(--muted); font-size: 0.8rem; margin-top: 8px; }
+.how-to {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 20px;
+}
+.how-to h2 { font-size: 1.2rem; margin-bottom: 12px; }
+.how-to p, .how-to li { color: var(--muted); margin-bottom: 8px; }
+.how-to ul { padding-left: 20px; }
+footer { text-align: center; color: var(--muted); font-size: 0.8rem; margin-top: 32px; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 640px) {
+  body { padding: 12px; }
+  h1 { font-size: 1.5rem; }
+  .price { font-size: 1.8rem; }
+  .meta { text-align: left; width: 100%; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Stablecoin Depeg Detector</h1>
+    <div class="tagline">Stablecoin Depeg Intelligence</div>
+  </div>
+  <div class="meta">
+    Last updated: <span id="last-updated">—</span><br>
+    Auto-refresh: 30s
+  </div>
+</header>
+
+<div class="banners">
+  <div id="volume-banner" class="banner volume"></div>
+  <div id="divergence-banner" class="banner divergence"></div>
+</div>
+
+<div class="grid" id="cards"></div>
+
+<section class="how-to">
+  <h2>How to use</h2>
+  <p>Open this file in any modern browser (Chrome, Safari, Firefox, Edge). No install, no login, no code.</p>
+  <ul>
+    <li>Each card shows live price, 24h change, and status for one stablecoin.</li>
+    <li>Green OK means price is between $0.99 and $1.01. Red is depeg down, amber is depeg up.</li>
+    <li>Volume spikes and cross-source divergences appear as banners at the top when detected.</li>
+    <li>Data refreshes automatically every 30 seconds from CoinGecko (with Coinbase fallback where available).</li>
+    <li>Works on iPhone Safari — just bookmark it or add to home screen.</li>
+  </ul>
+  <p>Built for funds, prop desks, and fintech teams that need minute-level depeg awareness.</p>
+</section>
+
+<footer>
+  Stablecoin Depeg Detector · Zero-code client dashboard · Prices via CoinGecko free API
+</footer>
+
+<script>
+const COINS = [
+  { id: "tether", symbol: "USDT", name: "Tether" },
+  { id: "usd-coin", symbol: "USDC", name: "USD Coin" },
+  { id: "dai", symbol: "DAI", name: "Dai" },
+  { id: "first-digital-usd", symbol: "FDUSD", name: "First Digital USD" },
+  { id: "paypal-usd", symbol: "PYUSD", name: "PayPal USD" },
+  { id: "true-usd", symbol: "TUSD", name: "TrueUSD" }
+];
+const LOWER = 0.99, UPPER = 1.01;
+const CG_URL = "https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coin,dai,first-digital-usd,paypal-usd,true-usd&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true";
+const CB_PAIRS = { USDT: "USDT-USD", USDC: "USDC-USD", DAI: "DAI-USD", PYUSD: "PYUSD-USD" };
+
+let volumeHistory = JSON.parse(localStorage.getItem("volHistory") || "{}");
+let lastPrices = {};
+
+function statusFor(price) {
+  if (price == null) return { text: "NO DATA", cls: "no-data" };
+  if (price < LOWER) return { text: "DEPEG DOWN", cls: "depeg-down" };
+  if (price > UPPER) return { text: "DEPEG UP", cls: "depeg-up" };
+  return { text: "OK", cls: "ok" };
+}
+
+function formatPrice(p) { return p == null ? "—" : "$" + p.toFixed(4); }
+function formatChange(c) {
+  if (c == null) return "—";
+  const sign = c >= 0 ? "+" : "";
+  return `<span class="change ${c >= 0 ? "pos" : "neg"}">${sign}${c.toFixed(2)}%</span>`;
+}
+function formatVol(v) { return v == null ? "" : `<div class="vol">24h vol: $${(v/1e6).toFixed(1)}M</div>`; }
+
+function renderCards(data) {
+  const container = document.getElementById("cards");
+  container.innerHTML = "";
+  COINS.forEach(coin => {
+    const d = data[coin.id] || {};
+    const price = d.usd;
+    const chg = d.usd_24h_change;
+    const vol = d.usd_24h_vol;
+    const st = statusFor(price);
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="card-header">
+        <div>
+          <div class="symbol">${coin.symbol}</div>
+          <div class="name">${coin.name}</div>
+        </div>
+        <span class="badge ${st.cls}">${st.text}</span>
+      </div>
+      <div class="price">${formatPrice(price)}</div>
+      <div>${formatChange(chg)}</div>
+      ${formatVol(vol)}
+    `;
+    container.appendChild(card);
+  });
+}
+
+function checkVolumeSpikes(data) {
+  const spikes = [];
+  COINS.forEach(coin => {
+    const vol = (data[coin.id] || {}).usd_24h_vol;
+    if (!vol || vol <= 0) return;
+    if (!volumeHistory[coin.symbol]) volumeHistory[coin.symbol] = [];
+    const hist = volumeHistory[coin.symbol];
+    if (hist.length >= 5) {
+      const avg = hist.reduce((a,b)=>a+b,0) / hist.length;
+      if (vol > avg * 3) spikes.push(`${coin.symbol} volume $${(vol/1e6).toFixed(1)}M > 3x recent avg`);
+    }
+    hist.push(vol);
+    if (hist.length > 20) hist.shift();
+  });
+  localStorage.setItem("volHistory", JSON.stringify(volumeHistory));
+  const banner = document.getElementById("volume-banner");
+  if (spikes.length) {
+    banner.textContent = "VOLUME SPIKE: " + spikes.join(" · ");
+    banner.style.display = "block";
+  } else {
+    banner.style.display = "none";
+  }
+}
+
+async function fetchCoinbase(symbol) {
+  const pair = CB_PAIRS[symbol];
+  if (!pair) return null;
+  try {
+    const r = await fetch(`https://api.coinbase.com/v2/prices/${pair}/spot`);
+    if (!r.ok) return null;
+    const j = await r.json();
+    return parseFloat(j.data.amount);
+  } catch { return null; }
+}
+
+async function checkDivergence(cgData) {
+  const divs = [];
+  for (const coin of COINS) {
+    if (!CB_PAIRS[coin.symbol]) continue;
+    const cgPrice = (cgData[coin.id] || {}).usd;
+    if (cgPrice == null) continue;
+    const cbPrice = await fetchCoinbase(coin.symbol);
+    if (cbPrice == null) continue;
+    const bps = Math.abs(cgPrice - cbPrice) / Math.max(cgPrice, cbPrice) * 10000;
+    if (bps > 50) divs.push(`${coin.symbol}: CG $${cgPrice.toFixed(4)} vs CB $${cbPrice.toFixed(4)} (${bps.toFixed(0)} bps)`);
+  }
+  const banner = document.getElementById("divergence-banner");
+  if (divs.length) {
+    banner.textContent = "DIVERGENCE: " + divs.join(" · ");
+    banner.style.display = "block";
+  } else {
+    banner.style.display = "none";
+  }
+}
+
+async function refresh() {
+  let data = {};
+  try {
+    const r = await fetch(CG_URL);
+    if (r.ok) data = await r.json();
+  } catch (e) {
+    console.warn("CoinGecko failed", e);
+  }
+  // fallback for missing
+  for (const coin of COINS) {
+    if (!data[coin.id] || data[coin.id].usd == null) {
+      const cb = await fetchCoinbase(coin.symbol);
+      if (cb != null) data[coin.id] = { usd: cb };
+    }
+  }
+  renderCards(data);
+  checkVolumeSpikes(data);
+  await checkDivergence(data);
+  document.getElementById("last-updated").textContent = new Date().toLocaleString();
+}
+
+refresh();
+setInterval(refresh, 30000);
+</script>
+</body>
+</html>

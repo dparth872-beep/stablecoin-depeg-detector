@@ -84,11 +84,12 @@
     border-radius: 999px;
     background: var(--green-dim);
     color: var(--green);
+    transition: all 0.3s;
   }
   .health.warn { background: var(--amber-dim); color: var(--amber); }
   .health.bad { background: var(--red-dim); color: var(--red); }
   .timestamp { background: rgba(15,21,32,0.9); padding: 6px 14px; border-radius: 14px; backdrop-filter: blur(10px); border: 1px solid var(--border); }
-  .refresh-btn {
+  .refresh-btn, .clear-btn {
     background: var(--card);
     border: 1px solid var(--border);
     color: var(--text);
@@ -98,7 +99,7 @@
     cursor: pointer;
     transition: all 0.2s;
   }
-  .refresh-btn:hover { background: var(--card-hover); border-color: var(--accent); }
+  .refresh-btn:hover, .clear-btn:hover { background: var(--card-hover); border-color: var(--accent); }
   .banner {
     max-width: 1240px;
     margin: 0 auto 18px;
@@ -140,6 +141,8 @@
     background: var(--status-color, var(--gray));
     transition: background 0.3s;
   }
+  .card.flash { animation: flash 0.6s ease; }
+  @keyframes flash { 0% { background: rgba(56,189,248,0.2); } 100% { background: var(--card); } }
   .coin-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
   .coin-name { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
   .symbol { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.025em; }
@@ -179,7 +182,8 @@
     border-radius: 14px;
     padding: 18px 22px;
   }
-  .alerts-section h3 { font-size: 0.95rem; margin-bottom: 12px; color: var(--muted); }
+  .alerts-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .alerts-section h3 { font-size: 0.95rem; color: var(--muted); }
   .alerts-list { font-size: 0.88rem; max-height: 140px; overflow-y: auto; }
   .alerts-list .item { padding: 5px 0; border-bottom: 1px solid var(--border); color: var(--muted); }
   .alerts-list .item:last-child { border: none; }
@@ -226,7 +230,10 @@
   </div>
 
   <div class="alerts-section">
-    <h3>Recent Session Alerts</h3>
+    <div class="alerts-header">
+      <h3>Recent Session Alerts</h3>
+      <button class="clear-btn" onclick="clearAlerts()">Clear log</button>
+    </div>
     <div class="alerts-list" id="alerts-list"><div class="item">No alerts this session.</div></div>
   </div>
 
@@ -237,9 +244,9 @@
       <li>Bookmark the page. It auto-refreshes every 30 seconds with no login or install required.</li>
       <li>Green badge = OK (price between $0.99 and $1.01). Red = depeg down. Amber = depeg up. Gray = no data.</li>
       <li>BPS shows distance from the $1.00 peg. Volume spike banners appear when 24h volume exceeds 3× the session median baseline.</li>
-      <li>Use the Refresh button for an immediate update. Just open and watch. Zero code, zero friction.</li>
+      <li>Use the Refresh button for an immediate update. Alerts persist across page reloads via local storage. Just open and watch. Zero code, zero friction.</li>
     </ol>
-    <p style="margin-top:20px; font-size:0.88rem;">Data source: CoinGecko free API. Thresholds: $0.99–$1.01. Built for professional trading teams who need clean, always-on peg intelligence. Last verified: all major stables within band except occasional FDUSD ticks.</p>
+    <p style="margin-top:20px; font-size:0.88rem;">Data source: CoinGecko free API. Thresholds: $0.99–$1.01. Built for professional trading teams who need clean, always-on peg intelligence.</p>
   </footer>
 
 <script>
@@ -257,7 +264,18 @@ const VOL_HISTORY = {};
 const PRICE_HISTORY = {};
 const VOL_WINDOW = 10;
 const PRICE_WINDOW = 24;
-let sessionAlerts = [];
+let sessionAlerts = JSON.parse(localStorage.getItem('depegAlerts') || '[]');
+
+function saveAlerts() {
+  localStorage.setItem('depegAlerts', JSON.stringify(sessionAlerts.slice(0, 20)));
+}
+
+function renderAlerts() {
+  const el = document.getElementById('alerts-list');
+  el.innerHTML = sessionAlerts.length
+    ? sessionAlerts.map(a => `<div class="item">${a}</div>`).join('')
+    : '<div class="item">No alerts this session.</div>';
+}
 
 function formatPrice(p) {
   return p == null ? '—' : '$' + Number(p).toFixed(4);
@@ -322,10 +340,17 @@ function sparklineSVG(prices) {
 }
 function addAlert(msg) {
   const now = new Date().toLocaleTimeString();
-  sessionAlerts.unshift(`${now} — ${msg}`);
-  if (sessionAlerts.length > 10) sessionAlerts.pop();
-  const el = document.getElementById('alerts-list');
-  el.innerHTML = sessionAlerts.map(a => `<div class="item">${a}</div>`).join('') || '<div class="item">No alerts this session.</div>';
+  const entry = `${now} — ${msg}`;
+  if (sessionAlerts[0] === entry) return;
+  sessionAlerts.unshift(entry);
+  if (sessionAlerts.length > 20) sessionAlerts.pop();
+  saveAlerts();
+  renderAlerts();
+}
+function clearAlerts() {
+  sessionAlerts = [];
+  saveAlerts();
+  renderAlerts();
 }
 
 async function refresh() {
@@ -398,6 +423,7 @@ function render(data) {
   }
 }
 
+renderAlerts();
 refresh();
 setInterval(refresh, 30000);
 </script>

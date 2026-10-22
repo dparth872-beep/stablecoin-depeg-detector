@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Stablecoin Depeg Intelligence</title>
 <style>
   :root {
@@ -88,6 +88,17 @@
   .health.warn { background: var(--amber-dim); color: var(--amber); }
   .health.bad { background: var(--red-dim); color: var(--red); }
   .timestamp { background: rgba(15,21,32,0.85); padding: 4px 12px; border-radius: 12px; backdrop-filter: blur(8px); }
+  .refresh-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .refresh-btn:hover { background: var(--card-hover); }
   .banner {
     max-width: 1200px;
     margin: 0 auto 16px;
@@ -201,7 +212,10 @@
 
   <div class="meta-bar">
     <div class="health" id="health">Loading…</div>
-    <div class="timestamp" id="timestamp">—</div>
+    <div style="display:flex; gap:12px; align-items:center;">
+      <button class="refresh-btn" onclick="refresh()">Refresh now</button>
+      <div class="timestamp" id="timestamp">—</div>
+    </div>
   </div>
 
   <div class="banner volume" id="volume-banner">VOLUME SPIKE — elevated 24h volume detected on one or more coins</div>
@@ -223,7 +237,7 @@
       <li>Bookmark the page. It auto-refreshes every 30 seconds with no login or install required.</li>
       <li>Green badge = OK (price between $0.99 and $1.01). Red = depeg down. Amber = depeg up. Gray = no data.</li>
       <li>BPS shows distance from the $1.00 peg. Volume spike banners appear when 24h volume exceeds 3× the session median baseline.</li>
-      <li>Just open and watch. This is the client surface — zero code, zero friction.</li>
+      <li>Use the Refresh button for an immediate update. Just open and watch. Zero code, zero friction.</li>
     </ol>
     <p style="margin-top:18px; font-size:0.85rem;">Data source: CoinGecko free API. Thresholds: $0.99–$1.01. Built for professional trading teams who need clean, always-on peg intelligence.</p>
   </footer>
@@ -320,7 +334,7 @@ async function refresh() {
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     render(data);
-    document.getElementById('timestamp').textContent = 'Updated ' + new Date().toLocaleTimeString();
+    document.getElementById('timestamp').textContent = 'Updated ' + new Date().toLocaleString();
   } catch (e) {
     document.getElementById('grid').innerHTML = '<div class="loading">API temporarily unavailable. Retrying in 30s…</div>';
     document.getElementById('timestamp').textContent = 'Error — retrying';

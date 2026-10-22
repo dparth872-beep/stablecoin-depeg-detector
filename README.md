@@ -46,7 +46,7 @@ python tests/test_depeg_logic.py      # 14 unit tests
 - Binance and Coinbase WebSocket streams with exponential-backoff reconnection
 - Volume anomaly detection (median baseline, cooldown)
 - CLI dashboard that refreshes in place
-- Professional single-file web dashboard (dark fintech aesthetic, mobile-responsive)
+- Professional single-file web dashboard (dark fintech aesthetic, mobile-responsive, recent alerts log, live indicator)
 - Telegram + email alerts (config.json)
 - JSON output for integration
 - Comprehensive unit tests
@@ -60,4 +60,4 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready. All six coins verified within band. 14/14 tests pass. Dashboard is the primary client surface.
+Production-ready. All six coins verified within band (latest check 2026-10-21 19:04 MDT). 14/14 tests pass. Dashboard v3.4 is the primary client surface.

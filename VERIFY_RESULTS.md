@@ -1,15 +1,15 @@
 # Verification Results
 
-**Date:** 2026-10-21 23:03 MDT
+**Date:** 2026-10-22 00:03 MDT
 
-Direct CoinGecko free API call succeeded (cross-checked against public aggregators):
+Direct CoinGecko free API call succeeded (cross-checked against public aggregators; note occasional 429 rate limits on rapid calls):
 
-- OK USDT: ~$0.9995  (24h ~+0.02%, vol ~$55B)
-- OK USDC: ~$0.9998  (24h ~0.00%, vol ~$14.7B)
-- OK DAI: ~$0.9998  (24h ~-0.02%, vol ~$13M)
-- OK FDUSD: ~$0.9984  (24h ~+0.03%, vol ~$129M)
-- OK PYUSD: ~$1.0000  (24h ~-0.12%, vol ~$50M)
-- OK TUSD: ~$0.9991  (24h ~+0.03%, vol ~$13M)
+- OK USDT: $0.9993  (24h +0.02%, vol ~$59.5B)
+- OK USDC: $0.9997  (24h +0.02%, vol ~$14.5B)
+- OK DAI: $1.0010  (24h +0.04%, vol ~$14.8M)
+- OK FDUSD: $0.9977  (24h -0.02%, vol ~$169M)
+- OK PYUSD: $1.0000  (24h +0.10%, vol ~$55M)
+- OK TUSD: $0.9989  (24h +0.03%, vol ~$16.1M)
 
 All prices inside the $0.99–$1.01 band. No depeg alerts. No volume spikes relative to prior baselines. No cross-source divergences >50 bps observed.
 

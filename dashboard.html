@@ -57,6 +57,7 @@
     margin-bottom: 40px;
     padding-bottom: 28px;
     border-bottom: 1px solid var(--border);
+    position: relative;
   }
   header h1 {
     font-size: 2rem;
@@ -75,6 +76,18 @@
     margin-left: auto;
     margin-right: auto;
     font-weight: 450;
+  }
+  .version-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgba(56,189,248,0.12);
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 650;
+    padding: 4px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.04em;
   }
   .meta-bar {
     display: flex;
@@ -307,11 +320,13 @@
     .grid { gap: 18px; grid-template-columns: 1fr; }
     .meta-bar { flex-direction: column; gap: 12px; text-align: center; }
     .card { padding: 22px; }
+    .version-badge { position: static; display: inline-block; margin-top: 8px; }
   }
 </style>
 </head>
 <body>
   <header>
+    <div class="version-badge">v1.3</div>
     <h1><span class="live-dot"></span>Stablecoin Depeg Intelligence</h1>
     <p class="tagline">Real-time peg monitoring for funds, prop desks, and fintech teams. Minutes matter when a peg breaks.</p>
   </header>
@@ -349,7 +364,7 @@
       <li>Divergence banner flags >50 bps gaps between CoinGecko and Coinbase on supported pairs.</li>
       <li>Use the Refresh button for an immediate update. Alerts persist across page reloads via local storage. Just open and watch. Zero code, zero friction.</li>
     </ol>
-    <p style="margin-top:24px; font-size:0.88rem;">Data sources: CoinGecko free API (primary) + Coinbase spot for cross-check. Thresholds: $0.99–$1.01. Built for professional trading teams who need clean, always-on peg intelligence.</p>
+    <p style="margin-top:24px; font-size:0.88rem;">Data sources: CoinGecko free API (primary) + Coinbase spot for cross-check. Thresholds: $0.99–$1.01. Built for professional trading teams who need clean, always-on peg intelligence. v1.3</p>
   </footer>
 
 <script>

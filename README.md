@@ -46,7 +46,7 @@ python tests/test_depeg_logic.py      # 14 unit tests
 - Binance and Coinbase WebSocket streams with exponential-backoff reconnection
 - Volume anomaly detection (median baseline, cooldown)
 - CLI dashboard that refreshes in place
-- Professional single-file web dashboard (dark fintech aesthetic, mobile-responsive, recent alerts log with localStorage persistence + clear button, live indicator, area-filled sparklines, bps-from-peg, overall health summary, manual refresh)
+- Professional single-file web dashboard (dark fintech aesthetic, mobile-responsive, recent alerts log with localStorage persistence + clear button, live indicator, area-filled sparklines, bps-from-peg, overall health summary, manual refresh, Coinbase cross-source divergence detection >50 bps)
 - Telegram + email alerts (config.json)
 - JSON output for integration
 - Comprehensive unit tests
@@ -60,4 +60,4 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready. Latest verification (2026-10-22 07:05 MDT): USDT $0.9993, USDC $0.9997, DAI $0.9997, FDUSD $0.9976, PYUSD $1.0000, TUSD $0.9988. All within $0.99–$1.01 band. 14/14 tests pass. Dashboard is the primary client surface — polished dark fintech aesthetic, zero-code, mobile-ready, with persistent localStorage alerts and clear-log button.
+Production-ready. Latest verification (2026-10-22 09:05 MDT): USDT $0.9993, USDC $0.9997, DAI $0.9994, FDUSD $0.9975, PYUSD $1.0000, TUSD $0.9993. All within $0.99–$1.01 band. 14/14 tests pass. Dashboard is the primary client surface — polished dark fintech aesthetic, zero-code, mobile-ready, with persistent localStorage alerts, clear-log button, live CoinGecko + Coinbase divergence checks, and specific alert banners.

@@ -60,4 +60,5 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready. All six coins verified within band (latest check 2026-10-21 19:04 MDT). 14/14 tests pass. Dashboard v3.4 is the primary client surface.
+Production-ready. All six coins verified within band (latest check 2026-10-21 19:04 MDT). 14/14 tests pass. Dashboard v3.5 is the primary client surface.
+- Price sparklines (last 30 ticks via localStorage)

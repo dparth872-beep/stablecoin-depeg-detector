@@ -118,6 +118,9 @@ footer { text-align: center; color: var(--muted); font-size: 0.8rem; margin-top:
   .price { font-size: 1.8rem; }
   .meta { text-align: left; width: 100%; }
 }
+
+.sparkline { width: 100%; height: 40px; margin-top: 8px; }
+.vol-large { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
 </style>
 </head>
 <body>
@@ -159,7 +162,7 @@ footer { text-align: center; color: var(--muted); font-size: 0.8rem; margin-top:
 </section>
 
 <footer>
-  Stablecoin Depeg Detector · Zero-code client dashboard · Prices via CoinGecko free API · v3.4
+  Stablecoin Depeg Detector · Zero-code client dashboard · Prices via CoinGecko free API · v3.5
 </footer>
 
 <script>
@@ -176,6 +179,7 @@ const CG_URL = "https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coi
 const CB_PAIRS = { USDT: "USDT-USD", USDC: "USDC-USD", DAI: "DAI-USD", PYUSD: "PYUSD-USD" };
 
 let volumeHistory = JSON.parse(localStorage.getItem("volHistory") || "{}");
+let priceHistory = JSON.parse(localStorage.getItem("priceHistory") || "{}");
 let recentAlerts = JSON.parse(localStorage.getItem("recentAlerts") || "[]");
 
 function statusFor(price) {
@@ -238,8 +242,35 @@ function renderCards(data) {
       <div class="price">${formatPrice(price)}</div>
       <div>${formatChange(chg)}</div>
       ${formatVol(vol)}
+      <canvas class="sparkline" id="spark-${coin.symbol}"></canvas>
     `;
     container.appendChild(card);
+    // Track and draw sparkline
+    if (price != null) {
+      if (!priceHistory[coin.symbol]) priceHistory[coin.symbol] = [];
+      const ph = priceHistory[coin.symbol];
+      ph.push(price);
+      if (ph.length > 30) ph.shift();
+      localStorage.setItem("priceHistory", JSON.stringify(priceHistory));
+      const canvas = card.querySelector("canvas");
+      if (canvas && ph.length > 1) {
+        const ctx = canvas.getContext("2d");
+        const w = canvas.width = canvas.offsetWidth || 200;
+        const h = canvas.height = 40;
+        ctx.clearRect(0,0,w,h);
+        const min = Math.min(...ph), max = Math.max(...ph);
+        const range = max - min || 0.001;
+        ctx.beginPath();
+        ctx.strokeStyle = st.cls === "ok" ? "#10b981" : st.cls === "depeg-down" ? "#ef4444" : "#f59e0b";
+        ctx.lineWidth = 1.5;
+        ph.forEach((p, i) => {
+          const x = (i / (ph.length - 1)) * w;
+          const y = h - ((p - min) / range) * (h - 4) - 2;
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+      }
+    }
     if (st.text.startsWith("DEPEG")) {
       logAlert(`${coin.symbol} ${st.text}: ${formatPrice(price)}`);
     }

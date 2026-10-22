@@ -46,7 +46,7 @@ python tests/test_depeg_logic.py      # 14 unit tests
 - Binance and Coinbase WebSocket streams with exponential-backoff reconnection
 - Volume anomaly detection (median baseline, cooldown)
 - CLI dashboard that refreshes in place
-- Professional single-file web dashboard (dark fintech aesthetic, mobile-responsive, recent alerts log with localStorage persistence + clear button, live indicator, area-filled sparklines, bps-from-peg, overall health summary, manual refresh, Coinbase cross-source divergence detection >50 bps)
+- Professional single-file web dashboard (dark fintech aesthetic with status glow, refined typography, mobile-responsive, recent alerts log with localStorage persistence + clear button, live indicator, area-filled sparklines, bps-from-peg, overall health summary, manual refresh, Coinbase cross-source divergence detection >50 bps)
 - Telegram + email alerts (config.json)
 - JSON output for integration
 - Comprehensive unit tests
@@ -60,6 +60,6 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready. Latest verification (2026-10-22 15:03 MDT): USDT $0.9986, USDC $1.0000, DAI $0.9999, FDUSD $0.9970, PYUSD $1.0000, TUSD $0.9986 (multi-source Coinbase + DefiLlama). All within $0.99–$1.01 band. 14/14 tests pass. Dashboard is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with persistent localStorage alerts, clear-log button, live CoinGecko + Coinbase divergence checks (>50 bps), volume spike banners, and specific alert banners.
+Production-ready. Latest verification (2026-10-22 16:04 MDT): USDT $0.9990, USDC $0.9995, DAI $0.9998, FDUSD $0.9971, PYUSD $0.9999, TUSD $0.9990 (CoinGecko). All within $0.99–$1.01 band. 14/14 tests pass. Dashboard is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple, status glow, refined spacing), zero-code, mobile-ready, with persistent localStorage alerts, clear-log button, live CoinGecko + Coinbase divergence checks (>50 bps), volume spike banners, and specific alert banners.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

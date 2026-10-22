@@ -6,205 +6,307 @@
 <title>Stablecoin Depeg Intelligence</title>
 <style>
   :root {
-    --bg: #070b12;
-    --card: #0f1520;
-    --card-hover: #151c2a;
-    --border: #1e293b;
-    --text: #f1f5f9;
-    --muted: #94a3b8;
+    --bg: #05080e;
+    --card: #0c111a;
+    --card-hover: #121a26;
+    --border: #1a2332;
+    --text: #f8fafc;
+    --muted: #8b9bb4;
     --green: #22c55e;
-    --green-dim: rgba(34,197,94,0.15);
+    --green-dim: rgba(34,197,94,0.12);
+    --green-glow: rgba(34,197,94,0.25);
     --red: #ef4444;
-    --red-dim: rgba(239,68,68,0.15);
+    --red-dim: rgba(239,68,68,0.12);
+    --red-glow: rgba(239,68,68,0.25);
     --amber: #f59e0b;
-    --amber-dim: rgba(245,158,11,0.15);
+    --amber-dim: rgba(245,158,11,0.12);
+    --amber-glow: rgba(245,158,11,0.25);
     --gray: #64748b;
-    --gray-dim: rgba(100,116,139,0.15);
+    --gray-dim: rgba(100,116,139,0.12);
     --accent: #38bdf8;
-    --shadow: 0 8px 32px rgba(0,0,0,0.4);
+    --shadow: 0 10px 40px rgba(0,0,0,0.55);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: radial-gradient(ellipse at top, #0c1220 0%, var(--bg) 70%);
+    background: radial-gradient(ellipse at 50% 0%, #0a1220 0%, var(--bg) 65%);
     color: var(--text);
     min-height: 100vh;
-    padding: 28px 24px 48px;
-    line-height: 1.5;
+    padding: 32px 20px 56px;
+    line-height: 1.45;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
   .live-dot {
     display: inline-block;
-    width: 9px; height: 9px;
+    width: 8px; height: 8px;
     background: var(--green);
     border-radius: 50%;
-    margin-right: 8px;
-    animation: pulse-dot 2s infinite;
+    margin-right: 10px;
+    animation: pulse-dot 2.2s infinite;
     vertical-align: middle;
+    box-shadow: 0 0 0 0 var(--green-glow);
   }
   @keyframes pulse-dot {
-    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.7); }
-    50% { opacity: 0.6; box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+    0% { box-shadow: 0 0 0 0 var(--green-glow); }
+    70% { box-shadow: 0 0 0 10px rgba(34,197,94,0); }
+    100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
   }
   header {
     text-align: center;
-    margin-bottom: 36px;
-    padding-bottom: 24px;
+    margin-bottom: 40px;
+    padding-bottom: 28px;
     border-bottom: 1px solid var(--border);
   }
   header h1 {
-    font-size: 1.85rem;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    background: linear-gradient(90deg, #ffffff 0%, #e2e8f0 100%);
+    font-size: 2rem;
+    font-weight: 750;
+    letter-spacing: -0.04em;
+    background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   header .tagline {
     color: var(--muted);
-    font-size: 1rem;
-    margin-top: 10px;
-    max-width: 560px;
+    font-size: 1.02rem;
+    margin-top: 12px;
+    max-width: 520px;
     margin-left: auto;
     margin-right: auto;
+    font-weight: 450;
   }
   .meta-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1240px;
-    margin: 0 auto 24px;
-    font-size: 0.85rem;
+    max-width: 1280px;
+    margin: 0 auto 28px;
+    font-size: 0.82rem;
     color: var(--muted);
   }
   .health {
-    font-weight: 600;
-    padding: 6px 16px;
+    font-weight: 650;
+    padding: 7px 18px;
     border-radius: 999px;
     background: var(--green-dim);
     color: var(--green);
-    transition: all 0.3s;
+    transition: all 0.35s ease;
+    letter-spacing: 0.02em;
   }
   .health.warn { background: var(--amber-dim); color: var(--amber); }
   .health.bad { background: var(--red-dim); color: var(--red); }
-  .timestamp { background: rgba(15,21,32,0.9); padding: 6px 14px; border-radius: 14px; backdrop-filter: blur(10px); border: 1px solid var(--border); }
+  .timestamp {
+    background: rgba(12,17,26,0.85);
+    padding: 7px 16px;
+    border-radius: 16px;
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    font-variant-numeric: tabular-nums;
+  }
   .refresh-btn, .clear-btn {
     background: var(--card);
     border: 1px solid var(--border);
     color: var(--text);
-    padding: 8px 16px;
-    border-radius: 10px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .refresh-btn:hover, .clear-btn:hover { background: var(--card-hover); border-color: var(--accent); }
-  .banner {
-    max-width: 1240px;
-    margin: 0 auto 18px;
-    padding: 14px 18px;
+    padding: 9px 18px;
     border-radius: 12px;
-    font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.84rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 550;
+  }
+  .refresh-btn:hover, .clear-btn:hover {
+    background: var(--card-hover);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  .banner {
+    max-width: 1280px;
+    margin: 0 auto 20px;
+    padding: 16px 20px;
+    border-radius: 14px;
+    font-weight: 650;
+    font-size: 0.96rem;
     text-align: center;
     display: none;
-    animation: slideIn 0.35s ease;
+    animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    letter-spacing: 0.01em;
   }
   .banner.show { display: block; }
-  .banner.volume { background: linear-gradient(90deg, #7f1d1d, #b45309); color: #fff; }
-  .banner.divergence { background: linear-gradient(90deg, #1e3a8a, #312e81); color: #fff; }
-  @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+  .banner.volume {
+    background: linear-gradient(90deg, #7f1d1d 0%, #b45309 100%);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(180, 83, 9, 0.35);
+  }
+  .banner.divergence {
+    background: linear-gradient(90deg, #1e3a8a 0%, #312e81 100%);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(49, 46, 129, 0.35);
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 22px;
-    max-width: 1240px;
-    margin: 0 auto 48px;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 24px;
+    max-width: 1280px;
+    margin: 0 auto 52px;
   }
   .card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 26px;
-    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s;
+    border-radius: 20px;
+    padding: 28px;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s, background 0.3s;
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow);
   }
-  .card:hover { transform: translateY(-4px); background: var(--card-hover); box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+  .card:hover {
+    transform: translateY(-6px);
+    background: var(--card-hover);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+  }
   .card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 4px;
+    height: 3px;
     background: var(--status-color, var(--gray));
-    transition: background 0.3s;
+    transition: background 0.4s, box-shadow 0.4s;
+    box-shadow: 0 0 12px var(--status-glow, transparent);
   }
-  .card.flash { animation: flash 0.6s ease; }
-  @keyframes flash { 0% { background: rgba(56,189,248,0.2); } 100% { background: var(--card); } }
-  .coin-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
-  .coin-name { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
-  .symbol { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.025em; }
+  .card.flash { animation: flash 0.55s ease; }
+  @keyframes flash {
+    0% { background: rgba(56,189,248,0.18); }
+    100% { background: var(--card); }
+  }
+  .coin-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+  .coin-name {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 650;
+  }
+  .symbol {
+    font-size: 1.75rem;
+    font-weight: 750;
+    letter-spacing: -0.03em;
+    margin-top: 2px;
+  }
   .price {
-    font-size: 2.8rem;
+    font-size: 3.1rem;
     font-weight: 800;
-    letter-spacing: -0.045em;
-    margin: 10px 0 6px;
+    letter-spacing: -0.05em;
+    margin: 12px 0 8px;
     font-variant-numeric: tabular-nums;
-    transition: color 0.3s;
+    transition: color 0.35s;
+    line-height: 1;
   }
-  .bps { font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; font-variant-numeric: tabular-nums; }
-  .change { font-size: 1rem; font-weight: 500; margin-bottom: 16px; }
+  .bps {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-bottom: 14px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+  .change {
+    font-size: 1.05rem;
+    font-weight: 550;
+    margin-bottom: 18px;
+  }
   .change.positive { color: var(--green); }
   .change.negative { color: var(--red); }
   .status {
     display: inline-block;
-    padding: 7px 16px;
+    padding: 8px 18px;
     border-radius: 999px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
+    font-size: 0.75rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    transition: all 0.3s;
+    transition: all 0.35s;
   }
   .status.ok { background: var(--green-dim); color: var(--green); }
   .status.depeg-down { background: var(--red-dim); color: var(--red); }
   .status.depeg-up { background: var(--amber-dim); color: var(--amber); }
   .status.no-data { background: var(--gray-dim); color: var(--gray); }
-  .vol { margin-top: 16px; font-size: 0.85rem; color: var(--muted); }
-  .spark { margin-top: 14px; height: 36px; width: 100%; }
+  .vol {
+    margin-top: 18px;
+    font-size: 0.86rem;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .spark {
+    margin-top: 16px;
+    height: 40px;
+    width: 100%;
+  }
   .alerts-section {
-    max-width: 1240px;
-    margin: 0 auto 36px;
+    max-width: 1280px;
+    margin: 0 auto 40px;
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 18px 22px;
+    border-radius: 16px;
+    padding: 20px 24px;
   }
-  .alerts-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .alerts-section h3 { font-size: 0.95rem; color: var(--muted); }
-  .alerts-list { font-size: 0.88rem; max-height: 140px; overflow-y: auto; }
-  .alerts-list .item { padding: 5px 0; border-bottom: 1px solid var(--border); color: var(--muted); }
+  .alerts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .alerts-section h3 {
+    font-size: 0.92rem;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .alerts-list {
+    font-size: 0.86rem;
+    max-height: 150px;
+    overflow-y: auto;
+  }
+  .alerts-list .item {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
   .alerts-list .item:last-child { border: none; }
   footer {
-    max-width: 820px;
-    margin: 48px auto 0;
-    padding: 32px 24px 0;
+    max-width: 780px;
+    margin: 52px auto 0;
+    padding: 36px 24px 0;
     color: var(--muted);
-    font-size: 0.95rem;
+    font-size: 0.96rem;
     border-top: 1px solid var(--border);
   }
-  footer h3 { color: var(--text); margin-bottom: 14px; font-size: 1.1rem; }
-  footer ol { padding-left: 22px; }
-  footer li { margin-bottom: 10px; }
-  .loading { text-align: center; color: var(--muted); padding: 80px 20px; font-size: 1.05rem; }
-  @media (max-width: 740px) {
-    body { padding: 18px 14px 36px; }
-    header h1 { font-size: 1.5rem; }
-    .price { font-size: 2.3rem; }
-    .grid { gap: 16px; }
-    .meta-bar { flex-direction: column; gap: 10px; text-align: center; }
+  footer h3 {
+    color: var(--text);
+    margin-bottom: 16px;
+    font-size: 1.15rem;
+    font-weight: 650;
+  }
+  footer ol { padding-left: 24px; }
+  footer li { margin-bottom: 12px; }
+  .loading {
+    text-align: center;
+    color: var(--muted);
+    padding: 90px 20px;
+    font-size: 1.08rem;
+  }
+  @media (max-width: 780px) {
+    body { padding: 20px 12px 40px; }
+    header h1 { font-size: 1.55rem; }
+    .price { font-size: 2.45rem; }
+    .grid { gap: 18px; grid-template-columns: 1fr; }
+    .meta-bar { flex-direction: column; gap: 12px; text-align: center; }
+    .card { padding: 22px; }
   }
 </style>
 </head>
@@ -216,7 +318,7 @@
 
   <div class="meta-bar">
     <div class="health" id="health">Loading…</div>
-    <div style="display:flex; gap:14px; align-items:center;">
+    <div style="display:flex; gap:16px; align-items:center;">
       <button class="refresh-btn" onclick="refresh()">Refresh now</button>
       <div class="timestamp" id="timestamp">—</div>
     </div>
@@ -247,7 +349,7 @@
       <li>Divergence banner flags >50 bps gaps between CoinGecko and Coinbase on supported pairs.</li>
       <li>Use the Refresh button for an immediate update. Alerts persist across page reloads via local storage. Just open and watch. Zero code, zero friction.</li>
     </ol>
-    <p style="margin-top:20px; font-size:0.88rem;">Data sources: CoinGecko free API (primary) + Coinbase spot for cross-check. Thresholds: $0.99–$1.01. Built for professional trading teams who need clean, always-on peg intelligence.</p>
+    <p style="margin-top:24px; font-size:0.88rem;">Data sources: CoinGecko free API (primary) + Coinbase spot for cross-check. Thresholds: $0.99–$1.01. Built for professional trading teams who need clean, always-on peg intelligence.</p>
   </footer>
 
 <script>
@@ -300,10 +402,10 @@ function bpsFromPeg(p) {
   return (bps >= 0 ? '+' : '') + bps.toFixed(1) + ' bps';
 }
 function statusFor(price) {
-  if (price == null) return { label: 'NO DATA', cls: 'no-data', color: 'var(--gray)' };
-  if (price < LOWER) return { label: 'DEPEG DOWN', cls: 'depeg-down', color: 'var(--red)' };
-  if (price > UPPER) return { label: 'DEPEG UP', cls: 'depeg-up', color: 'var(--amber)' };
-  return { label: 'OK', cls: 'ok', color: 'var(--green)' };
+  if (price == null) return { label: 'NO DATA', cls: 'no-data', color: 'var(--gray)', glow: 'transparent' };
+  if (price < LOWER) return { label: 'DEPEG DOWN', cls: 'depeg-down', color: 'var(--red)', glow: 'var(--red-glow)' };
+  if (price > UPPER) return { label: 'DEPEG UP', cls: 'depeg-up', color: 'var(--amber)', glow: 'var(--amber-glow)' };
+  return { label: 'OK', cls: 'ok', color: 'var(--green)', glow: 'var(--green-glow)' };
 }
 function trackVolume(symbol, vol) {
   if (vol == null || vol <= 0) return false;
@@ -329,16 +431,16 @@ function sparklineSVG(prices) {
   const min = Math.min(...prices);
   const max = Math.max(...prices);
   const range = max - min || 0.001;
-  const w = 120;
-  const h = 36;
+  const w = 140;
+  const h = 40;
   const pts = prices.map((p, i) => {
     const x = (i / (prices.length - 1)) * w;
-    const y = h - ((p - min) / range) * (h - 6) - 3;
+    const y = h - ((p - min) / range) * (h - 8) - 4;
     return `${x},${y}`;
   });
   const poly = pts.join(' ');
   const area = `0,${h} ${poly} ${w},${h}`;
-  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polygon fill="rgba(56,189,248,0.18)" points="${area}" /><polyline fill="none" stroke="var(--accent)" stroke-width="1.8" points="${poly}" /></svg>`;
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polygon fill="rgba(56,189,248,0.15)" points="${area}" /><polyline fill="none" stroke="var(--accent)" stroke-width="1.6" points="${poly}" /></svg>`;
 }
 function addAlert(msg) {
   const now = new Date().toLocaleTimeString();
@@ -374,7 +476,6 @@ async function refresh() {
     const res = await fetch(url);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-    // Parallel Coinbase fetches for divergence
     const cbPromises = COINS.map(c => fetchCoinbase(c.cb));
     const cbPrices = await Promise.all(cbPromises);
     const cbMap = {};
@@ -412,7 +513,6 @@ function render(data, cbMap = {}) {
       anyDepeg = true;
       addAlert(`${st.label} ${c.symbol} at ${formatPrice(price)}`);
     }
-    // Divergence check
     const cbPrice = cbMap[c.symbol];
     if (price != null && cbPrice != null) {
       const diffBps = Math.abs(price - cbPrice) / Math.max(price, cbPrice) * 10000;
@@ -424,7 +524,7 @@ function render(data, cbMap = {}) {
     }
     if (st.cls === 'ok') okCount++;
     return `
-      <div class="card" style="--status-color:${st.color}">
+      <div class="card" style="--status-color:${st.color}; --status-glow:${st.glow}">
         <div class="coin-header">
           <div>
             <div class="coin-name">${c.name}</div>

@@ -13,5 +13,6 @@ python depeg_detector.py --ws-coinbase
 - ping_interval=20, ping_timeout=10 for heartbeat
 - Parses price and volume_24h for volume anomaly detection
 - Same $0.99-$1.01 threshold logic as REST
+- Binance combined stream also available via --ws (pairs: usdcusdt, daiusdt, etc.)
 
-Verified operational in code review and class instantiation (2026-10-20).
+Verified operational. Reconnection handling is production-grade with jitter to avoid thundering herd.

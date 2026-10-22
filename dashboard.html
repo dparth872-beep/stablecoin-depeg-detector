@@ -1,1 +1,478 @@
-PLACEHOLDER - too long, will replace with actual in practice
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Stablecoin Depeg Intelligence</title>
+<style>
+  :root {
+    --bg: #070b12;
+    --card: #0f1520;
+    --card-hover: #151c2a;
+    --border: #1e293b;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --green: #22c55e;
+    --green-dim: rgba(34,197,94,0.15);
+    --red: #ef4444;
+    --red-dim: rgba(239,68,68,0.15);
+    --amber: #f59e0b;
+    --amber-dim: rgba(245,158,11,0.15);
+    --gray: #64748b;
+    --gray-dim: rgba(100,116,139,0.15);
+    --accent: #38bdf8;
+    --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: radial-gradient(ellipse at top, #0c1220 0%, var(--bg) 70%);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 28px 24px 48px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .live-dot {
+    display: inline-block;
+    width: 9px; height: 9px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: pulse-dot 2s infinite;
+    vertical-align: middle;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.7); }
+    50% { opacity: 0.6; box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+  }
+  header {
+    text-align: center;
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  header h1 {
+    font-size: 1.85rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    background: linear-gradient(90deg, #ffffff 0%, #e2e8f0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  header .tagline {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-top: 10px;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .meta-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1240px;
+    margin: 0 auto 24px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .health {
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 999px;
+    background: var(--green-dim);
+    color: var(--green);
+    transition: all 0.3s;
+  }
+  .health.warn { background: var(--amber-dim); color: var(--amber); }
+  .health.bad { background: var(--red-dim); color: var(--red); }
+  .timestamp { background: rgba(15,21,32,0.9); padding: 6px 14px; border-radius: 14px; backdrop-filter: blur(10px); border: 1px solid var(--border); }
+  .refresh-btn, .clear-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .refresh-btn:hover, .clear-btn:hover { background: var(--card-hover); border-color: var(--accent); }
+  .banner {
+    max-width: 1240px;
+    margin: 0 auto 18px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-align: center;
+    display: none;
+    animation: slideIn 0.35s ease;
+  }
+  .banner.show { display: block; }
+  .banner.volume { background: linear-gradient(90deg, #7f1d1d, #b45309); color: #fff; }
+  .banner.divergence { background: linear-gradient(90deg, #1e3a8a, #312e81); color: #fff; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 22px;
+    max-width: 1240px;
+    margin: 0 auto 48px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 26px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .card:hover { transform: translateY(-4px); background: var(--card-hover); box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--status-color, var(--gray));
+    transition: background 0.3s;
+  }
+  .card.flash { animation: flash 0.6s ease; }
+  @keyframes flash { 0% { background: rgba(56,189,248,0.2); } 100% { background: var(--card); } }
+  .coin-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+  .coin-name { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+  .symbol { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.025em; }
+  .price {
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    margin: 10px 0 6px;
+    font-variant-numeric: tabular-nums;
+    transition: color 0.3s;
+  }
+  .bps { font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; font-variant-numeric: tabular-nums; }
+  .change { font-size: 1rem; font-weight: 500; margin-bottom: 16px; }
+  .change.positive { color: var(--green); }
+  .change.negative { color: var(--red); }
+  .status {
+    display: inline-block;
+    padding: 7px 16px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: all 0.3s;
+  }
+  .status.ok { background: var(--green-dim); color: var(--green); }
+  .status.depeg-down { background: var(--red-dim); color: var(--red); }
+  .status.depeg-up { background: var(--amber-dim); color: var(--amber); }
+  .status.no-data { background: var(--gray-dim); color: var(--gray); }
+  .vol { margin-top: 16px; font-size: 0.85rem; color: var(--muted); }
+  .spark { margin-top: 14px; height: 36px; width: 100%; }
+  .alerts-section {
+    max-width: 1240px;
+    margin: 0 auto 36px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 22px;
+  }
+  .alerts-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .alerts-section h3 { font-size: 0.95rem; color: var(--muted); }
+  .alerts-list { font-size: 0.88rem; max-height: 140px; overflow-y: auto; }
+  .alerts-list .item { padding: 5px 0; border-bottom: 1px solid var(--border); color: var(--muted); }
+  .alerts-list .item:last-child { border: none; }
+  footer {
+    max-width: 820px;
+    margin: 48px auto 0;
+    padding: 32px 24px 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+    border-top: 1px solid var(--border);
+  }
+  footer h3 { color: var(--text); margin-bottom: 14px; font-size: 1.1rem; }
+  footer ol { padding-left: 22px; }
+  footer li { margin-bottom: 10px; }
+  .loading { text-align: center; color: var(--muted); padding: 80px 20px; font-size: 1.05rem; }
+  @media (max-width: 740px) {
+    body { padding: 18px 14px 36px; }
+    header h1 { font-size: 1.5rem; }
+    .price { font-size: 2.3rem; }
+    .grid { gap: 16px; }
+    .meta-bar { flex-direction: column; gap: 10px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1><span class="live-dot"></span>Stablecoin Depeg Intelligence</h1>
+    <p class="tagline">Real-time peg monitoring for funds, prop desks, and fintech teams. Minutes matter when a peg breaks.</p>
+  </header>
+
+  <div class="meta-bar">
+    <div class="health" id="health">Loading…</div>
+    <div style="display:flex; gap:14px; align-items:center;">
+      <button class="refresh-btn" onclick="refresh()">Refresh now</button>
+      <div class="timestamp" id="timestamp">—</div>
+    </div>
+  </div>
+
+  <div class="banner volume" id="volume-banner"></div>
+  <div class="banner divergence" id="divergence-banner"></div>
+
+  <div class="grid" id="grid">
+    <div class="loading">Fetching live prices from CoinGecko…</div>
+  </div>
+
+  <div class="alerts-section">
+    <div class="alerts-header">
+      <h3>Recent Session Alerts</h3>
+      <button class="clear-btn" onclick="clearAlerts()">Clear log</button>
+    </div>
+    <div class="alerts-list" id="alerts-list"><div class="item">No alerts this session.</div></div>
+  </div>
+
+  <footer>
+    <h3>How to use</h3>
+    <ol>
+      <li>Open this file in any modern browser (Chrome, Safari, Firefox, Edge, including iPhone Safari).</li>
+      <li>Bookmark the page. It auto-refreshes every 30 seconds with no login or install required.</li>
+      <li>Green badge = OK (price between $0.99 and $1.01). Red = depeg down. Amber = depeg up. Gray = no data.</li>
+      <li>BPS shows distance from the $1.00 peg. Volume spike banners appear when 24h volume exceeds 3× the session median baseline.</li>
+      <li>Divergence banner flags >50 bps gaps between CoinGecko and Coinbase on supported pairs.</li>
+      <li>Use the Refresh button for an immediate update. Alerts persist across page reloads via local storage. Just open and watch. Zero code, zero friction.</li>
+    </ol>
+    <p style="margin-top:20px; font-size:0.88rem;">Data sources: CoinGecko free API (primary) + Coinbase spot for cross-check. Thresholds: $0.99–$1.01. Built for professional trading teams who need clean, always-on peg intelligence.</p>
+  </footer>
+
+<script>
+const COINS = [
+  { id: 'tether', symbol: 'USDT', name: 'Tether', cb: 'USDT-USD' },
+  { id: 'usd-coin', symbol: 'USDC', name: 'USD Coin', cb: 'USDC-USD' },
+  { id: 'dai', symbol: 'DAI', name: 'Dai', cb: 'DAI-USD' },
+  { id: 'first-digital-usd', symbol: 'FDUSD', name: 'First Digital USD', cb: null },
+  { id: 'paypal-usd', symbol: 'PYUSD', name: 'PayPal USD', cb: 'PYUSD-USD' },
+  { id: 'true-usd', symbol: 'TUSD', name: 'TrueUSD', cb: null }
+];
+const LOWER = 0.99;
+const UPPER = 1.01;
+const DIVERGENCE_BPS = 50;
+const VOL_HISTORY = {};
+const PRICE_HISTORY = {};
+const VOL_WINDOW = 10;
+const PRICE_WINDOW = 24;
+let sessionAlerts = JSON.parse(localStorage.getItem('depegAlerts') || '[]');
+
+function saveAlerts() {
+  localStorage.setItem('depegAlerts', JSON.stringify(sessionAlerts.slice(0, 20)));
+}
+
+function renderAlerts() {
+  const el = document.getElementById('alerts-list');
+  el.innerHTML = sessionAlerts.length
+    ? sessionAlerts.map(a => `<div class="item">${a}</div>`).join('')
+    : '<div class="item">No alerts this session.</div>';
+}
+
+function formatPrice(p) {
+  return p == null ? '—' : '$' + Number(p).toFixed(4);
+}
+function formatChange(c) {
+  if (c == null) return '<span class="change">—</span>';
+  const cls = c >= 0 ? 'positive' : 'negative';
+  const sign = c >= 0 ? '+' : '';
+  return `<span class="change ${cls}">${sign}${c.toFixed(2)}%</span>`;
+}
+function formatVol(v) {
+  if (v == null) return '—';
+  if (v >= 1e9) return (v / 1e9).toFixed(2) + 'B';
+  if (v >= 1e6) return (v / 1e6).toFixed(1) + 'M';
+  return Number(v).toLocaleString();
+}
+function bpsFromPeg(p) {
+  if (p == null) return '—';
+  const bps = (p - 1) * 10000;
+  return (bps >= 0 ? '+' : '') + bps.toFixed(1) + ' bps';
+}
+function statusFor(price) {
+  if (price == null) return { label: 'NO DATA', cls: 'no-data', color: 'var(--gray)' };
+  if (price < LOWER) return { label: 'DEPEG DOWN', cls: 'depeg-down', color: 'var(--red)' };
+  if (price > UPPER) return { label: 'DEPEG UP', cls: 'depeg-up', color: 'var(--amber)' };
+  return { label: 'OK', cls: 'ok', color: 'var(--green)' };
+}
+function trackVolume(symbol, vol) {
+  if (vol == null || vol <= 0) return false;
+  if (!VOL_HISTORY[symbol]) VOL_HISTORY[symbol] = [];
+  const h = VOL_HISTORY[symbol];
+  h.push(vol);
+  if (h.length > VOL_WINDOW) h.shift();
+  if (h.length < 5) return false;
+  const sorted = [...h].sort((a, b) => a - b);
+  const med = sorted[Math.floor(sorted.length / 2)];
+  return vol > 3 * med;
+}
+function trackPrice(symbol, price) {
+  if (price == null) return [];
+  if (!PRICE_HISTORY[symbol]) PRICE_HISTORY[symbol] = [];
+  const h = PRICE_HISTORY[symbol];
+  h.push(price);
+  if (h.length > PRICE_WINDOW) h.shift();
+  return h;
+}
+function sparklineSVG(prices) {
+  if (!prices || prices.length < 2) return '';
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  const range = max - min || 0.001;
+  const w = 120;
+  const h = 36;
+  const pts = prices.map((p, i) => {
+    const x = (i / (prices.length - 1)) * w;
+    const y = h - ((p - min) / range) * (h - 6) - 3;
+    return `${x},${y}`;
+  });
+  const poly = pts.join(' ');
+  const area = `0,${h} ${poly} ${w},${h}`;
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polygon fill="rgba(56,189,248,0.18)" points="${area}" /><polyline fill="none" stroke="var(--accent)" stroke-width="1.8" points="${poly}" /></svg>`;
+}
+function addAlert(msg) {
+  const now = new Date().toLocaleTimeString();
+  const entry = `${now} — ${msg}`;
+  if (sessionAlerts[0] === entry) return;
+  sessionAlerts.unshift(entry);
+  if (sessionAlerts.length > 20) sessionAlerts.pop();
+  saveAlerts();
+  renderAlerts();
+}
+function clearAlerts() {
+  sessionAlerts = [];
+  saveAlerts();
+  renderAlerts();
+}
+
+async function fetchCoinbase(pair) {
+  if (!pair) return null;
+  try {
+    const r = await fetch(`https://api.coinbase.com/v2/prices/${pair}/spot`);
+    if (!r.ok) return null;
+    const j = await r.json();
+    return parseFloat(j.data?.amount);
+  } catch {
+    return null;
+  }
+}
+
+async function refresh() {
+  const ids = COINS.map(c => c.id).join(',');
+  const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    // Parallel Coinbase fetches for divergence
+    const cbPromises = COINS.map(c => fetchCoinbase(c.cb));
+    const cbPrices = await Promise.all(cbPromises);
+    const cbMap = {};
+    COINS.forEach((c, i) => { if (cbPrices[i] != null) cbMap[c.symbol] = cbPrices[i]; });
+    render(data, cbMap);
+    document.getElementById('timestamp').textContent = 'Updated ' + new Date().toLocaleString();
+  } catch (e) {
+    document.getElementById('grid').innerHTML = '<div class="loading">API temporarily unavailable (rate limit possible). Retrying in 30s…</div>';
+    document.getElementById('timestamp').textContent = 'Error — retrying';
+    document.getElementById('health').textContent = 'Data unavailable';
+    document.getElementById('health').className = 'health bad';
+  }
+}
+
+function render(data, cbMap = {}) {
+  let anySpike = false;
+  let spikeSymbols = [];
+  let anyDepeg = false;
+  let anyDivergence = false;
+  let divSymbols = [];
+  let okCount = 0;
+  const cards = COINS.map(c => {
+    const d = data[c.id] || {};
+    const price = d.usd;
+    const chg = d.usd_24h_change;
+    const vol = d.usd_24h_vol;
+    const st = statusFor(price);
+    const hist = trackPrice(c.symbol, price);
+    if (trackVolume(c.symbol, vol)) {
+      anySpike = true;
+      spikeSymbols.push(c.symbol);
+      addAlert(`Volume spike on ${c.symbol}`);
+    }
+    if (st.cls.startsWith('depeg')) {
+      anyDepeg = true;
+      addAlert(`${st.label} ${c.symbol} at ${formatPrice(price)}`);
+    }
+    // Divergence check
+    const cbPrice = cbMap[c.symbol];
+    if (price != null && cbPrice != null) {
+      const diffBps = Math.abs(price - cbPrice) / Math.max(price, cbPrice) * 10000;
+      if (diffBps > DIVERGENCE_BPS) {
+        anyDivergence = true;
+        divSymbols.push(c.symbol);
+        addAlert(`Divergence ${c.symbol}: CG $${price.toFixed(4)} vs CB $${cbPrice.toFixed(4)} (${diffBps.toFixed(0)} bps)`);
+      }
+    }
+    if (st.cls === 'ok') okCount++;
+    return `
+      <div class="card" style="--status-color:${st.color}">
+        <div class="coin-header">
+          <div>
+            <div class="coin-name">${c.name}</div>
+            <div class="symbol">${c.symbol}</div>
+          </div>
+        </div>
+        <div class="price">${formatPrice(price)}</div>
+        <div class="bps">${bpsFromPeg(price)} from peg</div>
+        ${formatChange(chg)}
+        <div class="status ${st.cls}">${st.label}</div>
+        <div class="vol">24h Volume: $${formatVol(vol)}</div>
+        ${sparklineSVG(hist)}
+      </div>`;
+  }).join('');
+  document.getElementById('grid').innerHTML = cards;
+
+  const volBanner = document.getElementById('volume-banner');
+  if (anySpike) {
+    volBanner.textContent = `VOLUME SPIKE — ${spikeSymbols.join(', ')}`;
+    volBanner.classList.add('show');
+  } else {
+    volBanner.classList.remove('show');
+  }
+
+  const divBanner = document.getElementById('divergence-banner');
+  if (anyDivergence) {
+    divBanner.textContent = `CROSS-SOURCE DIVERGENCE — ${divSymbols.join(', ')} (>50 bps)`;
+    divBanner.classList.add('show');
+  } else {
+    divBanner.classList.remove('show');
+  }
+
+  const healthEl = document.getElementById('health');
+  if (anyDepeg) {
+    healthEl.textContent = 'DEPEG DETECTED';
+    healthEl.className = 'health bad';
+  } else if (okCount === COINS.length) {
+    healthEl.textContent = 'All systems normal';
+    healthEl.className = 'health';
+  } else {
+    healthEl.textContent = `${okCount}/${COINS.length} OK`;
+    healthEl.className = 'health warn';
+  }
+}
+
+renderAlerts();
+refresh();
+setInterval(refresh, 30000);
+</script>
+</body>
+</html>

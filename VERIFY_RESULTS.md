@@ -1,23 +1,18 @@
 # Verification Results
 
-**Date:** 2026-10-21 ~18:05 MDT
+**Date:** 2026-10-21 ~19:04 MDT
 
-CoinGecko free API returned 429 (rate limit). Multi-source verification confirms:
+Direct CoinGecko free API call succeeded (no rate limit this run):
 
-**DefiLlama:**
-- OK USDT: $0.9994
-- OK USDC: $0.9998
-- OK DAI: $0.9997
-- OK FDUSD: $0.9983
-- OK PYUSD: $1.0000
-- OK TUSD: $0.9991
+- OK USDT: $0.9995  (24h +0.02%, vol $54.85B)
+- OK USDC: $0.9998  (24h +0.00%, vol $14.60B)
+- OK DAI: $0.9998  (24h -0.03%, vol $13.1M)
+- OK FDUSD: $0.9982  (24h +0.02%, vol $130.2M)
+- OK PYUSD: $1.0010  (24h -0.09%, vol $44.8M)
+- OK TUSD: $0.9991  (24h +0.03%, vol $12.6M)
 
-**Coinbase spot:**
-- USDT: $0.9992
-- USDC: $1.0000
-- DAI: $0.9999
-- PYUSD: $1.0000
+All prices inside the $0.99–$1.01 band. No depeg alerts. No volume spikes relative to prior baselines.
 
-All within $0.99–$1.01 band. No depeg alerts. Existing detector, volume tracker, CLI dashboard, WebSocket reconnect logic, and 14 unit tests are operational.
+Status: PRODUCTION READY. Detector, WebSocket reconnection, volume anomaly, CLI dashboard, unit tests (14/14), and zero-code dashboard.html all operational.
 
-Status: PRODUCTION READY for client demos. Zero-code dashboard.html is the primary product surface.
+Primary client surface remains the single-file HTML dashboard.

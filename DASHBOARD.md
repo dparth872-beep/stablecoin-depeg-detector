@@ -16,4 +16,4 @@ python depeg_detector.py --dashboard
 - Thresholds and exit instructions displayed at bottom
 - Ctrl+C to exit cleanly
 
-Verified operational against live multi-source REST prices. Provides at-a-glance monitoring for desks without needing external dashboards.
+Verified operational. Complements the zero-code web dashboard for technical users.

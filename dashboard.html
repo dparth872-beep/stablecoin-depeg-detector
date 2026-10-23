@@ -6,201 +6,210 @@
 <title>Stablecoin Depeg Intelligence</title>
 <style>
 :root {
-  --bg: #0a0e17;
-  --card: #131924;
-  --card-border: #1f2937;
-  --text: #e6edf3;
-  --muted: #8b949e;
-  --green: #3fb950;
-  --green-bg: rgba(63, 185, 80, 0.12);
+  --bg: #070b12;
+  --card: #111822;
+  --card-border: #1c2533;
+  --text: #f0f4f8;
+  --muted: #8a97a8;
+  --green: #2ea043;
+  --green-bg: rgba(46, 160, 67, 0.15);
   --red: #f85149;
-  --red-bg: rgba(248, 81, 73, 0.12);
+  --red-bg: rgba(248, 81, 73, 0.15);
   --amber: #d29922;
-  --amber-bg: rgba(210, 153, 34, 0.12);
+  --amber-bg: rgba(210, 153, 34, 0.15);
   --gray: #6e7681;
   --gray-bg: rgba(110, 118, 129, 0.12);
   --accent: #58a6ff;
-  --shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  background: var(--bg);
+  background: radial-gradient(ellipse at top, #0f1620 0%, var(--bg) 70%);
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   min-height: 100vh;
-  padding: 20px 16px 40px;
+  padding: 24px 16px 48px;
 }
 header {
   text-align: center;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 18px;
   border-bottom: 1px solid var(--card-border);
   position: relative;
 }
 header h1 {
-  font-size: 1.85rem;
+  font-size: 2rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 header .tagline {
   color: var(--muted);
-  font-size: 1.05rem;
-  margin-top: 6px;
+  font-size: 1.08rem;
+  margin-top: 8px;
+  font-weight: 400;
 }
 .version {
   position: absolute;
   top: 0;
   right: 0;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--muted);
   background: var(--card);
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 5px 10px;
+  border-radius: 8px;
   border: 1px solid var(--card-border);
 }
 .health-bar {
   max-width: 1200px;
-  margin: 0 auto 16px;
-  padding: 10px 16px;
+  margin: 0 auto 18px;
+  padding: 12px 20px;
   background: var(--card);
   border: 1px solid var(--card-border);
-  border-radius: 12px;
+  border-radius: 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
 }
-.health-bar .ok { color: var(--green); }
+.health-bar .ok { color: var(--green); font-weight: 600; }
 .banners {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 20px;
+  gap: 10px;
+  margin-bottom: 24px;
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
 }
 .banner {
-  padding: 14px 18px;
-  border-radius: 12px;
-  font-size: 0.95rem;
+  padding: 16px 20px;
+  border-radius: 14px;
+  font-size: 0.96rem;
   font-weight: 500;
   display: none;
   align-items: center;
-  gap: 10px;
-  animation: fadeIn 0.4s ease;
+  gap: 12px;
+  animation: fadeIn 0.35s ease;
 }
-.banner.volume { background: var(--amber-bg); border: 1px solid var(--amber); color: var(--amber); }
-.banner.divergence { background: var(--red-bg); border: 1px solid var(--red); color: var(--red); }
+.banner.volume { background: var(--amber-bg); border: 1px solid var(--amber); color: #e8c070; }
+.banner.divergence { background: var(--red-bg); border: 1px solid var(--red); color: #ff8a82; }
 .banner.show { display: flex; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  gap: 22px;
   max-width: 1200px;
-  margin: 0 auto 40px;
+  margin: 0 auto 48px;
 }
 .card {
   background: var(--card);
   border: 1px solid var(--card-border);
-  border-radius: 18px;
-  padding: 24px;
+  border-radius: 20px;
+  padding: 26px;
   box-shadow: var(--shadow);
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
   position: relative;
   overflow: hidden;
 }
-.card:hover { transform: translateY(-3px); border-color: #30363d; box-shadow: 0 8px 32px rgba(0,0,0,0.45); }
+.card:hover { transform: translateY(-4px); border-color: #2a3545; box-shadow: 0 12px 40px rgba(0,0,0,0.55); }
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
-.coin-name { font-size: 0.9rem; color: var(--muted); font-weight: 500; }
-.symbol { font-size: 1.55rem; font-weight: 700; letter-spacing: -0.01em; }
+.coin-name { font-size: 0.88rem; color: var(--muted); font-weight: 500; letter-spacing: 0.02em; }
+.symbol { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.02em; }
 .badge {
-  padding: 6px 12px;
-  border-radius: 24px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 28px;
+  font-size: 0.74rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
 }
 .badge.ok { background: var(--green-bg); color: var(--green); }
 .badge.down { background: var(--red-bg); color: var(--red); }
 .badge.up { background: var(--amber-bg); color: var(--amber); }
 .badge.nodata { background: var(--gray-bg); color: var(--gray); }
 .price {
-  font-size: 2.9rem;
+  font-size: 3.1rem;
   font-weight: 700;
-  letter-spacing: -0.03em;
-  margin: 12px 0 8px;
+  letter-spacing: -0.035em;
+  margin: 14px 0 6px;
   font-variant-numeric: tabular-nums;
   transition: color 0.3s ease;
 }
-.price.flash { animation: priceFlash 0.6s ease; }
+.price.flash { animation: priceFlash 0.7s ease; }
 @keyframes priceFlash {
   0% { color: var(--accent); }
   100% { color: var(--text); }
+}
+.bps {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 14px;
 }
 .meta {
   display: flex;
   justify-content: space-between;
   color: var(--muted);
-  font-size: 0.9rem;
-  margin-top: 12px;
-}
-.change.positive { color: var(--green); }
-.change.negative { color: var(--red); }
-.footer {
-  max-width: 860px;
-  margin: 48px auto 0;
-  color: var(--muted);
   font-size: 0.92rem;
-  text-align: center;
-  line-height: 1.6;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--card-border);
 }
-.footer h3 { color: var(--text); margin-bottom: 12px; font-size: 1.1rem; }
-.footer ol { text-align: left; display: inline-block; margin: 16px 0; padding-left: 20px; }
-.footer li { margin: 8px 0; }
+.change.positive { color: var(--green); font-weight: 500; }
+.change.negative { color: var(--red); font-weight: 500; }
+.footer {
+  max-width: 880px;
+  margin: 56px auto 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+  text-align: center;
+  line-height: 1.65;
+}
+.footer h3 { color: var(--text); margin-bottom: 14px; font-size: 1.15rem; }
+.footer ol { text-align: left; display: inline-block; margin: 18px 0; padding-left: 22px; }
+.footer li { margin: 10px 0; }
 #last-updated {
-  margin-top: 20px;
-  font-size: 0.85rem;
+  margin-top: 24px;
+  font-size: 0.86rem;
   color: var(--muted);
 }
 .live-dot {
   display: inline-block;
-  width: 9px; height: 9px;
+  width: 10px; height: 10px;
   background: var(--green);
   border-radius: 50%;
   margin-right: 8px;
-  animation: pulse 2s infinite;
+  animation: pulse 2.2s infinite;
 }
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.85); }
+  50% { opacity: 0.45; transform: scale(0.8); }
 }
 .sources {
-  margin-top: 8px;
+  margin-top: 10px;
   font-size: 0.8rem;
-  opacity: 0.8;
+  opacity: 0.75;
 }
 @media (max-width: 640px) {
-  .price { font-size: 2.3rem; }
-  header h1 { font-size: 1.5rem; }
-  .grid { gap: 14px; }
-  .card { padding: 18px; }
-  .version { position: static; display: inline-block; margin-top: 8px; }
-  .health-bar { flex-direction: column; gap: 6px; text-align: center; }
+  .price { font-size: 2.45rem; }
+  header h1 { font-size: 1.55rem; }
+  .grid { gap: 16px; }
+  .card { padding: 20px; }
+  .version { position: static; display: inline-block; margin-top: 10px; }
+  .health-bar { flex-direction: column; gap: 8px; text-align: center; }
 }
 </style>
 </head>
 <body>
 <header>
-  <div class="version">v2.2</div>
+  <div class="version">v2.3</div>
   <h1>Stablecoin Depeg Detector</h1>
   <div class="tagline">Stablecoin Depeg Intelligence — minutes matter when a peg breaks</div>
 </header>
@@ -225,6 +234,7 @@ header .tagline {
     <li>Prices refresh automatically every 30 seconds from CoinGecko (with Coinbase cross-check).</li>
     <li>Green badge = within $0.99–$1.01. Red = depeg down. Amber = depeg up. Gray = no data.</li>
     <li>Volume spike and cross-source divergence alerts appear as banners at the top when triggered.</li>
+    <li>Each card shows basis points from the $1.00 peg for quick deviation assessment.</li>
   </ol>
   <div id="last-updated"><span class="live-dot"></span>Waiting for data…</div>
   <div class="sources">Data: CoinGecko free API + Coinbase spot. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser.</div>
@@ -268,6 +278,12 @@ function formatVol(v) {
   return "$" + Math.round(v).toLocaleString();
 }
 
+function bpsFromPeg(price) {
+  if (price == null) return "—";
+  const bps = Math.abs(price - 1.0) * 10000;
+  return bps.toFixed(1) + " bps";
+}
+
 function updateHealth(data) {
   let okCount = 0, alertCount = 0, noData = 0;
   COINS.forEach(c => {
@@ -303,6 +319,7 @@ function renderCards(data) {
     const changeStr = chg == null ? "—" : (chg >= 0 ? "+" : "") + chg.toFixed(2) + "%";
     const priceStr = price == null ? "—" : "$" + price.toFixed(4);
     const flash = (lastPrices[c.id] != null && lastPrices[c.id] !== price) ? " flash" : "";
+    const bpsStr = bpsFromPeg(price);
 
     const card = document.createElement("div");
     card.className = "card";
@@ -315,6 +332,7 @@ function renderCards(data) {
         <span class="badge ${st.cls}">${st.label}</span>
       </div>
       <div class="price${flash}">${priceStr}</div>
+      <div class="bps">${bpsStr} from peg</div>
       <div class="meta">
         <span class="change ${changeCls}">24h ${changeStr}</span>
         <span>Vol ${formatVol(vol)}</span>

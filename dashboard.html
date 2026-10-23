@@ -29,223 +29,226 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   line-height: 1.5;
   min-height: 100vh;
-  padding: 24px 16px 48px;
+  padding: 28px 18px 56px;
 }
 header {
   text-align: center;
-  margin-bottom: 28px;
-  padding-bottom: 20px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
   border-bottom: 1px solid var(--card-border);
   position: relative;
 }
 .logo {
-  font-size: 2.4rem;
-  margin-bottom: 6px;
-  filter: drop-shadow(0 0 8px rgba(88, 166, 255, 0.4));
+  font-size: 2.6rem;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 0 10px rgba(88, 166, 255, 0.45));
 }
 header h1 {
-  font-size: 2.1rem;
+  font-size: 2.2rem;
   font-weight: 700;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.045em;
   background: linear-gradient(90deg, #e8edf4, #a0b8d0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 header .tagline {
   color: var(--muted);
-  font-size: 1.08rem;
-  margin-top: 8px;
+  font-size: 1.1rem;
+  margin-top: 10px;
   font-weight: 400;
 }
 .version {
   position: absolute;
   top: 0;
   right: 0;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   color: var(--muted);
   background: var(--card);
-  padding: 5px 12px;
-  border-radius: 8px;
+  padding: 6px 14px;
+  border-radius: 10px;
   border: 1px solid var(--card-border);
 }
 .refresh-btn {
-  margin-top: 12px;
-  padding: 8px 16px;
+  margin-top: 14px;
+  padding: 10px 18px;
   background: var(--card);
   border: 1px solid var(--card-border);
   color: var(--text);
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 0.85rem;
-  transition: background 0.2s;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
-.refresh-btn:hover { background: #1a2332; }
+.refresh-btn:hover { background: #1a2332; border-color: #2a3a4d; }
 .health-bar {
-  max-width: 1100px;
-  margin: 0 auto 20px;
-  padding: 18px 28px;
+  max-width: 1120px;
+  margin: 0 auto 24px;
+  padding: 20px 32px;
   background: linear-gradient(135deg, #0e141d 0%, #121a26 100%);
   border: 1px solid var(--card-border);
-  border-radius: 14px;
+  border-radius: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.98rem;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  font-size: 1rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
 }
 .health-bar .ok { color: var(--green); font-weight: 700; }
 .health-bar .down { color: var(--red); font-weight: 700; }
 .banners {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 24px;
-  max-width: 1100px;
+  gap: 12px;
+  margin-bottom: 28px;
+  max-width: 1120px;
   margin-left: auto;
   margin-right: auto;
 }
 .banner {
-  padding: 16px 20px;
-  border-radius: 14px;
-  font-size: 0.94rem;
+  padding: 18px 24px;
+  border-radius: 16px;
+  font-size: 0.96rem;
   font-weight: 500;
   display: none;
   align-items: center;
-  gap: 12px;
-  animation: fadeIn 0.35s ease;
+  gap: 14px;
+  animation: fadeIn 0.4s ease;
 }
 .banner.volume { background: var(--amber-bg); border: 1px solid var(--amber); color: #e8c070; }
 .banner.divergence { background: var(--red-bg); border: 1px solid var(--red); color: #ff8a82; }
 .banner.show { display: flex; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  max-width: 1100px;
-  margin: 0 auto 48px;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  gap: 22px;
+  max-width: 1120px;
+  margin: 0 auto 56px;
 }
 .card {
   background: linear-gradient(180deg, #101820 0%, #0e141d 100%);
   border: 1px solid var(--card-border);
-  border-radius: 18px;
-  padding: 24px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.02);
-  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+  border-radius: 20px;
+  padding: 26px;
+  box-shadow: 0 10px 36px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.025);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   position: relative;
   overflow: hidden;
 }
-.card:hover { transform: translateY(-4px); border-color: #2a3a4d; box-shadow: 0 16px 50px rgba(0,0,0,0.65); }
+.card:hover { transform: translateY(-5px); border-color: #2a3a4d; box-shadow: 0 18px 55px rgba(0,0,0,0.7); }
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
-.coin-name { font-size: 0.84rem; color: var(--muted); font-weight: 500; letter-spacing: 0.02em; }
-.symbol { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
+.coin-name { font-size: 0.86rem; color: var(--muted); font-weight: 500; letter-spacing: 0.025em; }
+.symbol { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.025em; }
 .badge {
-  padding: 7px 14px;
-  border-radius: 22px;
-  font-size: 0.72rem;
+  padding: 8px 16px;
+  border-radius: 24px;
+  font-size: 0.74rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
+  transition: transform 0.2s;
 }
 .badge.ok { background: var(--green-bg); color: var(--green); }
-.badge.down { background: var(--red-bg); color: var(--red); }
-.badge.up { background: var(--amber-bg); color: var(--amber); }
+.badge.down { background: var(--red-bg); color: var(--red); animation: pulseBadge 1.5s infinite; }
+.badge.up { background: var(--amber-bg); color: var(--amber); animation: pulseBadge 1.5s infinite; }
 .badge.nodata { background: var(--gray-bg); color: var(--gray); }
+@keyframes pulseBadge { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 .price {
-  font-size: 3rem;
+  font-size: 3.1rem;
   font-weight: 700;
-  letter-spacing: -0.04em;
-  margin: 12px 0 6px;
+  letter-spacing: -0.045em;
+  margin: 14px 0 8px;
   font-variant-numeric: tabular-nums;
   transition: color 0.3s ease;
 }
-.price.flash { animation: priceFlash 0.7s ease; }
+.price.flash { animation: priceFlash 0.8s ease; }
 @keyframes priceFlash {
-  0% { color: var(--accent); }
-  100% { color: var(--text); }
+  0% { color: var(--accent); transform: scale(1.02); }
+  100% { color: var(--text); transform: scale(1); }
 }
 .bps {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--muted);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 .peg-bar {
-  height: 5px;
+  height: 6px;
   background: #1a2332;
-  border-radius: 3px;
-  margin: 10px 0 14px;
+  border-radius: 4px;
+  margin: 12px 0 16px;
   overflow: hidden;
 }
 .peg-fill {
   height: 100%;
   width: 50%;
   background: var(--green);
-  transition: width 0.45s ease, background 0.35s;
+  transition: width 0.5s ease, background 0.4s;
 }
 .meta {
   display: flex;
   justify-content: space-between;
   color: var(--muted);
-  font-size: 0.9rem;
-  margin-top: 12px;
-  padding-top: 12px;
+  font-size: 0.92rem;
+  margin-top: 14px;
+  padding-top: 14px;
   border-top: 1px solid var(--card-border);
 }
 .change.positive { color: var(--green); font-weight: 500; }
 .change.negative { color: var(--red); font-weight: 500; }
 .footer {
-  max-width: 820px;
-  margin: 56px auto 0;
+  max-width: 840px;
+  margin: 64px auto 0;
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: 0.94rem;
   text-align: center;
-  line-height: 1.65;
+  line-height: 1.7;
 }
-.footer h3 { color: var(--text); margin-bottom: 14px; font-size: 1.15rem; }
-.footer ol { text-align: left; display: inline-block; margin: 18px 0; padding-left: 22px; }
-.footer li { margin: 10px 0; }
+.footer h3 { color: var(--text); margin-bottom: 16px; font-size: 1.2rem; }
+.footer ol { text-align: left; display: inline-block; margin: 20px 0; padding-left: 24px; }
+.footer li { margin: 12px 0; }
 #last-updated {
-  margin-top: 22px;
-  font-size: 0.84rem;
+  margin-top: 24px;
+  font-size: 0.86rem;
   color: var(--muted);
 }
 .live-dot {
   display: inline-block;
-  width: 9px; height: 9px;
+  width: 10px; height: 10px;
   background: var(--green);
   border-radius: 50%;
-  margin-right: 7px;
+  margin-right: 8px;
   animation: pulse 2s infinite;
-  box-shadow: 0 0 6px var(--green);
+  box-shadow: 0 0 8px var(--green);
 }
 @keyframes pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.45; }
+  50% { opacity: 0.4; }
 }
 .sources {
-  margin-top: 10px;
-  font-size: 0.76rem;
-  opacity: 0.75;
+  margin-top: 12px;
+  font-size: 0.78rem;
+  opacity: 0.8;
 }
 @media (max-width: 640px) {
-  .price { font-size: 2.4rem; }
-  header h1 { font-size: 1.55rem; }
-  .grid { gap: 16px; grid-template-columns: 1fr; }
-  .card { padding: 18px; }
-  .version { position: static; display: inline-block; margin-top: 10px; }
-  .health-bar { flex-direction: column; gap: 8px; text-align: center; padding: 16px; }
-  body { padding: 16px 10px 40px; }
+  .price { font-size: 2.5rem; }
+  header h1 { font-size: 1.65rem; }
+  .grid { gap: 18px; grid-template-columns: 1fr; }
+  .card { padding: 20px; }
+  .version { position: static; display: inline-block; margin-top: 12px; }
+  .health-bar { flex-direction: column; gap: 10px; text-align: center; padding: 18px; }
+  body { padding: 18px 12px 48px; }
 }
 </style>
 </head>
 <body>
 <header>
-  <div class="version">v2.8</div>
+  <div class="version">v2.9</div>
   <div class="logo">◉</div>
   <h1>Stablecoin Depeg Detector</h1>
   <div class="tagline">Stablecoin Depeg Intelligence — minutes matter when a peg breaks</div>
@@ -263,18 +266,18 @@ header .tagline {
 
 <div class="footer">
   <h3>How to use</h3>
-  <p>Zero-code tool. No install, no login, no terminal. Open and monitor.</p>
+  <p>This is a zero-code tool. No install, no login, no terminal required. Just open and monitor.</p>
   <ol>
-    <li>Open this file in any browser (works on iPhone Safari).</li>
-    <li>Bookmark it or add to home screen for quick access.</li>
-    <li>Prices refresh every 30 seconds from CoinGecko (with Coinbase cross-check for divergence).</li>
-    <li>Green = OK ($0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data.</li>
-    <li>Volume spikes and cross-source divergences appear as banners at the top.</li>
-    <li>Each card shows basis points from the $1.00 peg and a visual deviation bar.</li>
-    <li>Click "Refresh Now" for an immediate update.</li>
+    <li>Open this file in any modern browser (works perfectly on iPhone Safari).</li>
+    <li>Bookmark it or add it to your home screen for one-tap access.</li>
+    <li>Prices update automatically every 30 seconds from the CoinGecko free API, with Coinbase cross-checks for divergence.</li>
+    <li>Green badge = OK (price between $0.99 and $1.01). Red = depeg down. Amber = depeg up. Gray = no data.</li>
+    <li>Volume spikes and cross-source divergences appear as highlighted banners at the top when triggered.</li>
+    <li>Each card shows the exact basis points from the $1.00 peg and a visual deviation bar.</li>
+    <li>Tap "Refresh Now" anytime for an immediate update.</li>
   </ol>
   <div id="last-updated"><span class="live-dot"></span>Waiting for data…</div>
-  <div class="sources">Data: CoinGecko free API + Coinbase spot. Thresholds: $0.99–$1.01. Volume baseline stored in browser localStorage. Built for funds, prop desks, and fintech teams.</div>
+  <div class="sources">Data: CoinGecko free API + Coinbase spot. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours.</div>
 </div>
 
 <script>

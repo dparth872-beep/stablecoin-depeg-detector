@@ -39,13 +39,13 @@ header {
   position: relative;
 }
 header h1 {
-  font-size: 1.75rem;
+  font-size: 1.85rem;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 header .tagline {
   color: var(--muted);
-  font-size: 1rem;
+  font-size: 1.05rem;
   margin-top: 6px;
 }
 .version {
@@ -59,6 +59,19 @@ header .tagline {
   border-radius: 6px;
   border: 1px solid var(--card-border);
 }
+.health-bar {
+  max-width: 1200px;
+  margin: 0 auto 16px;
+  padding: 10px 16px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+.health-bar .ok { color: var(--green); }
 .banners {
   display: flex;
   flex-direction: column;
@@ -107,7 +120,7 @@ header .tagline {
   margin-bottom: 16px;
 }
 .coin-name { font-size: 0.9rem; color: var(--muted); font-weight: 500; }
-.symbol { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; }
+.symbol { font-size: 1.55rem; font-weight: 700; letter-spacing: -0.01em; }
 .badge {
   padding: 6px 12px;
   border-radius: 24px;
@@ -121,7 +134,7 @@ header .tagline {
 .badge.up { background: var(--amber-bg); color: var(--amber); }
 .badge.nodata { background: var(--gray-bg); color: var(--gray); }
 .price {
-  font-size: 2.8rem;
+  font-size: 2.9rem;
   font-weight: 700;
   letter-spacing: -0.03em;
   margin: 12px 0 8px;
@@ -176,20 +189,26 @@ header .tagline {
   opacity: 0.8;
 }
 @media (max-width: 640px) {
-  .price { font-size: 2.2rem; }
-  header h1 { font-size: 1.45rem; }
+  .price { font-size: 2.3rem; }
+  header h1 { font-size: 1.5rem; }
   .grid { gap: 14px; }
   .card { padding: 18px; }
   .version { position: static; display: inline-block; margin-top: 8px; }
+  .health-bar { flex-direction: column; gap: 6px; text-align: center; }
 }
 </style>
 </head>
 <body>
 <header>
-  <div class="version">v2.1</div>
+  <div class="version">v2.2</div>
   <h1>Stablecoin Depeg Detector</h1>
   <div class="tagline">Stablecoin Depeg Intelligence — minutes matter when a peg breaks</div>
 </header>
+
+<div class="health-bar" id="health-bar">
+  <span>Overall status: <strong class="ok" id="health-status">Checking…</strong></span>
+  <span id="coin-count">6 coins</span>
+</div>
 
 <div class="banners" id="banners"></div>
 
@@ -249,6 +268,28 @@ function formatVol(v) {
   return "$" + Math.round(v).toLocaleString();
 }
 
+function updateHealth(data) {
+  let okCount = 0, alertCount = 0, noData = 0;
+  COINS.forEach(c => {
+    const p = data[c.id]?.usd;
+    if (p == null) noData++;
+    else if (p < LOWER || p > UPPER) alertCount++;
+    else okCount++;
+  });
+  const statusEl = document.getElementById("health-status");
+  if (alertCount > 0) {
+    statusEl.textContent = alertCount + " ALERT" + (alertCount > 1 ? "S" : "");
+    statusEl.className = "down";
+  } else if (noData > 0) {
+    statusEl.textContent = "Partial data";
+    statusEl.className = "";
+  } else {
+    statusEl.textContent = "All OK";
+    statusEl.className = "ok";
+  }
+  document.getElementById("coin-count").textContent = okCount + " OK · " + alertCount + " alerts · " + noData + " no data";
+}
+
 function renderCards(data) {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
@@ -282,6 +323,7 @@ function renderCards(data) {
     grid.appendChild(card);
     lastPrices[c.id] = price;
   });
+  updateHealth(data);
 }
 
 function checkVolumeSpikes(data) {
@@ -368,7 +410,7 @@ async function refresh() {
       divAlerts = checkDivergence(data, cb);
     } catch {}
     showBanners(volAlerts, divAlerts);
-    const ts = new Date().toLocaleTimeString();
+    const ts = new Date().toLocaleString();
     document.getElementById("last-updated").innerHTML = `<span class="live-dot"></span>Updated ${ts} · Auto-refresh 30s`;
   } catch (e) {
     document.getElementById("last-updated").textContent = "Fetch failed — retrying…";

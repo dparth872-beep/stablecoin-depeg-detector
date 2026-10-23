@@ -326,7 +326,7 @@
 </head>
 <body>
   <header>
-    <div class="version-badge">v1.3</div>
+    <div class="version-badge">v1.4</div>
     <h1><span class="live-dot"></span>Stablecoin Depeg Intelligence</h1>
     <p class="tagline">Real-time peg monitoring for funds, prop desks, and fintech teams. Minutes matter when a peg breaks.</p>
   </header>
@@ -364,7 +364,7 @@
       <li>Divergence banner flags >50 bps gaps between CoinGecko and Coinbase on supported pairs.</li>
       <li>Use the Refresh button for an immediate update. Alerts persist across page reloads via local storage. Just open and watch. Zero code, zero friction.</li>
     </ol>
-    <p style="margin-top:24px; font-size:0.88rem;">Data sources: CoinGecko free API (primary) + Coinbase spot for cross-check. Thresholds: $0.99–$1.01. Built for professional trading teams who need clean, always-on peg intelligence. v1.3</p>
+    <p style="margin-top:24px; font-size:0.88rem;">Data sources: CoinGecko free API (primary) + Coinbase spot for cross-check. Thresholds: $0.99–$1.01. Built for professional trading teams who need clean, always-on peg intelligence. v1.4 — verified live 2026-10-22.</p>
   </footer>
 
 <script>
@@ -498,7 +498,7 @@ async function refresh() {
     render(data, cbMap);
     document.getElementById('timestamp').textContent = 'Updated ' + new Date().toLocaleString();
   } catch (e) {
-    document.getElementById('grid').innerHTML = '<div class="loading">API temporarily unavailable (rate limit possible). Retrying in 30s…</div>';
+    document.getElementById('grid').innerHTML = '<div class="loading">CoinGecko temporarily unavailable (rate limit or network). Automatic retry in 30 seconds. Use Refresh to try now.</div>';
     document.getElementById('timestamp').textContent = 'Error — retrying';
     document.getElementById('health').textContent = 'Data unavailable';
     document.getElementById('health').className = 'health bad';

@@ -46,7 +46,7 @@ python tests/test_depeg_logic.py      # 14 unit tests
 - Binance and Coinbase WebSocket streams with exponential-backoff reconnection
 - Volume anomaly detection (median baseline, cooldown)
 - CLI dashboard that refreshes in place
-- Professional single-file web dashboard (dark fintech aesthetic with status glow, refined typography, mobile-responsive, recent alerts log with localStorage persistence + clear button, live indicator, area-filled sparklines, bps-from-peg, overall health summary, manual refresh, Coinbase cross-source divergence detection >50 bps)
+- Professional single-file web dashboard (dark fintech aesthetic, six live cards, status badges, volume spike + Coinbase divergence banners, localStorage volume baseline, auto-refresh every 30s, mobile-responsive, plain-English how-to)
 - Telegram + email alerts (config.json)
 - JSON output for integration
 - Comprehensive unit tests
@@ -60,6 +60,6 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready. Latest verification (2026-10-23 04:03 MDT): CoinGecko free API rate-limited (429), fell back to Coinbase + DefiLlama successfully. USDT $0.9986, USDC $1.0000, DAI $0.9998, FDUSD $0.9973, PYUSD $1.0000, TUSD $0.9988. All within $0.99–$1.01 band. No depegs. 14/14 tests pass. Dashboard v2.0 is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple, status glow, refined spacing), zero-code, mobile-ready, with persistent localStorage alerts, clear-log button, live CoinGecko + Coinbase divergence checks (>50 bps), volume spike banners, and specific alert banners.
+Production-ready. Latest verification (2026-10-23 05:06 MDT): CoinGecko returned 200. USDT $0.9986, USDC $1.0000, DAI $0.9996, FDUSD $0.9973, PYUSD $1.0000, TUSD $0.9987. All within $0.99–$1.01 band. No depegs. 14/14 tests pass. dashboard.html is the primary client surface — polished dark fintech aesthetic, zero-code, mobile-ready, with volume spike and cross-source divergence banners.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

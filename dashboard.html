@@ -29,136 +29,164 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   min-height: 100vh;
-  padding: 16px;
-  padding-bottom: 40px;
+  padding: 20px 16px 40px;
 }
 header {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--card-border);
+  position: relative;
 }
 header h1 {
-  font-size: 1.6rem;
+  font-size: 1.75rem;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 header .tagline {
   color: var(--muted);
-  font-size: 0.95rem;
-  margin-top: 4px;
+  font-size: 1rem;
+  margin-top: 6px;
+}
+.version {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+  background: var(--card);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--card-border);
 }
 .banners {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .banner {
-  padding: 12px 16px;
-  border-radius: 10px;
-  font-size: 0.9rem;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-size: 0.95rem;
   font-weight: 500;
   display: none;
   align-items: center;
-  gap: 8px;
-  animation: fadeIn 0.3s ease;
+  gap: 10px;
+  animation: fadeIn 0.4s ease;
 }
 .banner.volume { background: var(--amber-bg); border: 1px solid var(--amber); color: var(--amber); }
 .banner.divergence { background: var(--red-bg); border: 1px solid var(--red); color: var(--red); }
 .banner.show { display: flex; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
   max-width: 1200px;
-  margin: 0 auto 32px;
+  margin: 0 auto 40px;
 }
 .card {
   background: var(--card);
   border: 1px solid var(--card-border);
-  border-radius: 16px;
-  padding: 20px;
+  border-radius: 18px;
+  padding: 24px;
   box-shadow: var(--shadow);
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   position: relative;
   overflow: hidden;
 }
-.card:hover { transform: translateY(-2px); border-color: #30363d; }
+.card:hover { transform: translateY(-3px); border-color: #30363d; box-shadow: 0 8px 32px rgba(0,0,0,0.45); }
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
-.coin-name { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
-.symbol { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.01em; }
+.coin-name { font-size: 0.9rem; color: var(--muted); font-weight: 500; }
+.symbol { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; }
 .badge {
-  padding: 4px 10px;
-  border-radius: 20px;
+  padding: 6px 12px;
+  border-radius: 24px;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
 }
 .badge.ok { background: var(--green-bg); color: var(--green); }
 .badge.down { background: var(--red-bg); color: var(--red); }
 .badge.up { background: var(--amber-bg); color: var(--amber); }
 .badge.nodata { background: var(--gray-bg); color: var(--gray); }
 .price {
-  font-size: 2.4rem;
+  font-size: 2.8rem;
   font-weight: 700;
   letter-spacing: -0.03em;
-  margin: 8px 0;
+  margin: 12px 0 8px;
   font-variant-numeric: tabular-nums;
+  transition: color 0.3s ease;
+}
+.price.flash { animation: priceFlash 0.6s ease; }
+@keyframes priceFlash {
+  0% { color: var(--accent); }
+  100% { color: var(--text); }
 }
 .meta {
   display: flex;
   justify-content: space-between;
   color: var(--muted);
-  font-size: 0.85rem;
-  margin-top: 8px;
+  font-size: 0.9rem;
+  margin-top: 12px;
 }
 .change.positive { color: var(--green); }
 .change.negative { color: var(--red); }
 .footer {
-  max-width: 800px;
-  margin: 40px auto 0;
+  max-width: 860px;
+  margin: 48px auto 0;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   text-align: center;
+  line-height: 1.6;
 }
-.footer h3 { color: var(--text); margin-bottom: 8px; font-size: 1rem; }
-.footer ol { text-align: left; display: inline-block; margin: 12px 0; }
-.footer li { margin: 6px 0; }
+.footer h3 { color: var(--text); margin-bottom: 12px; font-size: 1.1rem; }
+.footer ol { text-align: left; display: inline-block; margin: 16px 0; padding-left: 20px; }
+.footer li { margin: 8px 0; }
 #last-updated {
-  margin-top: 16px;
-  font-size: 0.8rem;
+  margin-top: 20px;
+  font-size: 0.85rem;
   color: var(--muted);
 }
 .live-dot {
   display: inline-block;
-  width: 8px; height: 8px;
+  width: 9px; height: 9px;
   background: var(--green);
   border-radius: 50%;
-  margin-right: 6px;
+  margin-right: 8px;
   animation: pulse 2s infinite;
 }
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
 }
-@media (max-width: 600px) {
-  .price { font-size: 2rem; }
-  header h1 { font-size: 1.4rem; }
-  .grid { gap: 12px; }
-  .card { padding: 16px; }
+.sources {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+@media (max-width: 640px) {
+  .price { font-size: 2.2rem; }
+  header h1 { font-size: 1.45rem; }
+  .grid { gap: 14px; }
+  .card { padding: 18px; }
+  .version { position: static; display: inline-block; margin-top: 8px; }
 }
 </style>
 </head>
 <body>
 <header>
+  <div class="version">v2.1</div>
   <h1>Stablecoin Depeg Detector</h1>
   <div class="tagline">Stablecoin Depeg Intelligence — minutes matter when a peg breaks</div>
 </header>
@@ -171,15 +199,16 @@ header .tagline {
 
 <div class="footer">
   <h3>How to use</h3>
-  <p>This is a zero-code tool. No install, no login, no terminal.</p>
+  <p>This is a zero-code tool. No install, no login, no terminal. Just open and monitor.</p>
   <ol>
-    <li>Open this file in any browser (Chrome, Safari, Firefox — works on iPhone).</li>
-    <li>Bookmark it or add to home screen.</li>
-    <li>Prices refresh automatically every 30 seconds from CoinGecko.</li>
+    <li>Open this file in any browser (Chrome, Safari, Firefox — works perfectly on iPhone).</li>
+    <li>Bookmark it or add to home screen for one-tap access.</li>
+    <li>Prices refresh automatically every 30 seconds from CoinGecko (with Coinbase cross-check).</li>
     <li>Green badge = within $0.99–$1.01. Red = depeg down. Amber = depeg up. Gray = no data.</li>
-    <li>Volume spike and cross-source divergence alerts appear at the top when triggered.</li>
+    <li>Volume spike and cross-source divergence alerts appear as banners at the top when triggered.</li>
   </ol>
   <div id="last-updated"><span class="live-dot"></span>Waiting for data…</div>
+  <div class="sources">Data: CoinGecko free API + Coinbase spot. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser.</div>
 </div>
 
 <script>
@@ -197,6 +226,8 @@ const UPPER = 1.01;
 const VOLUME_MULT = 3.0;
 const DIV_BPS = 50;
 const STORAGE_KEY = "depeg_vol_history_v1";
+
+let lastPrices = {};
 
 function loadHistory() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
@@ -230,6 +261,7 @@ function renderCards(data) {
     const changeCls = chg == null ? "" : (chg >= 0 ? "positive" : "negative");
     const changeStr = chg == null ? "—" : (chg >= 0 ? "+" : "") + chg.toFixed(2) + "%";
     const priceStr = price == null ? "—" : "$" + price.toFixed(4);
+    const flash = (lastPrices[c.id] != null && lastPrices[c.id] !== price) ? " flash" : "";
 
     const card = document.createElement("div");
     card.className = "card";
@@ -241,13 +273,14 @@ function renderCards(data) {
         </div>
         <span class="badge ${st.cls}">${st.label}</span>
       </div>
-      <div class="price">${priceStr}</div>
+      <div class="price${flash}">${priceStr}</div>
       <div class="meta">
         <span class="change ${changeCls}">24h ${changeStr}</span>
         <span>Vol ${formatVol(vol)}</span>
       </div>
     `;
     grid.appendChild(card);
+    lastPrices[c.id] = price;
   });
 }
 

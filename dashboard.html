@@ -66,17 +66,18 @@ header .tagline {
 .health-bar {
   max-width: 1100px;
   margin: 0 auto 16px;
-  padding: 14px 20px;
+  padding: 16px 24px;
   background: var(--card);
   border: 1px solid var(--card-border);
   border-radius: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   box-shadow: 0 4px 16px rgba(0,0,0,0.3);
 }
 .health-bar .ok { color: var(--green); font-weight: 600; }
+.health-bar .down { color: var(--red); font-weight: 600; }
 .banners {
   display: flex;
   flex-direction: column;
@@ -226,7 +227,7 @@ header .tagline {
 </head>
 <body>
 <header>
-  <div class="version">v2.4</div>
+  <div class="version">v2.5</div>
   <div class="logo">◉</div>
   <h1>Stablecoin Depeg Detector</h1>
   <div class="tagline">Stablecoin Depeg Intelligence — minutes matter when a peg breaks</div>
@@ -253,7 +254,7 @@ header .tagline {
     <li>Each card shows basis points from the $1.00 peg and a visual deviation bar.</li>
   </ol>
   <div id="last-updated"><span class="live-dot"></span>Waiting for data…</div>
-  <div class="sources">Data: CoinGecko free API + Coinbase spot. Thresholds: $0.99–$1.01. Volume baseline in browser localStorage.</div>
+  <div class="sources">Data: CoinGecko free API + Coinbase spot. Thresholds: $0.99–$1.01. Volume baseline in browser localStorage. Built for funds, prop desks, and fintech teams.</div>
 </div>
 
 <script>
@@ -456,7 +457,7 @@ async function refresh() {
     const ts = new Date().toLocaleString();
     document.getElementById("last-updated").innerHTML = `<span class="live-dot"></span>Updated ${ts} · Auto-refresh 30s`;
   } catch (e) {
-    document.getElementById("last-updated").textContent = "Fetch failed — retrying…";
+    document.getElementById("last-updated").textContent = "Fetch failed — retrying… (CoinGecko free tier rate limit possible)";
   }
 }
 

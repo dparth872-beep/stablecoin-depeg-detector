@@ -1,29 +1,16 @@
-# Verification Results
+# Price Verification Results
 
-**Timestamp:** 2026-10-23 00:03 MDT
+**Timestamp:** 2026-10-23 02:05 MDT
 
-## Live Multi-Source Snapshot
+**Source:** CoinGecko free API (https://api.coingecko.com/api/v3/simple/price)
 
-CoinGecko free API returned 200 OK.
+| Symbol | Price | Status | 24h Vol | 24h Change |
+|--------|-------|--------|---------|------------|
+| USDT | $0.9989 | OK | $48.7B | -0.03% |
+| USDC | $0.9995 | OK | $11.9B | -0.01% |
+| DAI | $0.9998 | OK | $35.1M | +0.01% |
+| FDUSD | $0.9972 | OK | $70.5M | -0.03% |
+| PYUSD | $1.0000 | OK | $50.2M | +0.02% |
+| TUSD | $0.9985 | OK | $3.7M | -0.05% |
 
-### CoinGecko
-- USDT (tether): $0.9989 | 24h vol ~$50.8B | 24h chg -0.04%
-- USDC (usd-coin): $0.9995 | 24h vol ~$12.4B | 24h chg -0.03%
-- DAI (dai): $0.9999 | 24h vol ~$20.6M | 24h chg -0.06%
-- FDUSD (first-digital-usd): $0.9971 | 24h vol ~$73.0M | 24h chg -0.06%
-- PYUSD (paypal-usd): $1.0000 | 24h vol ~$49.3M | 24h chg -0.03%
-- TUSD (true-usd): $0.9991 | 24h vol ~$6.4M | 24h chg +0.05%
-
-**All six coins within $0.99–$1.01 band. No depeg alerts.**
-
-Threshold logic verified via `python tests/test_depeg_logic.py` → 14/14 PASS.
-
-WebSocket clients (Binance combined ticker stream + Coinbase ticker channel) present with exponential backoff reconnection.
-
-Volume anomaly detection uses rolling median baseline with cooldown.
-
-CLI dashboard (`--dashboard`) and JSON output (`--json`) operational.
-
-Primary client surface: `dashboard.html` (v1.6) — polished dark fintech aesthetic (Bloomberg terminal meets Apple design), mobile-responsive (iPhone Safari), auto-refresh every 30s via CoinGecko, volume spike banners, cross-source divergence banners, status badges, sparklines, health summary, localStorage alerts. Zero-code: open in any browser. No login, no install.
-
-Last verified by autonomous agent at 00:03 MDT on 2026-10-23.
+All within $0.99–$1.01 band. No depegs detected. No volume anomalies or divergences in this snapshot.

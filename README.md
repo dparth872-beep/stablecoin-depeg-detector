@@ -46,7 +46,7 @@ python tests/test_depeg_logic.py      # 14 unit tests
 - Binance and Coinbase WebSocket streams with exponential-backoff reconnection
 - Volume anomaly detection (median baseline, cooldown)
 - CLI dashboard that refreshes in place
-- Professional single-file web dashboard (dark fintech aesthetic with radial gradient, six large live cards, status badges, overall health bar, bps-from-peg indicators, visual peg deviation bar, volume spike + Coinbase divergence banners, price flash animation, localStorage volume baseline, auto-refresh every 30s, manual refresh button, mobile-responsive, plain-English how-to, rate-limit resilience that keeps last good data)
+- Professional single-file web dashboard (dark fintech aesthetic with radial gradient, six large live cards, status badges with glow, overall health bar, bps-from-peg indicators, visual peg deviation bar, volume spike + Coinbase divergence banners, price flash animation, localStorage volume baseline, auto-refresh every 30s, manual refresh button, mobile-responsive, plain-English how-to, rate-limit resilience that keeps last good data)
 - Telegram + email alerts (config.json)
 - JSON output for integration
 - Comprehensive unit tests
@@ -60,6 +60,6 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready. Latest verification (2026-10-23 23:03 MDT): CoinGecko free API rate-limited (handled gracefully). Coinbase spot cross-check: USDT $0.9988, USDC $1.0000, DAI $0.9999. All within $0.99–$1.01 band. No depegs. No volume spikes. 14/14 tests pass. dashboard.html v3.4 is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume spike and cross-source divergence banners, plus graceful handling of free-tier rate limits (keeps last good data and shows a warning banner).
+Production-ready. Latest verification (2026-10-24 01:03 MDT): CoinGecko free API HTTP 200. All six coins within band — USDT $0.9992, USDC $0.9997, DAI $1.0000, FDUSD $0.9972, PYUSD $1.0000, TUSD $0.9985. No depegs. No volume spikes. 14/14 tests pass. dashboard.html v3.5 is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume spike and cross-source divergence banners, status glow, plus graceful handling of free-tier rate limits (keeps last good data and shows a warning banner).
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

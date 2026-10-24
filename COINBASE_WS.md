@@ -15,4 +15,4 @@ python depeg_detector.py --ws-coinbase
 - Same $0.99-$1.01 threshold logic as REST
 - Binance combined stream also available via --ws (pairs: usdcusdt, daiusdt, etc.)
 
-Verified operational. Reconnection handling is production-grade with jitter to avoid thundering herd.
+Verified operational as of 2026-10-23. Reconnection handling is production-grade with jitter to avoid thundering herd. Threshold logic identical to REST path.

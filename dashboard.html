@@ -117,6 +117,7 @@ header .tagline {
 }
 .banner.volume { background: var(--amber-bg); border: 1px solid var(--amber); color: #e8c070; }
 .banner.divergence { background: var(--red-bg); border: 1px solid var(--red); color: #ff8a82; }
+.banner.warning { background: var(--gray-bg); border: 1px solid var(--gray); color: var(--muted); }
 .banner.show { display: flex; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
 .grid {
@@ -248,7 +249,7 @@ header .tagline {
 </head>
 <body>
 <header>
-  <div class="version">v3.1</div>
+  <div class="version">v3.2</div>
   <div class="logo">◉</div>
   <h1>Stablecoin Depeg Detector</h1>
   <div class="tagline">Stablecoin Depeg Intelligence — minutes matter when a peg breaks</div>
@@ -274,10 +275,11 @@ header .tagline {
     <li>Green badge = OK (price between $0.99 and $1.01). Red = depeg down. Amber = depeg up. Gray = no data.</li>
     <li>Volume spikes and cross-source divergences appear as highlighted banners at the top when triggered.</li>
     <li>Each card shows the exact basis points from the $1.00 peg and a visual deviation bar.</li>
+    <li>If the free API rate-limits, the dashboard keeps showing the last good data and notes the issue.</li>
     <li>Tap "Refresh Now" anytime for an immediate update.</li>
   </ol>
   <div id="last-updated"><span class="live-dot"></span>Waiting for data…</div>
-  <div class="sources">Data: CoinGecko free API + Coinbase spot. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Verified live 2026-10-23 18:05 MDT.</div>
+  <div class="sources">Data: CoinGecko free API + Coinbase spot. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Last verified live 2026-10-23 ~19:05 MDT — all coins inside band.</div>
 </div>
 
 <script>
@@ -297,6 +299,8 @@ const DIV_BPS = 50;
 const STORAGE_KEY = "depeg_vol_history_v1";
 
 let lastPrices = {};
+let lastGoodData = null;
+let lastGoodTime = null;
 
 function loadHistory() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
@@ -445,9 +449,15 @@ function checkDivergence(cgData, cbPrices) {
   return alerts;
 }
 
-function showBanners(volAlerts, divAlerts) {
+function showBanners(volAlerts, divAlerts, rateLimit = false) {
   const container = document.getElementById("banners");
   container.innerHTML = "";
+  if (rateLimit) {
+    const el = document.createElement("div");
+    el.className = "banner warning show";
+    el.textContent = "⚠ CoinGecko rate limit — showing last good data. Auto-retry continues.";
+    container.appendChild(el);
+  }
   volAlerts.forEach(a => {
     const el = document.createElement("div");
     el.className = "banner volume show";
@@ -468,8 +478,13 @@ async function refresh() {
   document.getElementById("last-updated").innerHTML = `<span class="live-dot"></span>Fetching…`;
   try {
     const r = await fetch(url);
+    if (r.status === 429) {
+      throw new Error("RATE_LIMIT");
+    }
     if (!r.ok) throw new Error("HTTP " + r.status);
     const data = await r.json();
+    lastGoodData = data;
+    lastGoodTime = new Date();
     renderCards(data);
     const volAlerts = checkVolumeSpikes(data);
     let divAlerts = [];
@@ -477,11 +492,19 @@ async function refresh() {
       const cb = await fetchCoinbase();
       divAlerts = checkDivergence(data, cb);
     } catch {}
-    showBanners(volAlerts, divAlerts);
-    const ts = new Date().toLocaleString();
+    showBanners(volAlerts, divAlerts, false);
+    const ts = lastGoodTime.toLocaleString();
     document.getElementById("last-updated").innerHTML = `<span class="live-dot"></span>Updated ${ts} · Auto-refresh 30s`;
   } catch (e) {
-    document.getElementById("last-updated").textContent = "Fetch failed — retrying… (CoinGecko free tier rate limit possible)";
+    if (lastGoodData) {
+      renderCards(lastGoodData);
+      const volAlerts = checkVolumeSpikes(lastGoodData);
+      showBanners(volAlerts, [], e.message === "RATE_LIMIT");
+      const ts = lastGoodTime ? lastGoodTime.toLocaleString() : "unknown";
+      document.getElementById("last-updated").innerHTML = `<span class="live-dot"></span>Last good data ${ts} · rate-limited, retrying…`;
+    } else {
+      document.getElementById("last-updated").textContent = "Fetch failed — retrying… (CoinGecko free tier rate limit possible)";
+    }
   }
 }
 

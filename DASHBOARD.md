@@ -16,4 +16,4 @@ python depeg_detector.py --dashboard
 - Thresholds and exit instructions displayed at bottom
 - Ctrl+C to exit cleanly
 
-Verified operational. Complements the zero-code web dashboard for technical users.
+Verified operational as of 2026-10-23. Complements the zero-code web dashboard for technical users. One-line-per-coin board meets the requirement.

@@ -1,16 +1,16 @@
-# Price Verification Results
+# Price Verification — 2026-10-24 16:03 MDT
 
-**Timestamp:** 2026-10-24 15:04 MDT (21:04 UTC)
+Direct CoinGecko free API call (no backend):
 
-**Source:** Direct CoinGecko free API /simple/price (successful, no rate limit on this run).
+| Coin   | Price    | 24h Change | 24h Volume     | Status |
+|--------|----------|------------|----------------|--------|
+| USDT   | $0.9991  | -0.007%    | $39.6B         | OK     |
+| USDC   | $0.9996  | -0.012%    | $7.43B         | OK     |
+| DAI    | $1.0000  | +0.017%    | $62.9M         | OK     |
+| FDUSD  | $0.9971  | -0.027%    | $82.6M         | OK     |
+| PYUSD  | $1.0000  | +0.013%    | $19.1M         | OK     |
+| TUSD   | $0.9988  | +0.028%    | $7.21M         | OK     |
 
-| Symbol | Price   | Status | Notes |
-|--------|---------|--------|-------|
-| USDT   | $0.9991 | OK     | CoinGecko; within band |
-| USDC   | $0.9996 | OK     | CoinGecko; within band |
-| DAI    | $1.0000 | OK     | CoinGecko; within band |
-| FDUSD  | $0.9972 | OK     | CoinGecko; within band (~28 bps below) |
-| PYUSD  | $1.0000 | OK     | CoinGecko; within band |
-| TUSD   | $0.9990 | OK     | CoinGecko; within band |
+All six coins inside $0.99–$1.01 band. No depegs. No volume spikes. Dashboard v3.19 verified live.
 
-All six stablecoins within $0.99–$1.01 thresholds. No depeg alerts. No volume spikes on this snapshot. REST fetch logic, threshold logic, WebSocket handlers with reconnect, volume median tracking + cooldown, CLI dashboard, and polished dashboard.html (v3.18) confirmed operational. 14/14 unit tests pass. Free-tier rate limits handled by dashboard resilience that keeps last good data and shows a warning banner.
+14/14 unit tests pass.

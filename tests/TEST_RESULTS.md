@@ -1,6 +1,6 @@
 # Unit Test Results
 
-Run on 2026-10-21 by builder agent. Confirmed still passing.
+Run on 2026-10-23 by builder agent. Confirmed still passing.
 
 ```
 PASS test_clean_prices_no_alerts
@@ -30,4 +30,4 @@ Covers:
 - Cross-source divergence above/below 50 bps
 - Multi-coin simultaneous alerts
 
-Synthetic data only; no network calls. Ready for CI.
+Synthetic data only; no network calls. Ready for CI. Sample price data verifies threshold logic catches depegs and passes clean data.

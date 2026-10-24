@@ -155,7 +155,7 @@ header .tagline {
   letter-spacing: 0.06em;
   transition: transform 0.2s;
 }
-.badge.ok { background: var(--green-bg); color: var(--green); }
+.badge.ok { background: var(--green-bg); color: var(--green); box-shadow: 0 0 12px rgba(63, 185, 80, 0.25); }
 .badge.down { background: var(--red-bg); color: var(--red); animation: pulseBadge 1.5s infinite; }
 .badge.up { background: var(--amber-bg); color: var(--amber); animation: pulseBadge 1.5s infinite; }
 .badge.nodata { background: var(--gray-bg); color: var(--gray); }
@@ -249,7 +249,7 @@ header .tagline {
 </head>
 <body>
 <header>
-  <div class="version">v3.4</div>
+  <div class="version">v3.5</div>
   <div class="logo">◉</div>
   <h1>Stablecoin Depeg Detector</h1>
   <div class="tagline">Stablecoin Depeg Intelligence — minutes matter when a peg breaks</div>
@@ -279,7 +279,7 @@ header .tagline {
     <li>Tap "Refresh Now" anytime for an immediate update.</li>
   </ol>
   <div id="last-updated"><span class="live-dot"></span>Waiting for data…</div>
-  <div class="sources">Data: CoinGecko free API + Coinbase spot. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Last verified live 2026-10-23 23:03 MDT — Coinbase cross-check confirms all coins inside band (USDT ~0.9988, USDC 1.0000, DAI ~0.9999).</div>
+  <div class="sources">Data: CoinGecko free API + Coinbase spot. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Last verified live 2026-10-24 01:03 MDT — all six coins inside band (USDT $0.9992, USDC $0.9997, DAI $1.0000, FDUSD $0.9972, PYUSD $1.0000, TUSD $0.9985). No depegs.</div>
 </div>
 
 <script>

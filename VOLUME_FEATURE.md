@@ -13,4 +13,4 @@ Implemented in VolumeTracker class (depeg_detector.py):
 Alert example:
 VOLUME SPIKE USDT: $150,000,000 > 3.0x baseline $40,000,000 (med=$38,000,000, avg=$42,000,000, n=15)
 
-Provides independent early-warning tier for liquidity stress before or without price depegs. Verified in unit tests including median robustness and cooldown.
+Provides independent early-warning tier for liquidity stress before or without price depegs. Verified in unit tests including median robustness and cooldown. Status confirmed 2026-10-23.

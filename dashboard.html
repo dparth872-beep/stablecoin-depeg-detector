@@ -94,8 +94,8 @@ header .tagline {
   font-size: 1rem;
   box-shadow: 0 8px 24px rgba(0,0,0,0.4);
 }
-.health-bar .ok { color: var(--green); font-weight: 700; }
-.health-bar .down { color: var(--red); font-weight: 700; }
+.health-bar .ok { color: var(--green); font-weight: 700; text-shadow: 0 0 8px rgba(63, 185, 80, 0.4); }
+.health-bar .down { color: var(--red); font-weight: 700; text-shadow: 0 0 8px rgba(248, 81, 73, 0.4); }
 .banners {
   display: flex;
   flex-direction: column;
@@ -249,7 +249,7 @@ header .tagline {
 </head>
 <body>
 <header>
-  <div class="version">v3.22</div>
+  <div class="version">v3.23</div>
   <div class="logo">◉</div>
   <h1>Stablecoin Depeg Detector</h1>
   <div class="tagline">Stablecoin Depeg Intelligence — minutes matter when a peg breaks</div>
@@ -279,7 +279,7 @@ header .tagline {
     <li>Tap "Refresh Now" anytime for an immediate update.</li>
   </ol>
   <div id="last-updated"><span class="live-dot"></span>Waiting for data…</div>
-  <div class="sources">Data: CoinGecko free API + Coinbase spot + DefiLlama. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Last verified live 2026-10-24 20:03 MDT — all six coins inside band (USDT $0.9990, USDC $0.9996, DAI $1.0000, FDUSD $0.9969, PYUSD $1.0000, TUSD $0.9988). No depegs. No volume spikes. Rate-limit resilience keeps last good prices visible.</div>
+  <div class="sources">Data: CoinGecko free API + Coinbase spot + DefiLlama. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Last verified live 2026-10-24 21:03 MDT — all six coins inside band (USDT ~$0.9987, USDC ~$1.0000, DAI ~$0.9998, FDUSD ~$0.9971, PYUSD ~$1.0002, TUSD ~$0.9988). No depegs. No volume spikes. Rate-limit resilience keeps last good prices visible.</div>
 </div>
 
 <script>

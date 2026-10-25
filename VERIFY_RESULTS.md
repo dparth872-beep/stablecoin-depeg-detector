@@ -1,16 +1,16 @@
-# Price Verification — 2026-10-25 ~11:04 MDT
+# Price Verification — 2026-10-25 ~14:03 MDT
 
-CoinGecko free API returned 429 rate limit. Used DefiLlama + Coinbase fallbacks (as implemented in depeg_detector.py and dashboard.html):
+CoinGecko free API responding normally (no rate limit):
 
-| Coin   | Price (DefiLlama) | Coinbase Spot | Status |
-|--------|-------------------|---------------|--------|
-| USDT   | $0.9990           | $0.9987       | OK     |
-| USDC   | $0.9995           | $1.0000       | OK     |
-| DAI    | $1.0002           | $1.0001       | OK     |
-| FDUSD  | $0.9972           | n/a           | OK     |
-| PYUSD  | $1.0001           | $1.0000       | OK     |
-| TUSD   | $0.9987           | n/a           | OK     |
+| Coin   | Price     | 24h Vol       | 24h Change | Status |
+|--------|-----------|---------------|------------|--------|
+| USDT   | $0.998989 | $23.6B        | -0.02%     | OK     |
+| USDC   | $0.999606 | $4.86B        | -0.00%     | OK     |
+| DAI    | $0.999978 | $41.4M        | -0.03%     | OK     |
+| FDUSD  | $0.997042 | $56.5M        | -0.01%     | OK     |
+| PYUSD  | $1.000000 | $8.23M        | -0.02%     | OK     |
+| TUSD   | $0.999149 | $2.21M        | +0.03%     | OK     |
 
-All six coins inside $0.99–$1.01 band. No depegs. No volume spikes detected. Divergence well under 50 bps.
+All six coins inside $0.99–$1.01 band. No depegs. No volume spikes. Divergence checks available via Coinbase fallback in dashboard and detector.
 
-Dashboard resilience keeps last good data on rate limits. 14/14 unit tests pass.
+Dashboard (v3.30) and depeg_detector.py both operational. 14/14 unit tests pass. Primary client surface remains dashboard.html — zero-code, browser-based.

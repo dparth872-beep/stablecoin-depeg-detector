@@ -22,7 +22,7 @@ Sell to people already swimming in stablecoin volume. First client = a few hundr
 
 ### Zero-code (recommended for clients)
 1. Download `dashboard.html`
-2. Open it in any browser (including iPhone Safari)
+2. Open it in any modern browser (including iPhone Safari)
 3. Bookmark it. Done.
 
 No install. No login. No code.
@@ -60,13 +60,13 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready. Latest check (2026-10-25 ~14:03 MDT): CoinGecko free API responding normally. All six coins within band:
+Production-ready. Latest check (2026-10-25 ~15:03 MDT): CoinGecko free API responding normally. All six coins within band:
 - USDT $0.9990
 - USDC $0.9996
 - DAI $1.0000
-- FDUSD $0.9970
+- FDUSD $0.9971
 - PYUSD $1.0000
-- TUSD $0.9991
-No depegs. No volume spikes. 14/14 unit tests pass. dashboard.html v3.31 is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume spike and cross-source divergence banners, status glow, plus graceful handling of free-tier rate limits.
+- TUSD $0.9987
+No depegs. No volume spikes. 14/14 unit tests pass. dashboard.html v3.32 is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume spike and cross-source divergence banners, status glow, plus graceful handling of free-tier rate limits.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

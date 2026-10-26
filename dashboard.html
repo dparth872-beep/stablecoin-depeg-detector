@@ -249,7 +249,7 @@ header .tagline {
 </head>
 <body>
 <header>
-  <div class="version">v3.35</div>
+  <div class="version">v3.36</div>
   <div class="logo">◉</div>
   <h1>Stablecoin Depeg Detector</h1>
   <div class="tagline">Stablecoin Depeg Intelligence — minutes matter when a peg breaks</div>
@@ -274,12 +274,12 @@ header .tagline {
     <li>Prices update automatically every 30 seconds from the CoinGecko free API, with Coinbase cross-checks for divergence.</li>
     <li>Green badge = OK (price between $0.99 and $1.01). Red = depeg down. Amber = depeg up. Gray = no data.</li>
     <li>Volume spikes and cross-source divergences appear as highlighted banners at the top when triggered.</li>
-    <li>Each card shows the exact basis points from the $1.00 peg and a visual deviation bar.</li>
+    <li>Each card shows the exact basis points from the $1.00 peg, a visual deviation bar, and market cap.</li>
     <li>If the free API rate-limits, the dashboard keeps showing the last good data and notes the issue.</li>
     <li>Tap "Refresh Now" anytime for an immediate update.</li>
   </ol>
   <div id="last-updated"><span class="live-dot"></span>Waiting for data…</div>
-  <div class="sources">Data: CoinGecko free API + Coinbase spot + DefiLlama. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Last verified 2026-10-25 ~22:03 MDT via CoinGecko (USDT $0.9990, USDC $0.9998, DAI $1.0000, FDUSD $0.9969, PYUSD $1.0000, TUSD $0.9987). All within band. No depegs. Rate-limit resilience keeps last good prices visible on free tier.</div>
+  <div class="sources">Data: CoinGecko free API + Coinbase spot. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Last verified 2026-10-25 ~23:03 MDT via CoinGecko (USDT $0.9990, USDC $0.9997, DAI $1.0000, FDUSD $0.9970, PYUSD $1.0000, TUSD $0.9984). All within band. No depegs.</div>
 </div>
 
 <script>
@@ -319,6 +319,13 @@ function formatVol(v) {
   if (v == null) return "—";
   if (v >= 1e9) return "$" + (v / 1e9).toFixed(1) + "B";
   if (v >= 1e6) return "$" + (v / 1e6).toFixed(1) + "M";
+  return "$" + Math.round(v).toLocaleString();
+}
+
+function formatMcap(v) {
+  if (v == null) return "—";
+  if (v >= 1e9) return "$" + (v / 1e9).toFixed(1) + "B";
+  if (v >= 1e6) return "$" + (v / 1e6).toFixed(0) + "M";
   return "$" + Math.round(v).toLocaleString();
 }
 
@@ -364,6 +371,7 @@ function renderCards(data) {
     const price = d.usd;
     const chg = d.usd_24h_change;
     const vol = d.usd_24h_vol;
+    const mcap = d.usd_market_cap;
     const st = statusFor(price);
     const changeCls = chg == null ? "" : (chg >= 0 ? "positive" : "negative");
     const changeStr = chg == null ? "—" : (chg >= 0 ? "+" : "") + chg.toFixed(2) + "%";
@@ -389,6 +397,10 @@ function renderCards(data) {
       <div class="meta">
         <span class="change ${changeCls}">24h ${changeStr}</span>
         <span>Vol ${formatVol(vol)}</span>
+      </div>
+      <div class="meta" style="border-top:none;padding-top:6px;margin-top:0;">
+        <span>MCap ${formatMcap(mcap)}</span>
+        <span></span>
       </div>
     `;
     grid.appendChild(card);
@@ -474,7 +486,7 @@ function showBanners(volAlerts, divAlerts, rateLimit = false) {
 
 async function refresh() {
   const ids = COINS.map(c => c.id).join(",");
-  const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`;
+  const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`;
   document.getElementById("last-updated").innerHTML = `<span class="live-dot"></span>Fetching…`;
   try {
     const r = await fetch(url);

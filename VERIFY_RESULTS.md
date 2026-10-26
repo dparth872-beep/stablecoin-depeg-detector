@@ -1,16 +1,16 @@
-# Price Verification — 2026-10-25 ~18:05 MDT
+# Price Verification — 2026-10-26 ~01:05 MDT
 
-CoinGecko free API responding normally (no rate limit):
+CoinGecko free API responding normally (HTTP 200):
 
 | Coin   | Price     | 24h Vol       | 24h Change | Status |
 |--------|-----------|---------------|------------|--------|
-| USDT   | $0.999102 | $33.7B        | +0.01%     | OK     |
-| USDC   | $0.999607 | $6.55B        | -0.01%     | OK     |
-| DAI    | $1.000000 | $48.3M        | +0.00%     | OK     |
-| FDUSD  | $0.997003 | $87.7M        | -0.01%     | OK     |
-| PYUSD  | $1.000000 | $8.79M        | +0.00%     | OK     |
-| TUSD   | $0.999056 | $6.82M        | +0.04%     | OK     |
+| USDT   | $0.999312 | $31.25B       | +0.03%     | OK     |
+| USDC   | $0.999801 | $7.14B        | +0.03%     | OK     |
+| DAI    | $1.000000 | $64.1M        | +0.03%     | OK     |
+| FDUSD  | $0.996996 | $59.0M        | +0.02%     | OK     |
+| PYUSD  | $1.000000 | $9.88M        | +0.01%     | OK     |
+| TUSD   | $0.998467 | $5.34M        | -0.05%     | OK     |
 
-All six coins inside $0.99–$1.01 band. No depegs. No volume spikes. Divergence checks available via Coinbase fallback in dashboard and detector.
+All six coins inside $0.99–$1.01 band. No depegs. No volume spikes detected on this snapshot. Divergence checks available via Coinbase in dashboard.
 
-Dashboard (v3.34) and depeg_detector.py both operational. 14/14 unit tests pass. Primary client surface remains dashboard.html — zero-code, browser-based.
+Dashboard v3.37 and depeg_detector.py both operational. 14/14 unit tests pass. Primary client surface remains dashboard.html — zero-code, browser-based.

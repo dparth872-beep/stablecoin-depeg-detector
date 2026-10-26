@@ -60,13 +60,10 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready. Latest check (2026-10-26 ~14:03 MDT): CoinGecko free API responding normally. All six coins within band:
-- USDT $0.998708
-- USDC $0.999329
-- DAI $0.999985
-- FDUSD $0.996679
-- PYUSD $0.999757
-- TUSD $0.998168
-No depegs. No volume spikes. 14/14 unit tests pass. dashboard.html v3.42 is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume spike and cross-source divergence banners, status glow, market cap, plus graceful handling of free-tier rate limits.
+Production-ready. Latest check (2026-10-26 ~17:03 MDT): CoinGecko free API rate-limited (expected on free tier from shared IPs). Fallbacks healthy via Coinbase and DefiLlama. Sample prices within band:
+- USDT ~$0.9984 (Coinbase)
+- USDC $1.0000 (Coinbase)
+- DAI ~$0.9996 (Coinbase/DefiLlama)
+No depegs detected. 14/14 unit tests pass. dashboard.html v3.43 is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume spike and cross-source divergence banners, status glow, market cap, plus graceful handling of free-tier rate limits (keeps last good data).
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

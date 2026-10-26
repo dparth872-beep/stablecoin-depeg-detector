@@ -46,7 +46,7 @@ python tests/test_depeg_logic.py      # 14 unit tests
 - Binance and Coinbase WebSocket streams with exponential-backoff reconnection
 - Volume anomaly detection (median baseline, cooldown)
 - CLI dashboard that refreshes in place
-- Professional single-file web dashboard (dark fintech aesthetic with radial gradient, six large live cards, status badges with glow, overall health bar, bps-from-peg indicators, visual peg deviation bar, volume spike + Coinbase divergence banners, price flash animation, localStorage volume baseline, auto-refresh every 30s, manual refresh button, mobile-responsive, plain-English how-to, rate-limit resilience that keeps last good data)
+- Professional single-file web dashboard (dark fintech aesthetic with radial gradient, six large live cards, status badges with glow, overall health bar, bps-from-peg indicators, visual peg deviation bar, volume spike + Coinbase divergence banners, price flash animation, localStorage volume baseline, market cap display, auto-refresh every 30s, manual refresh button, mobile-responsive, plain-English how-to, rate-limit resilience that keeps last good data)
 - Telegram + email alerts (config.json)
 - JSON output for integration
 - Comprehensive unit tests
@@ -60,13 +60,13 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready. Latest check (2026-10-25 ~22:03 MDT): CoinGecko free API responding normally. All six coins within band:
-- USDT $0.998985
-- USDC $0.999777
+Production-ready. Latest check (2026-10-25 ~23:03 MDT): CoinGecko free API responding normally. All six coins within band:
+- USDT $0.998952
+- USDC $0.999733
 - DAI $1.000000
-- FDUSD $0.996920
+- FDUSD $0.996991
 - PYUSD $1.000000
-- TUSD $0.998716
-No depegs. No volume spikes. 14/14 unit tests pass. dashboard.html v3.35 is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume spike and cross-source divergence banners, status glow, plus graceful handling of free-tier rate limits.
+- TUSD $0.998410
+No depegs. No volume spikes. 14/14 unit tests pass. dashboard.html v3.36 is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume spike and cross-source divergence banners, status glow, market cap, plus graceful handling of free-tier rate limits.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

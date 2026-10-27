@@ -179,17 +179,29 @@ header .tagline {
   margin-bottom: 14px;
 }
 .peg-bar {
-  height: 6px;
+  height: 8px;
   background: #1a2332;
   border-radius: 4px;
   margin: 12px 0 16px;
-  overflow: hidden;
+  position: relative;
+  overflow: visible;
 }
 .peg-fill {
   height: 100%;
   width: 50%;
   background: var(--green);
+  border-radius: 4px;
   transition: width 0.5s ease, background 0.4s;
+}
+.peg-center {
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--accent);
+  opacity: 0.6;
+  transform: translateX(-50%);
 }
 .meta {
   display: flex;
@@ -249,7 +261,7 @@ header .tagline {
 </head>
 <body>
 <header>
-  <div class="version">v3.46</div>
+  <div class="version">v3.47</div>
   <div class="logo">◉</div>
   <h1>Stablecoin Depeg Detector</h1>
   <div class="tagline">Stablecoin Depeg Intelligence — minutes matter when a peg breaks</div>
@@ -274,12 +286,12 @@ header .tagline {
     <li>Prices update automatically every 30 seconds from the CoinGecko free API, with Coinbase cross-checks for divergence.</li>
     <li>Green badge = OK (price between $0.99 and $1.01). Red = depeg down. Amber = depeg up. Gray = no data.</li>
     <li>Volume spikes and cross-source divergences appear as highlighted banners at the top when triggered.</li>
-    <li>Each card shows the exact basis points from the $1.00 peg, a visual deviation bar, and market cap.</li>
+    <li>Each card shows the exact basis points from the $1.00 peg, a visual deviation bar (center mark = $1.00), and market cap.</li>
     <li>If the free API rate-limits, the dashboard keeps showing the last good data and notes the issue.</li>
     <li>Tap "Refresh Now" anytime for an immediate update.</li>
   </ol>
   <div id="last-updated"><span class="live-dot"></span>Waiting for data…</div>
-  <div class="sources">Data: CoinGecko free API + Coinbase spot. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Verified 2026-10-27 ~02:03 MDT: CoinGecko healthy. USDT $0.998675, USDC $0.999322, DAI $0.999813, FDUSD $0.996828, PYUSD $0.999713, TUSD $0.998280. All within band. No depegs. 14/14 tests pass.</div>
+  <div class="sources">Data: CoinGecko free API + Coinbase spot. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Verified 2026-10-27 ~05:04 MDT: CoinGecko healthy. USDT $0.998634, USDC $0.999352, DAI $1.000000, FDUSD $0.996822, PYUSD $0.999663, TUSD $0.998355. All within band. No depegs. 14/14 tests pass.</div>
 </div>
 
 <script>
@@ -393,7 +405,7 @@ function renderCards(data) {
       </div>
       <div class="price${flash}">${priceStr}</div>
       <div class="bps">${bpsStr} from peg</div>
-      <div class="peg-bar"><div class="peg-fill" style="width:${barW}%;background:${barColor}"></div></div>
+      <div class="peg-bar"><div class="peg-fill" style="width:${barW}%;background:${barColor}"></div><div class="peg-center"></div></div>
       <div class="meta">
         <span class="change ${changeCls}">24h ${changeStr}</span>
         <span>Vol ${formatVol(vol)}</span>

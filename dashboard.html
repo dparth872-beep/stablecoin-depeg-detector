@@ -265,7 +265,7 @@ header .tagline {
 </head>
 <body>
 <header>
-  <div class="version">v4.6</div>
+  <div class="version">v4.7</div>
   <div class="logo">◉</div>
   <h1>Stablecoin Depeg Detector</h1>
   <div class="tagline">Stablecoin Depeg Intelligence — minutes matter when a peg breaks</div>
@@ -291,11 +291,11 @@ header .tagline {
     <li>Green badge = OK (price between $0.99 and $1.01). Red = depeg down. Amber = depeg up. Gray = no data.</li>
     <li>Volume spikes and cross-source divergences appear as highlighted banners at the top when triggered.</li>
     <li>Each card shows the exact basis points from the $1.00 peg, a visual deviation bar (center mark = $1.00), and market cap.</li>
-    <li>If the free API rate-limits, the dashboard keeps showing the last good data and notes the issue.</li>
+    <li>If the free API rate-limits, the dashboard keeps showing the last good data and notes the issue clearly.</li>
     <li>Tap "Refresh Now" anytime for an immediate update.</li>
   </ol>
   <div id="last-updated"><span class="live-dot"></span>Waiting for data…</div>
-  <div class="sources">Data: CoinGecko free API + Coinbase spot + DefiLlama fallback. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Verified live 2026-10-28 12:03 MDT: USDT $0.9988, USDC $0.9994, DAI $0.9999, FDUSD $0.9973, PYUSD $0.9999, TUSD $0.9981. All within band. No depegs. No volume spikes.</div>
+  <div class="sources">Data: CoinGecko free API + Coinbase spot cross-check. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Verified 2026-10-28 13:04 MDT (Coinbase/DefiLlama): USDT $0.9993, USDC $0.9996, DAI $0.9999, FDUSD $0.9978, PYUSD $0.9999, TUSD $0.9988. All within band. No depegs. No volume spikes.</div>
 </div>
 
 <script>
@@ -484,7 +484,7 @@ function showBanners(volAlerts, divAlerts, rateLimit = false) {
   if (rateLimit) {
     const el = document.createElement("div");
     el.className = "banner warning show";
-    el.textContent = "⚠ CoinGecko rate limit — showing last good data. Auto-retry continues.";
+    el.textContent = "⚠ CoinGecko free-tier rate limit — showing last good data. Auto-retry continues every 30s.";
     container.appendChild(el);
   }
   volAlerts.forEach(a => {

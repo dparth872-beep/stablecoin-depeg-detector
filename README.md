@@ -67,6 +67,6 @@ Production-ready. Latest check (2026-10-28 08:05 MDT): CoinGecko free API rate-l
 - FDUSD $0.9977 (DefiLlama)
 - PYUSD $1.0000 (Coinbase)
 - TUSD $0.9986 (DefiLlama)
-No depegs. No volume spikes. 14/14 unit tests pass. dashboard.html (v4.1) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume spike and cross-source divergence banners, status glow, market cap, peg bar center mark, monospaced prices, alert card highlight, plus graceful handling of free-tier rate limits.
+No depegs. No volume spikes. 14/14 unit tests pass. dashboard.html (v4.2) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume spike and cross-source divergence banners, status glow, market cap, peg bar center mark, monospaced prices, alert card highlight, plus graceful handling of free-tier rate limits.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

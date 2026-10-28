@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#05080e">
 <title>Stablecoin Depeg Intelligence</title>
 <style>
 :root {
@@ -12,179 +13,180 @@
   --text: #e8edf4;
   --muted: #7a8799;
   --green: #3fb950;
-  --green-bg: rgba(63, 185, 80, 0.15);
+  --green-bg: rgba(63, 185, 80, 0.12);
   --red: #f85149;
-  --red-bg: rgba(248, 81, 73, 0.15);
+  --red-bg: rgba(248, 81, 73, 0.12);
   --amber: #d29922;
-  --amber-bg: rgba(210, 153, 34, 0.15);
+  --amber-bg: rgba(210, 153, 34, 0.12);
   --gray: #6e7681;
-  --gray-bg: rgba(110, 118, 129, 0.12);
+  --gray-bg: rgba(110, 118, 129, 0.1);
   --accent: #58a6ff;
-  --shadow: 0 12px 48px rgba(0, 0, 0, 0.55);
+  --shadow: 0 16px 56px rgba(0, 0, 0, 0.6);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  background: radial-gradient(ellipse 90% 60% at 50% -20%, #1a2a3a 0%, var(--bg) 60%);
+  background: radial-gradient(ellipse 100% 70% at 50% -30%, #1a2a3a 0%, var(--bg) 55%);
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  line-height: 1.5;
+  line-height: 1.55;
   min-height: 100vh;
-  padding: 28px 18px 56px;
+  padding: 32px 20px 64px;
 }
 header {
   text-align: center;
-  margin-bottom: 32px;
-  padding-bottom: 24px;
+  margin-bottom: 36px;
+  padding-bottom: 28px;
   border-bottom: 1px solid var(--card-border);
   position: relative;
 }
 .logo {
-  font-size: 2.6rem;
-  margin-bottom: 8px;
-  filter: drop-shadow(0 0 10px rgba(88, 166, 255, 0.45));
+  font-size: 2.8rem;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 12px rgba(88, 166, 255, 0.5));
 }
 header h1 {
-  font-size: 2.2rem;
+  font-size: 2.35rem;
   font-weight: 700;
-  letter-spacing: -0.045em;
-  background: linear-gradient(90deg, #e8edf4, #a0b8d0);
+  letter-spacing: -0.05em;
+  background: linear-gradient(90deg, #ffffff, #b0c8e0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 header .tagline {
   color: var(--muted);
-  font-size: 1.1rem;
-  margin-top: 10px;
+  font-size: 1.15rem;
+  margin-top: 12px;
   font-weight: 400;
 }
 .version {
   position: absolute;
   top: 0;
   right: 0;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   color: var(--muted);
   background: var(--card);
-  padding: 6px 14px;
-  border-radius: 10px;
+  padding: 7px 16px;
+  border-radius: 12px;
   border: 1px solid var(--card-border);
 }
 .refresh-btn {
-  margin-top: 14px;
-  padding: 10px 18px;
+  margin-top: 16px;
+  padding: 11px 20px;
   background: var(--card);
   border: 1px solid var(--card-border);
   color: var(--text);
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 500;
   transition: all 0.2s ease;
 }
-.refresh-btn:hover { background: #1a2332; border-color: #2a3a4d; }
+.refresh-btn:hover { background: #1a2332; border-color: #2a3a4d; transform: translateY(-1px); }
+.refresh-btn:active { transform: translateY(0); }
 .health-bar {
-  max-width: 1120px;
-  margin: 0 auto 24px;
-  padding: 20px 32px;
+  max-width: 1140px;
+  margin: 0 auto 28px;
+  padding: 22px 36px;
   background: linear-gradient(135deg, #0e141d 0%, #121a26 100%);
   border: 1px solid var(--card-border);
-  border-radius: 16px;
+  border-radius: 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1rem;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  font-size: 1.05rem;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.45);
 }
-.health-bar .ok { color: var(--green); font-weight: 700; text-shadow: 0 0 8px rgba(63, 185, 80, 0.4); }
-.health-bar .down { color: var(--red); font-weight: 700; text-shadow: 0 0 8px rgba(248, 81, 73, 0.4); }
+.health-bar .ok { color: var(--green); font-weight: 700; text-shadow: 0 0 10px rgba(63, 185, 80, 0.5); }
+.health-bar .down { color: var(--red); font-weight: 700; text-shadow: 0 0 10px rgba(248, 81, 73, 0.5); }
 .banners {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 28px;
-  max-width: 1120px;
+  gap: 14px;
+  margin-bottom: 32px;
+  max-width: 1140px;
   margin-left: auto;
   margin-right: auto;
 }
 .banner {
-  padding: 18px 24px;
-  border-radius: 16px;
-  font-size: 0.96rem;
+  padding: 20px 28px;
+  border-radius: 18px;
+  font-size: 1rem;
   font-weight: 500;
   display: none;
   align-items: center;
-  gap: 14px;
-  animation: fadeIn 0.4s ease;
+  gap: 16px;
+  animation: fadeIn 0.45s ease;
 }
 .banner.volume { background: var(--amber-bg); border: 1px solid var(--amber); color: #e8c070; }
 .banner.divergence { background: var(--red-bg); border: 1px solid var(--red); color: #ff8a82; }
 .banner.warning { background: var(--gray-bg); border: 1px solid var(--gray); color: var(--muted); }
 .banner.show { display: flex; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: none; } }
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-  gap: 22px;
-  max-width: 1120px;
-  margin: 0 auto 56px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  max-width: 1140px;
+  margin: 0 auto 64px;
 }
 .card {
   background: linear-gradient(180deg, #101820 0%, #0e141d 100%);
   border: 1px solid var(--card-border);
-  border-radius: 20px;
-  padding: 26px;
-  box-shadow: 0 10px 36px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.025);
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  border-radius: 22px;
+  padding: 28px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03);
+  transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
   position: relative;
   overflow: hidden;
 }
-.card:hover { transform: translateY(-5px); border-color: #2a3a4d; box-shadow: 0 18px 55px rgba(0,0,0,0.7); }
-.card.alert { box-shadow: 0 0 0 1px var(--red), 0 10px 36px rgba(248, 81, 73, 0.25); }
+.card:hover { transform: translateY(-6px); border-color: #2a3a4d; box-shadow: 0 20px 60px rgba(0,0,0,0.75); }
+.card.alert { box-shadow: 0 0 0 1px var(--red), 0 12px 40px rgba(248, 81, 73, 0.3); }
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
-.coin-name { font-size: 0.86rem; color: var(--muted); font-weight: 500; letter-spacing: 0.025em; }
-.symbol { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.025em; }
+.coin-name { font-size: 0.88rem; color: var(--muted); font-weight: 500; letter-spacing: 0.03em; }
+.symbol { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.03em; }
 .badge {
-  padding: 8px 16px;
-  border-radius: 24px;
-  font-size: 0.74rem;
+  padding: 9px 18px;
+  border-radius: 26px;
+  font-size: 0.76rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   transition: transform 0.2s;
 }
-.badge.ok { background: var(--green-bg); color: var(--green); box-shadow: 0 0 12px rgba(63, 185, 80, 0.25); }
-.badge.down { background: var(--red-bg); color: var(--red); animation: pulseBadge 1.5s infinite; }
-.badge.up { background: var(--amber-bg); color: var(--amber); animation: pulseBadge 1.5s infinite; }
+.badge.ok { background: var(--green-bg); color: var(--green); box-shadow: 0 0 14px rgba(63, 185, 80, 0.3); }
+.badge.down { background: var(--red-bg); color: var(--red); animation: pulseBadge 1.6s infinite; }
+.badge.up { background: var(--amber-bg); color: var(--amber); animation: pulseBadge 1.6s infinite; }
 .badge.nodata { background: var(--gray-bg); color: var(--gray); }
-@keyframes pulseBadge { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+@keyframes pulseBadge { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 .price {
-  font-size: 3.1rem;
+  font-size: 3.25rem;
   font-weight: 700;
-  letter-spacing: -0.045em;
-  margin: 14px 0 8px;
+  letter-spacing: -0.05em;
+  margin: 16px 0 10px;
   font-variant-numeric: tabular-nums;
-  font-family: "SF Mono", "Cascadia Code", "Roboto Mono", monospace;
+  font-family: "SF Mono", "Cascadia Code", "Roboto Mono", ui-monospace, monospace;
   transition: color 0.3s ease;
 }
-.price.flash { animation: priceFlash 0.8s ease; }
+.price.flash { animation: priceFlash 0.9s ease; }
 @keyframes priceFlash {
-  0% { color: var(--accent); transform: scale(1.03); }
+  0% { color: var(--accent); transform: scale(1.04); }
   100% { color: var(--text); transform: scale(1); }
 }
 .bps {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--muted);
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 .peg-bar {
-  height: 8px;
+  height: 9px;
   background: #1a2332;
-  border-radius: 4px;
-  margin: 12px 0 16px;
+  border-radius: 5px;
+  margin: 14px 0 18px;
   position: relative;
   overflow: visible;
 }
@@ -192,78 +194,78 @@ header .tagline {
   height: 100%;
   width: 50%;
   background: var(--green);
-  border-radius: 4px;
-  transition: width 0.5s ease, background 0.4s;
+  border-radius: 5px;
+  transition: width 0.55s ease, background 0.45s;
 }
 .peg-center {
   position: absolute;
   left: 50%;
-  top: -2px;
-  bottom: -2px;
+  top: -3px;
+  bottom: -3px;
   width: 2px;
   background: var(--accent);
-  opacity: 0.6;
+  opacity: 0.7;
   transform: translateX(-50%);
 }
 .meta {
   display: flex;
   justify-content: space-between;
   color: var(--muted);
-  font-size: 0.92rem;
-  margin-top: 14px;
-  padding-top: 14px;
+  font-size: 0.95rem;
+  margin-top: 16px;
+  padding-top: 16px;
   border-top: 1px solid var(--card-border);
 }
 .change.positive { color: var(--green); font-weight: 500; }
 .change.negative { color: var(--red); font-weight: 500; }
 .footer {
-  max-width: 840px;
-  margin: 64px auto 0;
+  max-width: 860px;
+  margin: 72px auto 0;
   color: var(--muted);
-  font-size: 0.94rem;
+  font-size: 0.96rem;
   text-align: center;
-  line-height: 1.7;
+  line-height: 1.75;
 }
-.footer h3 { color: var(--text); margin-bottom: 16px; font-size: 1.2rem; }
-.footer ol { text-align: left; display: inline-block; margin: 20px 0; padding-left: 24px; }
-.footer li { margin: 12px 0; }
+.footer h3 { color: var(--text); margin-bottom: 18px; font-size: 1.25rem; }
+.footer ol { text-align: left; display: inline-block; margin: 22px 0; padding-left: 26px; }
+.footer li { margin: 14px 0; }
 #last-updated {
-  margin-top: 24px;
-  font-size: 0.86rem;
+  margin-top: 28px;
+  font-size: 0.88rem;
   color: var(--muted);
 }
 .live-dot {
   display: inline-block;
-  width: 10px; height: 10px;
+  width: 11px; height: 11px;
   background: var(--green);
   border-radius: 50%;
-  margin-right: 8px;
-  animation: pulse 2s infinite;
-  box-shadow: 0 0 8px var(--green);
+  margin-right: 9px;
+  animation: pulse 2.2s infinite;
+  box-shadow: 0 0 10px var(--green);
 }
 @keyframes pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  50% { opacity: 0.35; }
 }
 .sources {
-  margin-top: 12px;
-  font-size: 0.78rem;
-  opacity: 0.8;
+  margin-top: 14px;
+  font-size: 0.8rem;
+  opacity: 0.85;
 }
-@media (max-width: 640px) {
-  .price { font-size: 2.5rem; }
-  header h1 { font-size: 1.65rem; }
-  .grid { gap: 18px; grid-template-columns: 1fr; }
-  .card { padding: 20px; }
-  .version { position: static; display: inline-block; margin-top: 12px; }
-  .health-bar { flex-direction: column; gap: 10px; text-align: center; padding: 18px; }
-  body { padding: 18px 12px 48px; }
+@media (max-width: 680px) {
+  .price { font-size: 2.6rem; }
+  header h1 { font-size: 1.75rem; }
+  .grid { gap: 20px; grid-template-columns: 1fr; }
+  .card { padding: 22px; }
+  .version { position: static; display: inline-block; margin-top: 14px; }
+  .health-bar { flex-direction: column; gap: 12px; text-align: center; padding: 20px; }
+  body { padding: 20px 14px 52px; }
 }
 </style>
 </head>
 <body>
 <header>
-  <div class="version">v3.58</div>
+  <div class="version">v4.0</div>
   <div class="logo">◉</div>
   <h1>Stablecoin Depeg Detector</h1>
   <div class="tagline">Stablecoin Depeg Intelligence — minutes matter when a peg breaks</div>
@@ -293,7 +295,7 @@ header .tagline {
     <li>Tap "Refresh Now" anytime for an immediate update.</li>
   </ol>
   <div id="last-updated"><span class="live-dot"></span>Waiting for data…</div>
-  <div class="sources">Data: CoinGecko free API + Coinbase spot + DefiLlama fallback. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Verified live 2026-10-28 05:03 MDT (CoinGecko 200): USDT $0.9988, USDC $0.9993, DAI $0.9998, FDUSD $0.9975, PYUSD $1.0000, TUSD $0.9975. All within band. No depegs. 14/14 tests pass.</div>
+  <div class="sources">Data: CoinGecko free API + Coinbase spot + DefiLlama fallback. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Verified live 2026-10-28 06:05 MDT: USDT $0.9988, USDC $0.9993, DAI $0.9998, FDUSD $0.9975, PYUSD $1.0000, TUSD $0.9985. All within band. No depegs.</div>
 </div>
 
 <script>

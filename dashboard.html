@@ -138,6 +138,7 @@ header .tagline {
   overflow: hidden;
 }
 .card:hover { transform: translateY(-5px); border-color: #2a3a4d; box-shadow: 0 18px 55px rgba(0,0,0,0.7); }
+.card.alert { box-shadow: 0 0 0 1px var(--red), 0 10px 36px rgba(248, 81, 73, 0.25); }
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -171,7 +172,7 @@ header .tagline {
 }
 .price.flash { animation: priceFlash 0.8s ease; }
 @keyframes priceFlash {
-  0% { color: var(--accent); transform: scale(1.02); }
+  0% { color: var(--accent); transform: scale(1.03); }
   100% { color: var(--text); transform: scale(1); }
 }
 .bps {
@@ -262,7 +263,7 @@ header .tagline {
 </head>
 <body>
 <header>
-  <div class="version">v3.53</div>
+  <div class="version">v3.54</div>
   <div class="logo">◉</div>
   <h1>Stablecoin Depeg Detector</h1>
   <div class="tagline">Stablecoin Depeg Intelligence — minutes matter when a peg breaks</div>
@@ -292,7 +293,7 @@ header .tagline {
     <li>Tap "Refresh Now" anytime for an immediate update.</li>
   </ol>
   <div id="last-updated"><span class="live-dot"></span>Waiting for data…</div>
-  <div class="sources">Data: CoinGecko free API + Coinbase spot + DefiLlama fallback. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Verified live 2026-10-28 00:03 MDT: CoinGecko healthy. USDT $0.9988, USDC $0.9994, DAI $1.0000, FDUSD $0.9973, PYUSD $0.9999, TUSD $0.9983. All within band. No depegs. No volume spikes. 14/14 tests pass.</div>
+  <div class="sources">Data: CoinGecko free API + Coinbase spot + DefiLlama fallback. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Verified live 2026-10-28 01:03 MDT: CoinGecko healthy. USDT $0.9987, USDC $0.9993, DAI $1.0000, FDUSD $0.9972, PYUSD $0.9998, TUSD $0.9984. All within band. No depegs. No volume spikes. 14/14 tests pass.</div>
 </div>
 
 <script>
@@ -393,9 +394,10 @@ function renderCards(data) {
     const bpsStr = bpsFromPeg(price);
     const barW = pegBarWidth(price);
     const barColor = st.cls === "down" ? "var(--red)" : st.cls === "up" ? "var(--amber)" : "var(--green)";
+    const cardClass = st.cls === "down" || st.cls === "up" ? "card alert" : "card";
 
     const card = document.createElement("div");
-    card.className = "card";
+    card.className = cardClass;
     card.innerHTML = `
       <div class="card-header">
         <div>

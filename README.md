@@ -67,6 +67,6 @@ Production-ready. Latest check (2026-10-28 07:06 MDT): CoinGecko free API return
 - FDUSD $0.997568 (vol $74.8M)
 - PYUSD $0.999834 (vol $27.6M)
 - TUSD $0.998725 (vol $7.1M)
-No depegs. No volume spikes. 14/14 unit tests pass. dashboard.html (v4.0) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume spike and cross-source divergence banners, status glow, market cap, peg bar center mark, monospaced prices, alert card highlight, plus graceful handling of free-tier rate limits.
+No depegs. No volume spikes. 14/14 unit tests pass. dashboard.html (v4.1) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume spike and cross-source divergence banners, status glow, market cap, peg bar center mark, monospaced prices, alert card highlight, plus graceful handling of free-tier rate limits.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

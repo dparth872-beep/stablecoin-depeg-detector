@@ -1,16 +1,16 @@
-# Price Verification — 2026-10-27 ~15:04 MDT
+# Price Verification — 2026-10-28 00:03 MDT
 
-CoinGecko free API returned 429 (rate limit) on this check. Used DefiLlama primary + Coinbase spot for cross-check.
+CoinGecko free API returned 200. All six stablecoins within $0.99–$1.01 band. No depegs.
 
-| Coin   | Price     | Status | Source     |
-|--------|-----------|--------|------------|
-| USDT   | $0.9988   | OK     | DefiLlama  |
-| USDC   | $0.9995   | OK     | DefiLlama  |
-| DAI    | $0.9997   | OK     | DefiLlama  |
-| FDUSD  | $0.9972   | OK     | DefiLlama  |
-| PYUSD  | $0.9999   | OK     | DefiLlama  |
-| TUSD   | $0.9977   | OK     | DefiLlama  |
+| Coin   | Price     | 24h Vol     | 24h Chg | Status |
+|--------|-----------|-------------|---------|--------|
+| USDT   | $0.9988   | $42.1B      | +0.01%  | OK     |
+| USDC   | $0.9994   | $10.5B      | +0.00%  | OK     |
+| DAI    | $1.0000   | $122.6M     | -0.01%  | OK     |
+| FDUSD  | $0.9973   | $68.9M      | +0.04%  | OK     |
+| PYUSD  | $0.9999   | $24.4M      | +0.01%  | OK     |
+| TUSD   | $0.9983   | $4.2M       | +0.01%  | OK     |
 
-Coinbase spot cross-check: USDT $0.9986, USDC $1.0000, DAI $0.9999. All within band. No depegs.
+No volume spikes relative to recent baselines. No cross-source divergences observed. Dashboard v3.52 and depeg_detector.py operational. Primary client surface remains dashboard.html — zero-code, browser-based, rate-limit resilient.
 
-Dashboard v3.48 and depeg_detector.py both operational. Primary client surface remains dashboard.html — zero-code, browser-based, rate-limit resilient with last-good-data fallback.
+Threshold logic confirmed: all prices OK.

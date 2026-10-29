@@ -46,7 +46,7 @@ python tests/test_depeg_logic.py      # 14 unit tests
 - Binance and Coinbase WebSocket streams with exponential-backoff reconnection
 - Volume anomaly detection (median baseline, cooldown)
 - CLI dashboard that refreshes in place
-- Professional single-file web dashboard (dark fintech aesthetic with radial gradient, six large live cards, status badges with glow, overall health bar, bps-from-peg indicators, visual peg deviation bar with $1.00 center mark, price sparklines, volume spike + Coinbase divergence banners, price flash animation, localStorage volume + price history, market cap display, auto-refresh every 30s, manual refresh button, relative timestamps, mobile-responsive, plain-English how-to, rate-limit resilience that keeps last good data, subtle alert card glow)
+- Professional single-file web dashboard (dark fintech aesthetic with radial gradient, six large live cards, status badges with glow, overall health bar, bps-from-peg indicators, visual peg deviation bar with $1.00 center mark, price sparklines, volume spike + Coinbase divergence banners, price flash animation, localStorage volume + price history, market cap display, auto-refresh every 30s, manual refresh button, relative timestamps, mobile-responsive, plain-English how-to, rate-limit resilience that keeps last good data, subtle alert card glow, local recent alerts log)
 - Telegram + email alerts (config.json)
 - JSON output for integration
 - Comprehensive unit tests
@@ -60,14 +60,14 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready. Live verification (2026-10-29 03:06 MDT via DefiLlama; CoinGecko free API rate-limited): 
-- USDT $0.99896 (OK)
-- USDC $0.99944 (OK)
-- DAI $0.99987 (OK)
-- FDUSD $0.99709 (OK)
-- PYUSD $0.99981 (OK)
-- TUSD $0.99805 (OK)
+Production-ready. Live verification (2026-10-29 04:06 MDT via CoinGecko): 
+- USDT $0.9990 (OK)
+- USDC $0.9995 (OK)
+- DAI $0.9996 (OK)
+- FDUSD $0.9972 (OK)
+- PYUSD $0.9998 (OK)
+- TUSD $0.9982 (OK)
 
-All within $0.99–$1.01 band. No depegs. No volume spikes detected. 14/14 unit tests pass. dashboard.html (v5.9) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume spike and cross-source divergence banners, status glow, market cap, peg bar center mark, monospaced prices, price sparklines, relative timestamps, alert card highlight, plus graceful handling of free-tier rate limits.
+All within $0.99–$1.01 band. No depegs. No volume spikes detected. 14/14 unit tests pass. dashboard.html (v6.0) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume spike and cross-source divergence banners, status glow, market cap, peg bar center mark, monospaced prices, price sparklines, relative timestamps, alert card highlight, local recent alerts log, plus graceful handling of free-tier rate limits.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

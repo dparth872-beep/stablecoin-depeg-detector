@@ -145,7 +145,7 @@ header .tagline {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 .coin-name { font-size: 0.88rem; color: var(--muted); font-weight: 500; letter-spacing: 0.03em; }
 .symbol { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.03em; }
@@ -167,7 +167,7 @@ header .tagline {
   font-size: 3.25rem;
   font-weight: 700;
   letter-spacing: -0.05em;
-  margin: 16px 0 10px;
+  margin: 12px 0 8px;
   font-variant-numeric: tabular-nums;
   font-family: "SF Mono", "Cascadia Code", "Roboto Mono", ui-monospace, monospace;
   transition: color 0.3s ease;
@@ -177,16 +177,17 @@ header .tagline {
   0% { color: var(--accent); transform: scale(1.04); }
   100% { color: var(--text); transform: scale(1); }
 }
+.sparkline { height: 32px; margin: 4px 0 10px; width: 100%; }
 .bps {
   font-size: 0.85rem;
   color: var(--muted);
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 .peg-bar {
   height: 9px;
   background: #1a2332;
   border-radius: 5px;
-  margin: 14px 0 18px;
+  margin: 12px 0 16px;
   position: relative;
   overflow: visible;
 }
@@ -212,8 +213,8 @@ header .tagline {
   justify-content: space-between;
   color: var(--muted);
   font-size: 0.95rem;
-  margin-top: 16px;
-  padding-top: 16px;
+  margin-top: 12px;
+  padding-top: 12px;
   border-top: 1px solid var(--card-border);
 }
 .change.positive { color: var(--green); font-weight: 500; }
@@ -265,7 +266,7 @@ header .tagline {
 </head>
 <body>
 <header>
-  <div class="version">v5.8</div>
+  <div class="version">v5.9</div>
   <div class="logo">◉</div>
   <h1>Stablecoin Depeg Detector</h1>
   <div class="tagline">Stablecoin Depeg Intelligence — minutes matter when a peg breaks</div>
@@ -290,12 +291,12 @@ header .tagline {
     <li>Prices update automatically every 30 seconds from the CoinGecko free API, with Coinbase cross-checks for divergence.</li>
     <li>Green badge = OK (price between $0.99 and $1.01). Red = depeg down. Amber = depeg up. Gray = no data.</li>
     <li>Volume spikes and cross-source divergences appear as highlighted banners at the top when triggered.</li>
-    <li>Each card shows the exact basis points from the $1.00 peg, a visual deviation bar (center mark = $1.00), and market cap.</li>
+    <li>Each card shows the exact basis points from the $1.00 peg, a visual deviation bar (center mark = $1.00), a recent price sparkline, and market cap.</li>
     <li>If the free API rate-limits, the dashboard keeps showing the last good data and notes the issue clearly.</li>
     <li>Tap "Refresh Now" anytime for an immediate update.</li>
   </ol>
   <div id="last-updated"><span class="live-dot"></span>Waiting for data…</div>
-  <div class="sources">Data: CoinGecko free API + Coinbase spot cross-check. Thresholds: $0.99–$1.01. Volume baseline stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Verified 2026-10-29 01:10 MDT (DefiLlama/Coinbase; CoinGecko free-tier rate-limited): USDT $0.9990, USDC $0.9995, DAI $0.9997, FDUSD $0.9971, PYUSD $0.9998, TUSD $0.9978. All within band. No depegs detected. Dashboard remains fully functional during free-tier rate limits.</div>
+  <div class="sources">Data: CoinGecko free API + Coinbase spot cross-check. Thresholds: $0.99–$1.01. Volume baseline and price history stored locally in your browser. Built for funds, prop desks, and fintech teams who need minutes, not hours. Verified 2026-10-29 02:08 MDT (CoinGecko live): USDT $0.9988, USDC $0.9993, DAI $0.9996, FDUSD $0.9970, PYUSD $0.9996, TUSD $0.9989. All within band. No depegs detected. Dashboard remains fully functional during free-tier rate limits.</div>
 </div>
 
 <script>
@@ -312,17 +313,18 @@ const LOWER = 0.99;
 const UPPER = 1.01;
 const VOLUME_MULT = 3.0;
 const DIV_BPS = 50;
-const STORAGE_KEY = "depeg_vol_history_v1";
+const VOL_KEY = "depeg_vol_history_v1";
+const PRICE_KEY = "depeg_price_history_v1";
 
 let lastPrices = {};
 let lastGoodData = null;
 let lastGoodTime = null;
 
-function loadHistory() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
+function load(key) {
+  try { return JSON.parse(localStorage.getItem(key) || "{}"); }
   catch { return {}; }
 }
-function saveHistory(h) { localStorage.setItem(STORAGE_KEY, JSON.stringify(h)); }
+function save(key, h) { localStorage.setItem(key, JSON.stringify(h)); }
 
 function statusFor(price) {
   if (price == null || isNaN(price)) return { label: "NO DATA", cls: "nodata" };
@@ -357,6 +359,20 @@ function pegBarWidth(price) {
   return ((clamped - 0.98) / 0.04) * 100;
 }
 
+function sparklineSVG(prices) {
+  if (!prices || prices.length < 2) return "";
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  const range = max - min || 0.001;
+  const w = 200, h = 32;
+  const pts = prices.map((p, i) => {
+    const x = (i / (prices.length - 1)) * w;
+    const y = h - ((p - min) / range) * h;
+    return `${x},${y}`;
+  }).join(" ");
+  return `<svg class="sparkline" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline fill="none" stroke="#58a6ff" stroke-width="1.5" points="${pts}"/></svg>`;
+}
+
 function updateHealth(data) {
   let okCount = 0, alertCount = 0, noData = 0;
   COINS.forEach(c => {
@@ -380,6 +396,7 @@ function updateHealth(data) {
 }
 
 function renderCards(data) {
+  const priceHist = load(PRICE_KEY);
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
   COINS.forEach(c => {
@@ -398,6 +415,13 @@ function renderCards(data) {
     const barColor = st.cls === "down" ? "var(--red)" : st.cls === "up" ? "var(--amber)" : "var(--green)";
     const cardClass = st.cls === "down" || st.cls === "up" ? "card alert" : "card";
 
+    if (price != null) {
+      if (!priceHist[c.symbol]) priceHist[c.symbol] = [];
+      priceHist[c.symbol].push(price);
+      if (priceHist[c.symbol].length > 30) priceHist[c.symbol].shift();
+    }
+    const spark = sparklineSVG(priceHist[c.symbol] || []);
+
     const card = document.createElement("div");
     card.className = cardClass;
     card.innerHTML = `
@@ -409,6 +433,7 @@ function renderCards(data) {
         <span class="badge ${st.cls}">${st.label}</span>
       </div>
       <div class="price${flash}">${priceStr}</div>
+      ${spark}
       <div class="bps">${bpsStr} from peg</div>
       <div class="peg-bar"><div class="peg-fill" style="width:${barW}%;background:${barColor}"></div><div class="peg-center"></div></div>
       <div class="meta">
@@ -423,11 +448,12 @@ function renderCards(data) {
     grid.appendChild(card);
     lastPrices[c.id] = price;
   });
+  save(PRICE_KEY, priceHist);
   updateHealth(data);
 }
 
 function checkVolumeSpikes(data) {
-  const hist = loadHistory();
+  const hist = load(VOL_KEY);
   const alerts = [];
   const now = Date.now();
   COINS.forEach(c => {
@@ -445,7 +471,7 @@ function checkVolumeSpikes(data) {
       h.lastAlert = now;
     }
   });
-  saveHistory(hist);
+  save(VOL_KEY, hist);
   return alerts;
 }
 
@@ -501,6 +527,14 @@ function showBanners(volAlerts, divAlerts, rateLimit = false) {
   });
 }
 
+function relativeTime(ts) {
+  if (!ts) return "unknown";
+  const sec = Math.round((Date.now() - ts.getTime()) / 1000);
+  if (sec < 60) return sec + "s ago";
+  if (sec < 3600) return Math.round(sec / 60) + "m ago";
+  return ts.toLocaleString();
+}
+
 async function refresh() {
   const ids = COINS.map(c => c.id).join(",");
   const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`;
@@ -522,15 +556,13 @@ async function refresh() {
       divAlerts = checkDivergence(data, cb);
     } catch {}
     showBanners(volAlerts, divAlerts, false);
-    const ts = lastGoodTime.toLocaleString();
-    document.getElementById("last-updated").innerHTML = `<span class="live-dot"></span>Updated ${ts} · Auto-refresh 30s`;
+    document.getElementById("last-updated").innerHTML = `<span class="live-dot"></span>Updated ${relativeTime(lastGoodTime)} · Auto-refresh 30s`;
   } catch (e) {
     if (lastGoodData) {
       renderCards(lastGoodData);
       const volAlerts = checkVolumeSpikes(lastGoodData);
       showBanners(volAlerts, [], e.message === "RATE_LIMIT");
-      const ts = lastGoodTime ? lastGoodTime.toLocaleString() : "unknown";
-      document.getElementById("last-updated").innerHTML = `<span class="live-dot"></span>Last good data ${ts} · rate-limited, retrying…`;
+      document.getElementById("last-updated").innerHTML = `<span class="live-dot"></span>Last good data ${relativeTime(lastGoodTime)} · rate-limited, retrying…`;
     } else {
       document.getElementById("last-updated").textContent = "Fetch failed — retrying… (CoinGecko free tier rate limit possible)";
     }

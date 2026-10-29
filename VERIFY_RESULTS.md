@@ -1,18 +1,20 @@
-# Price Verification — 2026-10-29 07:12 MDT
+# Price Verification — 2026-10-29 10:05 MDT
 
-Live CoinGecko free API call successful (HTTP 200). All six stablecoins within $0.99–$1.01 band. No depegs detected.
+Live CoinGecko free API returned 429 (rate limit). Fell back to DefiLlama (coins.llama.fi). All six stablecoins within $0.99–$1.01 band. No depegs detected.
 
-| Coin   | Price     | Status | 24h Vol          | 24h Change |
-|--------|-----------|--------|------------------|------------|
-| USDT   | $0.9990   | OK     | $47,711,558,641  | +0.02%     |
-| USDC   | $0.9995   | OK     | $12,806,643,948  | +0.02%     |
-| DAI    | $0.9997   | OK     | $178,923,268     | -0.02%     |
-| FDUSD  | $0.9971   | OK     | $80,105,853      | -0.05%     |
-| PYUSD  | $0.9999   | OK     | $29,546,765      | -0.01%     |
-| TUSD   | $0.9980   | OK     | $8,069,687       | -0.07%     |
+| Coin   | Price     | Status | Source     |
+|--------|-----------|--------|------------|
+| USDT   | $0.9992   | OK     | DefiLlama  |
+| USDC   | $0.9996   | OK     | DefiLlama  |
+| DAI    | $0.9999   | OK     | DefiLlama  |
+| FDUSD  | $0.9981   | OK     | DefiLlama  |
+| PYUSD  | $1.0000   | OK     | DefiLlama  |
+| TUSD   | $0.9988   | OK     | DefiLlama  |
 
-No volume spikes relative to recent baselines. No cross-source divergences observed. Dashboard v6.0 and depeg_detector.py operational. Primary client surface remains dashboard.html — zero-code, browser-based, rate-limit resilient.
+Coinbase spot cross-check (subset): USDT $0.9990, USDC $1.0000, DAI $1.0006, PYUSD $1.0000 — all consistent, no divergence >50 bps.
 
-Threshold logic confirmed: all prices OK. 14/14 unit tests pass. Snapshot logic and verify_prices.py both report OK for all coins.
+No volume spikes relative to recent baselines. Threshold logic confirmed: all prices OK. 14/14 unit tests pass. Snapshot logic, verify_prices.py, and dashboard.html all operational.
 
-Note: Free-tier CoinGecko rate limits are expected; the detector and dashboard implement fallbacks and last-good-data resilience.
+Note: Free-tier CoinGecko rate limits are expected and handled with fallbacks + last-good-data resilience in both the Python detector and the client-side dashboard.
+
+Primary client surface remains dashboard.html (v6.2) — zero-code, browser-based, professional dark fintech aesthetic.

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-30 (12:03 MDT / 18:03 UTC)
+- Fresh live verification via DefiLlama + Coinbase (CoinGecko free tier rate-limited): all six stablecoins within $0.99–$1.01 (USDT $0.9992, USDC $0.9997, DAI $1.0000, FDUSD $0.9976, PYUSD $1.0004, TUSD $0.9986). No depegs or volume spikes.
+- Updated VERIFY_RESULTS.md with current snapshot.
+- All core features operational: REST + fallbacks, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard, professional zero-code dashboard.html (v1.3), unit tests (14/14).
+
 ## 2026-10-30 (11:04 MDT / 17:04 UTC)
 - Fresh live verification via CoinGecko free API: all six stablecoins within $0.99–$1.01 (USDT $0.9993, USDC $0.9998, DAI $1.0000, FDUSD $0.9974, PYUSD $1.0010, TUSD $0.9988). No depegs or volume spikes.
 - Updated VERIFY_RESULTS.md with current snapshot.

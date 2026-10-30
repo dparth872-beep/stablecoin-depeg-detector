@@ -94,6 +94,8 @@ body {
   font-size: 0.88rem;
   animation: slideIn 0.25s ease;
 }
+.banner.depeg { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+.banner.volume { background: var(--amber-bg); border-color: var(--amber); color: var(--amber); }
 .banner.divergence { background: rgba(59, 130, 246, 0.12); border-color: var(--accent); color: #60a5fa; }
 @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
 .grid {
@@ -241,8 +243,10 @@ body {
   font-weight: 600;
   cursor: pointer;
   font-size: 0.82rem;
+  transition: opacity 0.2s;
 }
 .refresh-btn:hover { opacity: 0.88; }
+.refresh-btn.loading { opacity: 0.6; cursor: wait; }
 @media (max-width: 640px) {
   .header h1 { font-size: 1.45rem; }
   .price { font-size: 1.85rem; }
@@ -261,7 +265,7 @@ body {
 <div class="health-bar" id="health-bar"></div>
 <div class="meta">
   <span id="last-updated">Last updated: —</span>
-  <button class="refresh-btn" onclick="fetchPrices()">Refresh now</button>
+  <button class="refresh-btn" id="refresh-btn" onclick="fetchPrices()">Refresh now</button>
 </div>
 <div class="banners" id="banners"></div>
 <div class="grid" id="cards"></div>
@@ -275,12 +279,12 @@ body {
     <li>Bookmark this page. Open it any time in any browser (including iPhone Safari).</li>
     <li>The six cards show live prices, 24h change, market cap, and status for USDT, USDC, DAI, FDUSD, PYUSD, and TUSD.</li>
     <li>Green badge = OK (inside $0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data. Cards pulse on depeg.</li>
-    <li>Volume spike banners appear if 24h volume jumps more than 3× recent median (tracked locally).</li>
-    <li>Data refreshes every 30 seconds. No install, no login, no code required. Last-good data shown on rate limits.</li>
+    <li>Volume spike banners appear if 24h volume jumps more than 3× recent median (tracked locally). Depeg alerts show in red.</li>
+    <li>Data refreshes every 30 seconds. No install, no login, no code required. Last-good data shown on rate limits or errors.</li>
   </ol>
 </div>
 <div class="footer">
-  Stablecoin Depeg Detector · Zero-code client surface · Free CoinGecko data · Production-grade signals · v1.2
+  Stablecoin Depeg Detector · Zero-code client surface · Free CoinGecko data · Production-grade signals · v1.3
 </div>
 <script>
 const COINS = [
@@ -396,12 +400,12 @@ function renderCards(data) {
     const spike = checkVolumeSpike(coin.symbol, vol);
     if (spike) {
       const msg = `VOLUME SPIKE ${spike.symbol}: $${spike.vol.toLocaleString(undefined, {maximumFractionDigits: 0})} > 3× median $${spike.med.toLocaleString(undefined, {maximumFractionDigits: 0})}`;
-      banners.push(msg);
+      banners.push({ text: msg, cls: "volume" });
       addToLog(msg);
     }
     if (st.cls.startsWith("depeg")) {
       const msg = `${st.text} ${coin.symbol}: $${price.toFixed(4)}`;
-      banners.push(msg);
+      banners.push({ text: msg, cls: "depeg" });
       addToLog(msg);
     }
     const chgCls = chg == null ? "neutral" : chg > 0 ? "positive" : chg < 0 ? "negative" : "neutral";
@@ -435,13 +439,16 @@ function renderCards(data) {
     grid.appendChild(card);
   });
   const bEl = document.getElementById("banners");
-  bEl.innerHTML = banners.map(b => `<div class="banner volume">${b}</div>`).join("");
+  bEl.innerHTML = banners.map(b => `<div class="banner ${b.cls}">${b.text}</div>`).join("");
   renderHealth(okCount, alertCount, COINS.length);
   lastUpdate = Date.now();
   document.getElementById("last-updated").textContent = "Updated " + relativeTime(lastUpdate);
 }
 
 async function fetchPrices() {
+  const btn = document.getElementById("refresh-btn");
+  btn.classList.add("loading");
+  btn.textContent = "Refreshing...";
   try {
     const r = await fetch(API);
     if (r.status === 429) {
@@ -455,6 +462,9 @@ async function fetchPrices() {
   } catch (e) {
     document.getElementById("last-updated").textContent = "Fetch error — last good data";
     renderCards({});
+  } finally {
+    btn.classList.remove("loading");
+    btn.textContent = "Refresh now";
   }
 }
 

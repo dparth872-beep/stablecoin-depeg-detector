@@ -98,6 +98,7 @@ body {
 .banner.depeg { background: var(--red-bg); border-color: var(--red); color: var(--red); }
 .banner.volume { background: var(--amber-bg); border-color: var(--amber); color: var(--amber); }
 .banner.divergence { background: rgba(59, 130, 246, 0.12); border-color: var(--accent); color: #60a5fa; }
+.banner.all-clear { background: var(--green-bg); border-color: var(--green); color: var(--green); }
 @keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 .grid {
   display: grid;
@@ -184,7 +185,7 @@ body {
 }
 .peg-bar {
   height: 9px;
-  background: linear-gradient(to right, #151c28 0%, #151c28 25%, rgba(0,217,163,0.18) 25%, rgba(0,217,163,0.18) 75%, #151c28 75%, #151c28 100%);
+  background: linear-gradient(to right, #151c28 0%, #151c28 25%, rgba(0,217,163,0.25) 25%, rgba(0,217,163,0.25) 75%, #151c28 75%, #151c28 100%);
   border-radius: 5px;
   position: relative;
   margin-top: 7px;
@@ -288,7 +289,7 @@ body {
   </ol>
 </div>
 <div class="footer">
-  Stablecoin Depeg Detector · Zero-code client surface · Free CoinGecko data · Production-grade signals · v1.6
+  Stablecoin Depeg Detector · Zero-code client surface · Free CoinGecko data · Production-grade signals · v1.7
 </div>
 <script>
 const COINS = [
@@ -443,6 +444,9 @@ function renderCards(data) {
     `;
     grid.appendChild(card);
   });
+  if (banners.length === 0 && okCount === COINS.length) {
+    banners.push({ text: "All systems nominal — all six stablecoins within $0.99–$1.01 band.", cls: "all-clear" });
+  }
   const bEl = document.getElementById("banners");
   bEl.innerHTML = banners.map(b => `<div class="banner ${b.cls}">${b.text}</div>`).join("");
   renderHealth(okCount, alertCount, COINS.length);

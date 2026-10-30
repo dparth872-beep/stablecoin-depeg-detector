@@ -1,15 +1,15 @@
-# Price Verification — 2026-10-30 06:08 MDT
+# Price Verification — 2026-10-30 08:06 MDT
 
 Live snapshot via CoinGecko free API (direct fetch). All six stablecoins within $0.99–$1.01 band. No depegs detected.
 
 | Coin   | Price     | Status | Notes                  |
 |--------|-----------|--------|------------------------|
-| USDT   | $0.9991   | OK     | within band            |
-| USDC   | $0.9997   | OK     | within band            |
+| USDT   | $0.9989   | OK     | within band            |
+| USDC   | $0.9995   | OK     | within band            |
 | DAI    | $1.0000   | OK     | within band            |
-| FDUSD  | $0.9975   | OK     | within band            |
+| FDUSD  | $0.9969   | OK     | within band            |
 | PYUSD  | $1.0000   | OK     | within band            |
-| TUSD   | $0.9989   | OK     | within band            |
+| TUSD   | $0.9985   | OK     | within band            |
 
 No volume spikes on this snapshot. Threshold logic confirmed against live data. 14/14 unit tests pass. Snapshot logic, WebSocket streams (Binance + Coinbase with exponential-backoff reconnection), volume tracker, CLI dashboard, and professional dashboard.html all operational.
 

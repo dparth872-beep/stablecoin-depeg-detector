@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-30 (04:08 UTC / ~22:08 MDT prior day)
+- Replaced stub dashboard.html with full production-grade single-file client dashboard: dark fintech aesthetic (Bloomberg-meets-Apple), six large cards with live price / 24h change / status badge / peg bar, volume spike banners (localStorage median baseline), rate-limit resilience (last-good-data), auto-refresh every 30s via CoinGecko free API, mobile-responsive, plain-English how-to. Zero-code surface ready for clients.
+- Commit: feat: production-grade zero-code web dashboard
+
 ## 2026-10-30 (early morning verification)
 - Fresh live snapshot at ~03:07 MDT: all six stablecoins within $0.99–$1.01 (USDT $0.9985, USDC $1.0000, DAI $1.0000, FDUSD $0.9970, PYUSD $1.0000, TUSD $0.9984). No depegs.
 - Confirmed detector snapshot, fallbacks, and 14/14 unit tests pass.

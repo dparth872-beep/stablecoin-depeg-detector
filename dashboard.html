@@ -6,20 +6,20 @@
 <title>Stablecoin Depeg Intelligence</title>
 <style>
 :root {
-  --bg: #07090d;
-  --surface: #0f141c;
-  --surface-elevated: #161c27;
-  --border: #252d3d;
-  --text: #f0f2f5;
-  --text-muted: #8e96a8;
-  --green: #00e5b0;
-  --green-bg: rgba(0, 229, 176, 0.12);
-  --red: #ff5a7a;
-  --red-bg: rgba(255, 90, 122, 0.12);
-  --amber: #ffc107;
-  --amber-bg: rgba(255, 193, 7, 0.12);
+  --bg: #05070a;
+  --surface: #0c1017;
+  --surface-elevated: #131a24;
+  --border: #1e2633;
+  --text: #f4f6f9;
+  --text-muted: #8b94a7;
+  --green: #00d9a3;
+  --green-bg: rgba(0, 217, 163, 0.14);
+  --red: #ff4d6d;
+  --red-bg: rgba(255, 77, 109, 0.14);
+  --amber: #ffb020;
+  --amber-bg: rgba(255, 176, 32, 0.14);
   --gray: #6b7280;
-  --gray-bg: rgba(107, 114, 128, 0.15);
+  --gray-bg: rgba(107, 114, 128, 0.18);
   --accent: #3b82f6;
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
 }
@@ -29,96 +29,97 @@ body {
   color: var(--text);
   font-family: var(--font);
   min-height: 100vh;
-  padding: 24px 20px 48px;
-  background-image: radial-gradient(ellipse 90% 60% at 50% -10%, rgba(59, 130, 246, 0.09), transparent 60%);
+  padding: 28px 22px 56px;
+  background-image: radial-gradient(ellipse 100% 70% at 50% -15%, rgba(59, 130, 246, 0.11), transparent 65%);
 }
 .header {
   text-align: center;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 18px;
   border-bottom: 1px solid var(--border);
 }
 .header h1 {
-  font-size: 1.85rem;
+  font-size: 2.05rem;
   font-weight: 700;
-  letter-spacing: -0.6px;
-  background: linear-gradient(135deg, #ffffff 0%, #c4c9d4 100%);
+  letter-spacing: -0.8px;
+  background: linear-gradient(135deg, #ffffff 0%, #d1d5db 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .header .tagline {
   color: var(--text-muted);
-  font-size: 0.98rem;
-  margin-top: 6px;
+  font-size: 1.02rem;
+  margin-top: 8px;
   font-weight: 400;
 }
 .health-bar {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   justify-content: center;
-  margin: 16px 0 24px;
+  margin: 18px 0 28px;
   flex-wrap: wrap;
 }
 .health-stat {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px 16px;
-  font-size: 0.85rem;
-  min-width: 110px;
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-size: 0.88rem;
+  min-width: 120px;
   text-align: center;
+  transition: border-color 0.2s;
 }
-.health-stat .num { font-size: 1.4rem; font-weight: 700; display: block; }
+.health-stat .num { font-size: 1.55rem; font-weight: 700; display: block; font-variant-numeric: tabular-nums; }
 .health-stat.ok .num { color: var(--green); }
 .health-stat.alert .num { color: var(--red); }
 .meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  font-size: 0.82rem;
+  margin-bottom: 18px;
+  font-size: 0.85rem;
   color: var(--text-muted);
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
-.banners { margin-bottom: 16px; }
+.banners { margin-bottom: 18px; }
 .banner {
   background: var(--amber-bg);
   border: 1px solid var(--amber);
   color: var(--amber);
-  padding: 10px 14px;
-  border-radius: 8px;
-  margin-bottom: 8px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 10px;
   font-weight: 500;
-  font-size: 0.88rem;
-  animation: slideIn 0.25s ease;
+  font-size: 0.9rem;
+  animation: slideIn 0.3s ease;
 }
 .banner.depeg { background: var(--red-bg); border-color: var(--red); color: var(--red); }
 .banner.volume { background: var(--amber-bg); border-color: var(--amber); color: var(--amber); }
 .banner.divergence { background: rgba(59, 130, 246, 0.12); border-color: var(--accent); color: #60a5fa; }
-@keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 16px;
-  margin-bottom: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 18px;
+  margin-bottom: 32px;
 }
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 18px 18px 16px;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  border-radius: 18px;
+  padding: 20px 20px 18px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
   overflow: hidden;
 }
-.card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,0.45); }
+.card:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,0.5); }
 .card::before {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 3px;
+  height: 4px;
   background: var(--gray);
   transition: background 0.3s;
 }
@@ -126,39 +127,40 @@ body {
 .card.depeg-down::before { background: var(--red); }
 .card.depeg-up::before { background: var(--amber); }
 .card.no-data::before { background: var(--gray); }
-.card.depeg-down, .card.depeg-up { animation: pulse 2s infinite; }
-@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,90,122,0.3); } 50% { box-shadow: 0 0 0 6px rgba(255,90,122,0); } }
+.card.depeg-down, .card.depeg-up { animation: pulse 2.2s infinite; }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,77,109,0.35); } 50% { box-shadow: 0 0 0 8px rgba(255,77,109,0); } }
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
-.coin-name { font-size: 0.9rem; font-weight: 500; color: var(--text-muted); }
-.coin-symbol { font-size: 1.05rem; font-weight: 700; }
+.coin-name { font-size: 0.92rem; font-weight: 500; color: var(--text-muted); }
+.coin-symbol { font-size: 1.12rem; font-weight: 700; }
 .price {
-  font-size: 2.15rem;
+  font-size: 2.35rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -1.2px;
-  margin: 4px 0 2px;
+  letter-spacing: -1.4px;
+  margin: 6px 0 4px;
   font-feature-settings: "tnum";
+  font-family: "SF Mono", ui-monospace, Consolas, monospace;
 }
 .change {
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   font-weight: 500;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 .change.positive { color: var(--green); }
 .change.negative { color: var(--red); }
 .change.neutral { color: var(--text-muted); }
 .badge {
   display: inline-block;
-  padding: 3px 9px;
-  border-radius: 12px;
-  font-size: 0.7rem;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
 }
 .badge.ok { background: var(--green-bg); color: var(--green); }
@@ -166,95 +168,96 @@ body {
 .badge.depeg-up { background: var(--amber-bg); color: var(--amber); }
 .badge.no-data { background: var(--gray-bg); color: var(--gray); }
 .vol, .mcap {
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
-  margin-top: 4px;
+  margin-top: 5px;
 }
 .sparkline {
-  height: 28px;
+  height: 32px;
   width: 100%;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 .peg-container {
-  margin-top: 10px;
+  margin-top: 12px;
   position: relative;
-  height: 22px;
+  height: 24px;
 }
 .peg-bar {
-  height: 8px;
-  background: linear-gradient(to right, #1a2230 0%, #1a2230 25%, rgba(0,229,176,0.15) 25%, rgba(0,229,176,0.15) 75%, #1a2230 75%, #1a2230 100%);
-  border-radius: 4px;
+  height: 9px;
+  background: linear-gradient(to right, #151c28 0%, #151c28 25%, rgba(0,217,163,0.18) 25%, rgba(0,217,163,0.18) 75%, #151c28 75%, #151c28 100%);
+  border-radius: 5px;
   position: relative;
-  margin-top: 6px;
+  margin-top: 7px;
   border: 1px solid #252d3d;
 }
 .peg-scale {
   display: flex;
   justify-content: space-between;
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   color: var(--text-muted);
-  margin-top: 2px;
+  margin-top: 3px;
 }
 .peg-marker {
   position: absolute;
-  top: -4px;
+  top: -5px;
   width: 3px;
-  height: 16px;
+  height: 18px;
   background: #fff;
-  border-radius: 1px;
+  border-radius: 1.5px;
   transform: translateX(-50%);
   z-index: 2;
-  box-shadow: 0 0 4px rgba(255,255,255,0.6);
+  box-shadow: 0 0 6px rgba(255,255,255,0.7);
 }
 .alerts-log {
   background: var(--surface-elevated);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
-  margin-top: 16px;
-  font-size: 0.82rem;
+  border-radius: 14px;
+  padding: 18px;
+  margin-top: 18px;
+  font-size: 0.84rem;
   color: var(--text-muted);
-  max-height: 140px;
+  max-height: 150px;
   overflow-y: auto;
 }
-.alerts-log h3 { font-size: 0.95rem; color: var(--text); margin-bottom: 8px; }
-.alerts-log .entry { margin-bottom: 4px; }
+.alerts-log h3 { font-size: 0.98rem; color: var(--text); margin-bottom: 10px; }
+.alerts-log .entry { margin-bottom: 5px; }
 .how-to {
   background: var(--surface-elevated);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-  margin-top: 24px;
+  border-radius: 14px;
+  padding: 22px;
+  margin-top: 28px;
 }
-.how-to h2 { font-size: 1.1rem; margin-bottom: 10px; }
-.how-to ol { padding-left: 18px; color: var(--text-muted); line-height: 1.65; }
-.how-to li { margin-bottom: 5px; }
+.how-to h2 { font-size: 1.15rem; margin-bottom: 12px; }
+.how-to ol { padding-left: 20px; color: var(--text-muted); line-height: 1.7; }
+.how-to li { margin-bottom: 6px; }
 .footer {
   text-align: center;
-  margin-top: 24px;
-  font-size: 0.78rem;
+  margin-top: 28px;
+  font-size: 0.8rem;
   color: var(--text-muted);
 }
 .refresh-btn {
   background: var(--accent);
   color: white;
   border: none;
-  padding: 7px 14px;
-  border-radius: 7px;
+  padding: 8px 16px;
+  border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  font-size: 0.82rem;
-  transition: opacity 0.2s;
+  font-size: 0.85rem;
+  transition: opacity 0.2s, transform 0.1s;
 }
-.refresh-btn:hover { opacity: 0.88; }
-.refresh-btn.loading { opacity: 0.6; cursor: wait; }
+.refresh-btn:hover { opacity: 0.9; }
+.refresh-btn:active { transform: scale(0.98); }
+.refresh-btn.loading { opacity: 0.65; cursor: wait; }
 @media (max-width: 640px) {
-  .header h1 { font-size: 1.45rem; }
-  .price { font-size: 1.85rem; }
+  .header h1 { font-size: 1.55rem; }
+  .price { font-size: 2rem; }
   .grid { grid-template-columns: 1fr; }
-  body { padding: 14px 12px 36px; }
-  .health-bar { gap: 8px; }
-  .health-stat { min-width: 90px; padding: 8px 10px; }
+  body { padding: 16px 14px 40px; }
+  .health-bar { gap: 10px; }
+  .health-stat { min-width: 95px; padding: 10px 12px; }
 }
 </style>
 </head>
@@ -285,7 +288,7 @@ body {
   </ol>
 </div>
 <div class="footer">
-  Stablecoin Depeg Detector · Zero-code client surface · Free CoinGecko data · Production-grade signals · v1.5
+  Stablecoin Depeg Detector · Zero-code client surface · Free CoinGecko data · Production-grade signals · v1.6
 </div>
 <script>
 const COINS = [
@@ -338,13 +341,13 @@ function sparklineSVG(prices) {
   if (!prices || prices.length < 2) return "";
   const min = Math.min(...prices), max = Math.max(...prices);
   const range = max - min || 0.001;
-  const w = 100, h = 28;
+  const w = 100, h = 32;
   const pts = prices.map((p, i) => {
     const x = (i / (prices.length - 1)) * w;
     const y = h - ((p - min) / range) * h;
     return `${x},${y}`;
   }).join(" ");
-  return `<svg class="sparkline" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline fill="none" stroke="#3b82f6" stroke-width="1.5" points="${pts}"/></svg>`;
+  return `<svg class="sparkline" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline fill="none" stroke="#3b82f6" stroke-width="1.8" points="${pts}"/></svg>`;
 }
 
 function pegPosition(price) {

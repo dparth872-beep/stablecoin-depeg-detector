@@ -1,1 +1,347 @@
-PLACEHOLDER
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Stablecoin Depeg Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0c10;
+  --bg-elevated: #12151c;
+  --card: #161a22;
+  --card-border: #252a35;
+  --text: #e8eaed;
+  --text-muted: #8b929e;
+  --green: #00d4a1;
+  --green-bg: rgba(0, 212, 161, 0.12);
+  --red: #ff4d6a;
+  --red-bg: rgba(255, 77, 106, 0.12);
+  --amber: #ffb020;
+  --amber-bg: rgba(255, 176, 32, 0.12);
+  --gray: #6b7280;
+  --gray-bg: rgba(107, 114, 128, 0.12);
+  --accent: #3b82f6;
+  --radius: 16px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: radial-gradient(ellipse 120% 80% at 50% -20%, #1a1f2e 0%, var(--bg) 60%);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 24px 16px 48px;
+  line-height: 1.5;
+}
+.container { max-width: 1200px; margin: 0 auto; }
+header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+header h1 {
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #fff 0%, #a0aec0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.tagline {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-top: 6px;
+  font-weight: 500;
+}
+.meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+#last-updated { font-family: 'JetBrains Mono', monospace; }
+.banners { margin-bottom: 24px; display: flex; flex-direction: column; gap: 10px; }
+.banner {
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: none;
+  animation: slideIn 0.4s ease-out;
+  border-left: 4px solid;
+}
+.banner.show { display: block; }
+.banner.volume { background: var(--amber-bg); border-color: var(--amber); color: var(--amber); }
+.banner.divergence { background: rgba(59, 130, 246, 0.12); border-color: var(--accent); color: #60a5fa; }
+.banner.depeg { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+@keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 22px 20px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gray);
+  transition: background 0.3s;
+}
+.card.ok::before { background: var(--green); }
+.card.depeg-down::before { background: var(--red); }
+.card.depeg-up::before { background: var(--amber); }
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.coin-name { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
+.symbol { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.02em; }
+.price {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(2rem, 6vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 8px 0 4px;
+  transition: color 0.3s;
+}
+.change {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.change.pos { color: var(--green); }
+.change.neg { color: var(--red); }
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.badge.ok { background: var(--green-bg); color: var(--green); }
+.badge.depeg-down { background: var(--red-bg); color: var(--red); }
+.badge.depeg-up { background: var(--amber-bg); color: var(--amber); }
+.badge.no-data { background: var(--gray-bg); color: var(--gray); }
+.vol {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 10px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.peg-bar {
+  height: 4px;
+  background: #2a2f3a;
+  border-radius: 2px;
+  margin-top: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.peg-fill {
+  position: absolute;
+  height: 100%;
+  background: var(--green);
+  border-radius: 2px;
+  transition: width 0.5s ease, background 0.3s;
+}
+.how-to {
+  background: var(--bg-elevated);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-top: 16px;
+}
+.how-to h2 { font-size: 1.2rem; margin-bottom: 12px; }
+.how-to ol { padding-left: 20px; color: var(--text-muted); }
+.how-to li { margin-bottom: 8px; }
+.refresh-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: opacity 0.2s;
+}
+.refresh-btn:hover { opacity: 0.9; }
+.refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+@media (max-width: 600px) {
+  .meta { flex-direction: column; gap: 8px; align-items: flex-start; }
+  .grid { grid-template-columns: 1fr; }
+  body { padding: 16px 12px 32px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Stablecoin Depeg Intelligence</h1>
+    <p class="tagline">Real-time peg monitoring for funds, prop desks & fintech teams</p>
+    <div class="meta">
+      <span>Auto-refresh every 30 seconds · CoinGecko free API</span>
+      <span id="last-updated">Updating…</span>
+    </div>
+  </header>
+
+  <div class="banners" id="banners"></div>
+
+  <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+    <button class="refresh-btn" id="refresh-btn" onclick="fetchPrices()">Refresh now</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="how-to">
+    <h2>How to use</h2>
+    <ol>
+      <li>Bookmark this page. Open it any time on your phone or laptop — no install, no login, no code.</li>
+      <li>Green badge = price inside the safe $0.99–$1.01 band. Red = depeg down. Amber = depeg up.</li>
+      <li>Volume spike or cross-source banners appear at the top when stress is detected.</li>
+      <li>Leave it open. It refreshes itself every 30 seconds. If a peg breaks, you see it immediately.</li>
+      <li>For alerts on your phone, ask your technical team to enable Telegram or email in the Python monitor.</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+const COINS = [
+  { id: 'tether', symbol: 'USDT', name: 'Tether' },
+  { id: 'usd-coin', symbol: 'USDC', name: 'USD Coin' },
+  { id: 'dai', symbol: 'DAI', name: 'Dai' },
+  { id: 'first-digital-usd', symbol: 'FDUSD', name: 'First Digital USD' },
+  { id: 'paypal-usd', symbol: 'PYUSD', name: 'PayPal USD' },
+  { id: 'true-usd', symbol: 'TUSD', name: 'TrueUSD' }
+];
+const LOWER = 0.99, UPPER = 1.01;
+const API = 'https://api.coingecko.com/api/v3/simple/price?ids=' + COINS.map(c => c.id).join(',') + '&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true';
+
+const volumeHistory = JSON.parse(localStorage.getItem('volHistory') || '{}');
+let lastPrices = {};
+
+function getStatus(price) {
+  if (price == null || isNaN(price)) return { label: 'NO DATA', cls: 'no-data', card: '' };
+  if (price < LOWER) return { label: 'DEPEG DOWN', cls: 'depeg-down', card: 'depeg-down' };
+  if (price > UPPER) return { label: 'DEPEG UP', cls: 'depeg-up', card: 'depeg-up' };
+  return { label: 'OK', cls: 'ok', card: 'ok' };
+}
+
+function formatVol(v) {
+  if (!v) return '—';
+  if (v >= 1e9) return '$' + (v / 1e9).toFixed(1) + 'B';
+  if (v >= 1e6) return '$' + (v / 1e6).toFixed(1) + 'M';
+  return '$' + Math.round(v).toLocaleString();
+}
+
+function checkVolumeSpike(symbol, vol) {
+  if (!vol || vol <= 0) return null;
+  if (!volumeHistory[symbol]) volumeHistory[symbol] = [];
+  const hist = volumeHistory[symbol];
+  hist.push({ t: Date.now(), v: vol });
+  if (hist.length > 24) hist.shift();
+  localStorage.setItem('volHistory', JSON.stringify(volumeHistory));
+  if (hist.length < 6) return null;
+  const baseline = hist.slice(0, -1).reduce((a, b) => a + b.v, 0) / (hist.length - 1);
+  if (baseline > 0 && vol > baseline * 3) {
+    return `${symbol} volume spike: ${formatVol(vol)} (>3× recent avg)`;
+  }
+  return null;
+}
+
+function render(data) {
+  const grid = document.getElementById('grid');
+  const banners = document.getElementById('banners');
+  banners.innerHTML = '';
+  const volAlerts = [];
+  const depegAlerts = [];
+
+  grid.innerHTML = COINS.map(coin => {
+    const d = data[coin.id] || {};
+    const price = d.usd;
+    const change = d.usd_24h_change;
+    const vol = d.usd_24h_vol;
+    const status = getStatus(price);
+    const spike = checkVolumeSpike(coin.symbol, vol);
+    if (spike) volAlerts.push(spike);
+    if (status.cls.startsWith('depeg')) depegAlerts.push(`${coin.symbol} ${status.label}: $${price?.toFixed(4)}`);
+
+    const chgClass = change > 0 ? 'pos' : change < 0 ? 'neg' : '';
+    const chgText = change != null ? (change >= 0 ? '+' : '') + change.toFixed(2) + '%' : '—';
+    const priceText = price != null ? '$' + price.toFixed(4) : '—';
+    const pegPct = price != null ? Math.min(100, Math.max(0, ((price - 0.97) / 0.06) * 100)) : 50;
+
+    return `
+      <div class="card ${status.card}">
+        <div class="card-header">
+          <div>
+            <div class="coin-name">${coin.name}</div>
+            <div class="symbol">${coin.symbol}</div>
+          </div>
+          <span class="badge ${status.cls}">${status.label}</span>
+        </div>
+        <div class="price">${priceText}</div>
+        <div class="change ${chgClass}">${chgText} 24h</div>
+        <div class="vol">24h vol ${formatVol(vol)}</div>
+        <div class="peg-bar"><div class="peg-fill" style="width:${pegPct}%;background:${status.cls==='ok'?'var(--green)':status.cls==='depeg-down'?'var(--red)':'var(--amber)'}"></div></div>
+      </div>`;
+  }).join('');
+
+  if (volAlerts.length) {
+    const b = document.createElement('div');
+    b.className = 'banner volume show';
+    b.textContent = '⚠ VOLUME SPIKE — ' + volAlerts.join(' · ');
+    banners.appendChild(b);
+  }
+  if (depegAlerts.length) {
+    const b = document.createElement('div');
+    b.className = 'banner depeg show';
+    b.textContent = '🚨 DEPEG — ' + depegAlerts.join(' · ');
+    banners.appendChild(b);
+  }
+
+  document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString();
+}
+
+async function fetchPrices() {
+  const btn = document.getElementById('refresh-btn');
+  btn.disabled = true;
+  try {
+    const r = await fetch(API);
+    if (!r.ok) throw new Error(r.status);
+    const data = await r.json();
+    lastPrices = data;
+    render(data);
+  } catch (e) {
+    console.error(e);
+    document.getElementById('last-updated').textContent = 'Update failed — retrying…';
+    if (Object.keys(lastPrices).length) render(lastPrices);
+  }
+  btn.disabled = false;
+}
+
+fetchPrices();
+setInterval(fetchPrices, 30000);
+</script>
+</body>
+</html>

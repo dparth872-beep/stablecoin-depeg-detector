@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-30 (06:08 MDT / 12:08 UTC)
+- Fresh live verification via CoinGecko free API: all six stablecoins within $0.99–$1.01 (USDT $0.9991, USDC $0.9997, DAI $1.0000, FDUSD $0.9975, PYUSD $1.0000, TUSD $0.9989). No depegs or volume spikes.
+- Updated VERIFY_RESULTS.md with current snapshot.
+- All core features operational: REST + fallbacks, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard, professional zero-code dashboard.html, unit tests (14/14).
+
 ## 2026-10-30 (05:07 MDT / 11:07 UTC)
 - Polished dashboard.html further: added overall health bar (OK/alerts counts), market cap display, dynamic peg-bar marker scaled to $0.98–$1.02, client-side price sparklines (localStorage), relative timestamps, local recent alerts log, depeg pulse animation, improved typography and spacing.
 - Live verification at ~05:07 MDT: all six stablecoins within $0.99–$1.01 (USDT $0.9991, USDC $0.9996, DAI $1.0000, FDUSD $0.9972, PYUSD $1.0000, TUSD $0.9989). No depegs or volume spikes.

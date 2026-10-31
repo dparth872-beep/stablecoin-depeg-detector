@@ -1,3 +1,7 @@
+## v3.1 — 2026-10-31 17:05 MDT
+- Fresh live verification via DefiLlama (CoinGecko free tier rate-limited): all six within $0.99–$1.01 (USDT $0.9995, USDC $1.0000, DAI $1.0006, FDUSD $0.9978, PYUSD $1.0004, TUSD $0.9991). No depegs or volume spikes detected.
+- All core features operational. Unit tests 14/14. Zero-code dashboard.html (v3.0+) remains the primary client surface — polished dark fintech aesthetic, mobile-ready, zero-code.
+
 ## v3.0 — 2026-10-31 16:04 MDT
 - Dashboard upgraded to v3.0: added market cap display, local price sparklines (canvas), relative timestamps (Xs ago), refined card spacing and visuals.
 - Fresh live verification via DefiLlama (CoinGecko free tier 429): all six within $0.99–$1.01 (USDT $0.9995, USDC $1.0000, DAI $1.0006, FDUSD $0.9978, PYUSD $1.0004, TUSD $0.9981). No depegs or volume spikes.

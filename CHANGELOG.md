@@ -1,3 +1,8 @@
+## v2.7 — 2026-10-31 13:03 MDT
+- Replaced placeholder dashboard.html with production-grade single-file HTML dashboard: dark fintech aesthetic, six live cards (price, 24h change, volume, status badge, peg bar), volume spike and depeg banners, live indicator, auto-refresh every 30s via CoinGecko, mobile-responsive, plain-English how-to.
+- Fresh live verification via CoinGecko free API: all six within $0.99–$1.01 (USDT $0.9994, USDC $1.0000, DAI $1.0000, FDUSD $0.9978, PYUSD $1.0000, TUSD $0.9985). No depegs or volume spikes.
+- All core features operational. Unit tests 14/14. Zero-code dashboard.html (v2.7) is the primary client surface.
+
 ## v2.4 — 2026-10-31 08:06 MDT
 - Fresh live verification via CoinGecko free API: all six within $0.99–$1.01 (USDT $0.9993, USDC $0.9999, DAI $1.0000, FDUSD $0.9976, PYUSD $1.0000, TUSD $0.9978). 24h volumes healthy. No depegs or volume spikes.
 - All core features operational. Unit tests 14/14. Zero-code dashboard.html is the primary client surface (v2.4).

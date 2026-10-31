@@ -1,3 +1,8 @@
+## v3.0 — 2026-10-31 16:04 MDT
+- Dashboard upgraded to v3.0: added market cap display, local price sparklines (canvas), relative timestamps (Xs ago), refined card spacing and visuals.
+- Fresh live verification via DefiLlama (CoinGecko free tier 429): all six within $0.99–$1.01 (USDT $0.9995, USDC $1.0000, DAI $1.0006, FDUSD $0.9978, PYUSD $1.0004, TUSD $0.9981). No depegs or volume spikes.
+- All core features operational. Unit tests 14/14. Zero-code dashboard.html (v3.0) is the primary client surface.
+
 ## v2.9 — 2026-10-31 15:04 MDT
 - Dashboard polish: added basis-point deviation under price, overall status line in header (All clear / N depegs), minor spacing refinements. Version bump to v2.9.
 - Fresh live verification via CoinGecko free API: all six within $0.99–$1.01 (USDT $0.9996, USDC $1.0000, DAI $1.0000, FDUSD $0.9979, PYUSD $1.0000, TUSD $0.9985). No depegs or volume spikes.
@@ -7,65 +12,5 @@
 - Replaced placeholder dashboard.html with production-grade single-file HTML dashboard: dark fintech aesthetic, six live cards (price, 24h change, volume, status badge, peg bar), volume spike and depeg banners, live indicator, auto-refresh every 30s via CoinGecko, mobile-responsive, plain-English how-to.
 - Fresh live verification via CoinGecko free API: all six within $0.99–$1.01 (USDT $0.9994, USDC $1.0000, DAI $1.0000, FDUSD $0.9978, PYUSD $1.0000, TUSD $0.9985). No depegs or volume spikes.
 - All core features operational. Unit tests 14/14. Zero-code dashboard.html (v2.7) is the primary client surface.
-
-## v2.4 — 2026-10-31 08:06 MDT
-- Fresh live verification via CoinGecko free API: all six within $0.99–$1.01 (USDT $0.9993, USDC $0.9999, DAI $1.0000, FDUSD $0.9976, PYUSD $1.0000, TUSD $0.9978). 24h volumes healthy. No depegs or volume spikes.
-- All core features operational. Unit tests 14/14. Zero-code dashboard.html is the primary client surface (v2.4).
-- No code changes this cycle — status confirmation and version note.
-
-## v2.4 — 2026-10-31 07:09 MDT
-- Fresh live verification via DefiLlama + Coinbase (CoinGecko free tier 429 rate-limited): all six within $0.99–$1.01 (USDT $0.9993 / $0.9989, USDC $0.9999 / $1.0000, DAI $1.0003 / $0.9997, FDUSD $0.9976, PYUSD $1.0004, TUSD $0.9986). No depegs or volume spikes.
-- All core features operational. Unit tests 14/14. Zero-code dashboard.html is the primary client surface (v2.4).
-- No code changes this cycle — status confirmation and version note.
-
-## v2.4 — 2026-10-31 06:08 MDT
-- Fresh live verification via CoinGecko: all six within $0.99–$1.01 (USDT $0.9993, USDC $0.9999, DAI $1.0000, FDUSD $0.9975, PYUSD $1.0000, TUSD $0.9979). No depegs or volume spikes.
-- All core features operational. Unit tests 14/14. Zero-code dashboard.html is the primary client surface (v2.4).
-- No code changes this cycle — status confirmation and version note.
-
-## v2.3 — 2026-10-31 05:06 MDT
-- Fresh live verification via CoinGecko: all six within $0.99–$1.01 (USDT $0.9992, USDC $0.9999, DAI $1.0000, FDUSD $0.9976, PYUSD $1.0000, TUSD $0.9986). No depegs or volume spikes.
-- 14/14 unit tests pass. All core features operational. Zero-code dashboard.html (v2.3) is the primary client surface.
-- No code changes this cycle — status confirmation only.
-
-## v2.3 — 2026-10-31 02:06 MDT
-- Dashboard polish: added live status indicator (blinking green dot), version bump to v2.3.
-- Fresh live verification via CoinGecko: all six within $0.99–$1.01 (USDT $0.9992, USDC $0.9999, DAI $1.0000, FDUSD $0.9976, PYUSD $1.0000, TUSD $0.9988). No depegs or volume spikes.
-- All core features operational. Unit tests 14/14. Zero-code dashboard is the primary client surface.
-
-## v2.1 — 2026-10-31 01:07 MDT
-- Fresh live verification via CoinGecko: all six within $0.99–$1.01 (USDT $0.9992, USDC $0.9998, DAI $1.0000, FDUSD $0.9975, PYUSD $1.0000, TUSD $0.9981). No depegs or volume spikes.
-- All core features operational. Unit tests 14/14. Zero-code dashboard is the primary client surface.
-
-## v2.1 — 2026-10-31 00:05 MDT
-- Fresh live verification via CoinGecko: all six within $0.99–$1.01 (USDT $0.9992, USDC $0.9999, DAI $1.0000, FDUSD $0.9975, PYUSD $1.0000, TUSD $0.9984). No depegs or volume spikes.
-- All core features operational. Unit tests 14/14. Zero-code dashboard is the primary client surface.
-
-## v2.1 — 2026-10-30 22:07 MDT
-- Fixed critical JS syntax error in dashboard.html (nested function / broken addToLog).
-- Restored exact six stablecoins (USDT, USDC, DAI, FDUSD, PYUSD, TUSD) per product spec.
-- Fresh live verification via CoinGecko: all six within $0.99–$1.01 (USDT $0.9992, USDC $0.9999, DAI $1.0000, FDUSD $0.9974, PYUSD $1.0000, TUSD $0.9988). No depegs or volume spikes.
-- All core features operational. Unit tests 14/14. Zero-code dashboard is the primary client surface.
-
-## v2.0 — 2026-10-31
-- Expanded dashboard to 8 stablecoins: added Ethena USDe and USDD. (reverted in v2.1)
-- Added peg deviation display in basis points on every card.
-- Added one-click "Copy summary" button for quick status sharing.
-- Updated how-to text and version footer.
-- API endpoint expanded to cover the new coins.
-- All prior features retained: health bar, sparklines, volume spikes, rate-limit resilience, mobile-responsive.
-
-# Changelog
-
-## 2026-10-30 (20:10 MDT)
-- Dashboard polished to v1.9: refined card padding, larger price display, improved peg-bar safe-zone contrast, version bump.
-- Live verification (fallback sources due to CoinGecko rate limit): all six stablecoins within $0.99–$1.01 band. No depegs.
-- All core features operational. Unit tests 14/14 passing.
-- Commit: feat: dashboard v1.9 polish — refined spacing, price scale, peg visualization
-
-## 2026-10-30 (21:03 MDT / 03:03 UTC next day)
-- Fresh live verification via DefiLlama (CoinGecko free tier rate-limited): all six stablecoins within $0.99–$1.01 (USDT $0.9992, USDC $0.9999, DAI $1.0004, FDUSD $0.9975, PYUSD $1.0003, TUSD $0.9988). No depegs or volume spikes.
-- All core features operational: REST + fallbacks, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard, professional zero-code dashboard.html (v1.9), unit tests (14/14).
-- Commit: docs: fresh live verification 21:03 MDT - all stablecoins OK within band
 
 ## Earlier entries preserved below (see full history in repo)

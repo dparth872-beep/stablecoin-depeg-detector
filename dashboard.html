@@ -75,6 +75,13 @@ body {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.5; transform: scale(0.85); }
 }
+.overall {
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 4px;
+  color: var(--green);
+}
+.overall.alert { color: var(--red); }
 .banners {
   padding: 0 32px;
 }
@@ -154,8 +161,14 @@ body {
   font-size: 36px;
   font-weight: 700;
   letter-spacing: -1.2px;
-  margin: 6px 0 10px;
+  margin: 6px 0 4px;
   line-height: 1;
+}
+.bps {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
 }
 .change {
   font-size: 15px;
@@ -234,6 +247,7 @@ body {
   </div>
   <div class="meta">
     <div class="live"><span class="dot"></span> Live</div>
+    <div id="overall" class="overall">Checking...</div>
     <div id="updated">Last updated: —</div>
   </div>
 </div>
@@ -243,13 +257,13 @@ body {
   <h2>How to use</h2>
   <ol>
     <li>Bookmark this page. It works in any modern browser (including iPhone Safari) and refreshes automatically every 30 seconds.</li>
-    <li>Green badge = peg is healthy ($0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data from the API.</li>
+    <li>Green badge = peg is healthy ($0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data from the API. Deviation in basis points shown under price.</li>
     <li>A banner appears at the top if volume spikes above 3× the recent median or a depeg is detected. The peg bar shows price position relative to the $0.99–$1.01 safe zone.</li>
     <li>No login, no install, no code to run. Just open the file. Data comes from CoinGecko’s free public API.</li>
   </ol>
 </div>
 <div class="footer">
-  <div>v2.8 · CoinGecko free API · Thresholds $0.99–$1.01 · Volume spike 3× median</div>
+  <div>v2.9 · CoinGecko free API · Thresholds $0.99–$1.01 · Volume spike 3× median</div>
   <div>Zero-code. Open this file in any browser. Done.</div>
 </div>
 <script>
@@ -266,6 +280,7 @@ const API = 'https://api.coingecko.com/api/v3/simple/price?ids=' + COINS.map(c =
 const grid = document.getElementById('grid');
 const banners = document.getElementById('banners');
 const updatedEl = document.getElementById('updated');
+const overallEl = document.getElementById('overall');
 let volHistory = JSON.parse(localStorage.getItem('volHistory') || '{}');
 let lastPrices = {};
 let retryDelay = 1000;
@@ -283,6 +298,12 @@ function formatVol(v) {
   if (v >= 1e6) return '$' + (v / 1e6).toFixed(1) + 'M';
   if (v >= 1e3) return '$' + (v / 1e3).toFixed(0) + 'K';
   return '$' + Math.round(v).toLocaleString();
+}
+
+function bpsDeviation(price) {
+  if (price == null || isNaN(price)) return '—';
+  const bps = Math.round((price - 1.0) * 10000);
+  return (bps >= 0 ? '+' : '') + bps + ' bps';
 }
 
 function pegPosition(price) {
@@ -313,15 +334,20 @@ function render(data) {
   updatedEl.textContent = 'Last updated: ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   let volumeAlerts = [];
   let depegAlerts = [];
+  let okCount = 0;
+  let total = 0;
   grid.innerHTML = COINS.map(coin => {
     const d = data[coin.id] || {};
     const price = d.usd;
     const chg = d.usd_24h_change;
     const vol = d.usd_24h_vol;
     const status = getStatus(price);
+    total++;
+    if (status.cls === 'ok') okCount++;
     const chgCls = chg == null || isNaN(chg) ? 'zero' : (chg >= 0 ? 'pos' : 'neg');
     const chgStr = chg == null || isNaN(chg) ? '—' : (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%';
     const priceStr = price == null || isNaN(price) ? '—' : '$' + price.toFixed(4);
+    const bpsStr = bpsDeviation(price);
     const volAlert = checkVolumeSpike(coin.symbol, vol);
     if (volAlert) volumeAlerts.push(volAlert);
     if (status.cls === 'down' || status.cls === 'up') depegAlerts.push(`${coin.symbol} ${status.text}: ${priceStr}`);
@@ -336,6 +362,7 @@ function render(data) {
           <div class="badge ${status.cls}">${status.text}</div>
         </div>
         <div class="price">${priceStr}</div>
+        <div class="bps">${bpsStr} from peg</div>
         <div class="change ${chgCls}">24h ${chgStr}</div>
         <div class="vol">24h vol ${formatVol(vol)}</div>
         <div class="peg-bar">
@@ -345,6 +372,17 @@ function render(data) {
       </div>
     `;
   }).join('');
+
+  if (depegAlerts.length === 0 && volumeAlerts.length === 0 && okCount === total && total > 0) {
+    overallEl.textContent = `All ${total} clear`;
+    overallEl.className = 'overall';
+  } else if (depegAlerts.length > 0) {
+    overallEl.textContent = `${depegAlerts.length} depeg${depegAlerts.length > 1 ? 's' : ''}`;
+    overallEl.className = 'overall alert';
+  } else {
+    overallEl.textContent = `${okCount}/${total} OK`;
+    overallEl.className = 'overall';
+  }
 
   banners.innerHTML = '';
   if (depegAlerts.length) {

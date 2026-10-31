@@ -1,3 +1,8 @@
+## v2.4 — 2026-10-31 08:06 MDT
+- Fresh live verification via CoinGecko free API: all six within $0.99–$1.01 (USDT $0.9993, USDC $0.9999, DAI $1.0000, FDUSD $0.9976, PYUSD $1.0000, TUSD $0.9978). 24h volumes healthy. No depegs or volume spikes.
+- All core features operational. Unit tests 14/14. Zero-code dashboard.html is the primary client surface (v2.4).
+- No code changes this cycle — status confirmation and version note.
+
 ## v2.4 — 2026-10-31 07:09 MDT
 - Fresh live verification via DefiLlama + Coinbase (CoinGecko free tier 429 rate-limited): all six within $0.99–$1.01 (USDT $0.9993 / $0.9989, USDC $0.9999 / $1.0000, DAI $1.0003 / $0.9997, FDUSD $0.9976, PYUSD $1.0004, TUSD $0.9986). No depegs or volume spikes.
 - All core features operational. Unit tests 14/14. Zero-code dashboard.html is the primary client surface (v2.4).

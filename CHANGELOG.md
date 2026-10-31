@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-30 (19:05 MDT / 01:05 UTC next day)
+- Fresh live verification via CoinGecko free API: all six stablecoins within $0.99–$1.01 (USDT $0.9991, USDC $0.9998, DAI $1.0000, FDUSD $0.9973, PYUSD $1.0000, TUSD $0.9986). No depegs or volume spikes.
+- All core features operational: REST + fallbacks, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard, professional zero-code dashboard.html (v1.7), unit tests (14/14).
+- Commit: docs: fresh live verification 19:05 MDT - all stablecoins OK within band
+
 ## 2026-10-30 (17:05 MDT / 23:05 UTC)
 - Fresh live verification via CoinGecko free API: all six stablecoins within $0.99–$1.01 (USDT $0.99911, USDC $0.999787, DAI $1.0000, FDUSD $0.997251, PYUSD $1.0000, TUSD $0.997797). No depegs or volume spikes.
 - Polished dashboard.html to v1.7: refined spacing, stronger visual hierarchy, improved peg-bar contrast.

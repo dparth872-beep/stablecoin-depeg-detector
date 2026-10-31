@@ -60,14 +60,14 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready. Live verification (2026-10-31 09:06 MDT via DefiLlama + Coinbase):
-- USDT $0.9992 (OK)
-- USDC $0.9999 (OK)
-- DAI $1.0003 (OK)
-- FDUSD $0.9976 (OK)
-- PYUSD $1.0003 (OK)
-- TUSD $0.9978 (OK)
+Production-ready. Live verification (2026-10-31 12:03 MDT via CoinGecko):
+- USDT $0.9995 (OK) vol ~$32.3B
+- USDC $1.0000 (OK) vol ~$7.7B
+- DAI $1.0000 (OK) vol ~$37M
+- FDUSD $0.9978 (OK) vol ~$40M
+- PYUSD $1.0000 (OK) vol ~$65M
+- TUSD $0.9975 (OK) vol ~$8.3M
 
-All within $0.99–$1.01 band. No depegs. No volume spikes detected. 14/14 unit tests pass. dashboard.html (v2.5) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with distinct volume/depeg banners, health bar + peg health percentage, market cap, dynamic peg bar with safe-zone highlight, monospaced prices, price sparklines, relative timestamps, depeg pulse, local recent alerts log, loading state on refresh, live status indicator, plus graceful handling of free-tier rate limits. Six coins only.
+All within $0.99–$1.01 band. No depegs. No volume spikes detected. 14/14 unit tests pass. dashboard.html (v2.6) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with distinct volume/depeg banners, health bar + peg health percentage, market cap, dynamic peg bar with safe-zone highlight, monospaced prices, price sparklines, relative timestamps, depeg pulse, local recent alerts log, loading state on refresh, live status indicator, plus graceful handling of free-tier rate limits. Six coins only.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

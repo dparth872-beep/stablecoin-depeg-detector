@@ -1,3 +1,8 @@
+## v2.3 — 2026-10-31 02:06 MDT
+- Dashboard polish: added live status indicator (blinking green dot), version bump to v2.3.
+- Fresh live verification via CoinGecko: all six within $0.99–$1.01 (USDT $0.9992, USDC $0.9999, DAI $1.0000, FDUSD $0.9976, PYUSD $1.0000, TUSD $0.9988). No depegs or volume spikes.
+- All core features operational. Unit tests 14/14. Zero-code dashboard is the primary client surface.
+
 ## v2.1 — 2026-10-31 01:07 MDT
 - Fresh live verification via CoinGecko: all six within $0.99–$1.01 (USDT $0.9992, USDC $0.9998, DAI $1.0000, FDUSD $0.9975, PYUSD $1.0000, TUSD $0.9981). No depegs or volume spikes.
 - All core features operational. Unit tests 14/14. Zero-code dashboard is the primary client surface.

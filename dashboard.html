@@ -298,11 +298,11 @@ body {
     <li>The six cards show live prices, 24h change, market cap, peg deviation, and status for USDT, USDC, DAI, FDUSD, PYUSD, and TUSD.</li>
     <li>Green badge = OK (inside $0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data. Cards pulse on depeg.</li>
     <li>Volume spike banners appear if 24h volume jumps more than 3× recent median (tracked locally). Depeg alerts show in red.</li>
-    <li>Data refreshes every 30 seconds from CoinGecko. No install, no login, no code required. Last-good data shown on rate limits or errors. Peg bar highlights the safe $0.99–$1.01 zone.</li>
+    <li>Data refreshes every 30 seconds from CoinGecko (with automatic last-good fallback on rate limits). Backend detector adds Coinbase + DefiLlama resilience. No install, no login, no code required. Peg bar highlights the safe $0.99–$1.01 zone.</li>
   </ol>
 </div>
 <div class="footer">
-  Stablecoin Depeg Detector · Zero-code client surface · Free CoinGecko data · Production-grade signals · v2.4
+  Stablecoin Depeg Detector · Zero-code client surface · Free CoinGecko data · Production-grade signals · v2.5
 </div>
 <script>
 const COINS = [

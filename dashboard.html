@@ -185,7 +185,7 @@ body {
 }
 .peg-bar {
   height: 9px;
-  background: linear-gradient(to right, #151c28 0%, #151c28 25%, rgba(0,217,163,0.25) 25%, rgba(0,217,163,0.25) 75%, #151c28 75%, #151c28 100%);
+  background: linear-gradient(to right, #151c28 0%, #151c28 37.5%, rgba(0,217,163,0.25) 37.5%, rgba(0,217,163,0.25) 62.5%, #151c28 62.5%, #151c28 100%);
   border-radius: 5px;
   position: relative;
   margin-top: 7px;
@@ -283,13 +283,13 @@ body {
   <ol>
     <li>Bookmark this page. Open it any time in any browser (including iPhone Safari).</li>
     <li>The six cards show live prices, 24h change, market cap, and status for USDT, USDC, DAI, FDUSD, PYUSD, and TUSD.</li>
-    <li>Green badge = OK (inside $0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data. Cards pulse on depeg.</li>
-    <li>Volume spike banners appear if 24h volume jumps more than 3× recent median (tracked locally). Depeg alerts show in red.</li>
-    <li>Data refreshes every 30 seconds from CoinGecko. No install, no login, no code required. Last-good data shown on rate limits or errors. Peg bar highlights the safe $0.99–$1.01 zone.</li>
+    <li>Green badge = OK (inside $0.995–$1.005). Red = depeg down. Amber = depeg up. Gray = no data. Cards pulse on depeg.</li>
+    <li>Volume spike banners appear if 24h volume jumps more than 3× the recent local median. The Python detector also alerts when 5-minute volume is at least 3× its rolling median, even if price is still inside the band. Depeg alerts show in red.</li>
+    <li>Data refreshes every 30 seconds from CoinGecko. No install, no login, no code required. Last-good data shown on rate limits or errors. Peg bar highlights the safe $0.995–$1.005 zone. Add <code>?dry_run=1</code> to simulate a TEST USDC print of $0.97.</li>
   </ol>
 </div>
 <div class="footer">
-  Stablecoin Depeg Detector · Zero-code client surface · Free CoinGecko data · Production-grade signals · v1.7
+  Stablecoin Depeg Detector · Zero-code client surface · Free CoinGecko data · Production-grade signals · v1.8.0
 </div>
 <script>
 const COINS = [
@@ -300,7 +300,9 @@ const COINS = [
   { id: "paypal-usd", symbol: "PYUSD", name: "PayPal USD" },
   { id: "true-usd", symbol: "TUSD", name: "TrueUSD" }
 ];
-const LOWER = 0.99, UPPER = 1.01;
+const LOWER = 0.995, UPPER = 1.005;
+const DRY_RUN = new URLSearchParams(location.search).get("dry_run") === "1";
+const DRY_RUN_USDC = 0.97;
 const API = "https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coin,dai,first-digital-usd,paypal-usd,true-usd&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true";
 let volumeHistory = JSON.parse(localStorage.getItem("volHist") || "{}");
 let priceHistory = JSON.parse(localStorage.getItem("priceHist") || "{}");
@@ -389,9 +391,19 @@ function relativeTime(ts) {
 }
 
 function renderCards(data) {
+  if (DRY_RUN) {
+    data = Object.assign({}, data);
+    data["usd-coin"] = Object.assign({}, data["usd-coin"] || {}, { usd: DRY_RUN_USDC });
+  }
   const grid = document.getElementById("cards");
   grid.innerHTML = "";
   const banners = [];
+  if (DRY_RUN) {
+    banners.push({
+      text: "TEST/DRY RUN — simulated USDC depeg at $0.97. Not a live incident. This page does not send Telegram or email.",
+      cls: "depeg"
+    });
+  }
   let okCount = 0, alertCount = 0;
   COINS.forEach(coin => {
     const d = data[coin.id] || {};
@@ -410,7 +422,8 @@ function renderCards(data) {
       addToLog(msg);
     }
     if (st.cls.startsWith("depeg")) {
-      const msg = `${st.text} ${coin.symbol}: $${price.toFixed(4)}`;
+      const prefix = DRY_RUN && coin.symbol === "USDC" ? "TEST/DRY RUN — " : "";
+      const msg = `${prefix}${st.text} ${coin.symbol}: $${price.toFixed(4)}`;
       banners.push({ text: msg, cls: "depeg" });
       addToLog(msg);
     }
@@ -444,8 +457,8 @@ function renderCards(data) {
     `;
     grid.appendChild(card);
   });
-  if (banners.length === 0 && okCount === COINS.length) {
-    banners.push({ text: "All systems nominal — all six stablecoins within $0.99–$1.01 band.", cls: "all-clear" });
+  if (!DRY_RUN && banners.length === 0 && okCount === COINS.length) {
+    banners.push({ text: "All systems nominal — all six stablecoins within $0.995–$1.005 band.", cls: "all-clear" });
   }
   const bEl = document.getElementById("banners");
   bEl.innerHTML = banners.map(b => `<div class="banner ${b.cls}">${b.text}</div>`).join("");
@@ -478,6 +491,9 @@ async function fetchPrices() {
 }
 
 renderLog();
+if (DRY_RUN) {
+  renderCards({ "usd-coin": { usd: DRY_RUN_USDC } });
+}
 fetchPrices();
 setInterval(fetchPrices, 30000);
 setInterval(() => {

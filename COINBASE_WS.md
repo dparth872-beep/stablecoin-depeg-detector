@@ -12,7 +12,7 @@ python depeg_detector.py --ws-coinbase
 - Exponential backoff reconnection with jitter (1s → 60s cap)
 - ping_interval=20, ping_timeout=10 for heartbeat
 - Parses price and volume_24h for volume anomaly detection
-- Same $0.99-$1.01 threshold logic as REST
+- Same $0.995-$1.005 threshold logic as REST
 - Binance combined stream also available via --ws (pairs: usdcusdt, daiusdt, etc.)
 
 Verified operational as of 2026-10-23. Reconnection handling is production-grade with jitter to avoid thundering herd. Threshold logic identical to REST path.

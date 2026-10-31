@@ -14,8 +14,9 @@ Sell to people already swimming in stablecoin volume. First client = a few hundr
 
 | Tier | Trigger | Meaning |
 |------|---------|---------|
-| DEPEG | Price outside $0.99–$1.01 | Peg break — incident mode |
+| DEPEG | Price below $0.995 or above $1.005 | Peg break — incident mode |
 | VOLUME SPIKE | 24h vol > 3x recent median baseline | Liquidity stress building |
+| VOLUME VELOCITY | 5-minute vol ≥ 3x median of prior 5-minute bars | Liquidity stress even while price is inside the band |
 | DIVERGENCE | Cross-venue gap > 50 bps | One source is stale or manipulated |
 
 ## Quick start
@@ -38,13 +39,15 @@ python depeg_detector.py --dashboard  # live CLI board
 python depeg_detector.py --ws         # Binance WebSocket
 python depeg_detector.py --ws-coinbase # Coinbase WebSocket (recommended fallback)
 python verify_prices.py               # multi-source verification
-python tests/test_depeg_logic.py      # 14 unit tests
+python depeg_detector.py --dry-run # TEST: simulate USDC at $0.97
+python tests/test_depeg_logic.py      # unit tests (30)
 ```
 
 ## Features
 - CoinGecko REST with Coinbase + DefiLlama fallbacks
 - Binance and Coinbase WebSocket streams with exponential-backoff reconnection
-- Volume anomaly detection (median baseline, cooldown)
+- Volume anomaly detection (24h median baseline, cooldown)
+- 5-minute volume-velocity alerts (configurable multiplier, window, cooldown; fires even if price is inside the band)
 - CLI dashboard that refreshes in place
 - Professional single-file web dashboard (dark fintech aesthetic with radial gradient, six large live cards, status badges, overall health bar + peg health %, summary stats, dynamic peg deviation bar with highlighted safe zone, price sparklines, volume spike banners, depeg pulse animation, localStorage volume + price history, market cap display, auto-refresh every 30s, manual refresh button with loading state, relative timestamps, mobile-responsive, plain-English how-to, rate-limit resilience that keeps last good data, local recent alerts log)
 - Telegram + email alerts (config.json)
@@ -60,14 +63,8 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready. Live verification (2026-10-30 17:05 MDT via CoinGecko):
-- USDT $0.99911 (OK)
-- USDC $0.999787 (OK)
-- DAI $1.0000 (OK)
-- FDUSD $0.997251 (OK)
-- PYUSD $1.0000 (OK)
-- TUSD $0.997797 (OK)
+Production-ready. Alert band is $0.995–$1.005 (v1.8.0). The 2026-10-30 17:05 MDT CoinGecko snapshot was scored against the previous $0.99–$1.01 band (USDT $0.99911, USDC $0.999787, DAI $1.0000, FDUSD $0.997251, PYUSD $1.0000, TUSD $0.997797). Those six prints are also inside the tightened band. A print from $0.9900 up to but not including $0.9950, or from just over $1.0050 through $1.0100, now alerts and previously did not.
 
-All within $0.99–$1.01 band. No depegs. No volume spikes detected. 14/14 unit tests pass. dashboard.html (v1.7) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with distinct volume/depeg banners, health bar + peg health percentage, market cap, dynamic peg bar with safe-zone highlight, monospaced prices, price sparklines, relative timestamps, depeg pulse, local recent alerts log, loading state on refresh, plus graceful handling of free-tier rate limits.
+30/30 unit tests pass. dashboard.html (v1.8.0) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with distinct volume/depeg banners, health bar + peg health percentage, market cap, dynamic peg bar with the $0.995–$1.005 safe zone highlighted, monospaced prices, price sparklines, relative timestamps, depeg pulse, local recent alerts log, loading state on refresh, plus graceful handling of free-tier rate limits. Open `dashboard.html?dry_run=1` to simulate a TEST USDC print of $0.97.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

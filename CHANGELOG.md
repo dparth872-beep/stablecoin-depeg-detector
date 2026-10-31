@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-31 (v1.8.0)
+- Tightened the default depeg band from $0.99–$1.01 to $0.995–$1.005. A print below $0.995 or above $1.005 alerts. Exact bounds stay inside the band. Dashboard safe-zone highlight, `verify_prices.py`, and `config.json.example` use the same bounds.
+- Added a 5-minute volume-velocity tier (`VolumeVelocityTracker`). The current 5-minute quote volume alerts immediately when it is at least `volume_velocity_multiplier` (default 3) times the median of prior 5-minute bars, including when price is still inside the band. Window, minimum samples, cooldown, bar length, and the enabled flag are config keys. The existing 24h volume spike check is unchanged.
+- `--dry-run` feeds a synthetic USDC price of $0.97 through the same alert path as a live depeg and prefixes every line with `[TEST/DRY RUN]`. `dashboard.html?dry_run=1` shows the same simulation in the browser. Delivery is attempted only on configured channels; this environment has neither Telegram nor SMTP credentials, so those sends were not faked.
+- Logged the price-only blind spot and the Oct 30 data-source notes that are actually in the repo in `FAILURES.md`.
+- Unit tests: 30/30 passing (`tests/test_depeg_logic.py`). `test_depeg.py` remains the deprecation stub.
+- Poll interval, notification enablement, and the separate 9 PM America/Denver summary email were not changed. That summary is not produced by this repository.
+
 ## 2026-10-30 (17:05 MDT / 23:05 UTC)
 - Fresh live verification via CoinGecko free API: all six stablecoins within $0.99–$1.01 (USDT $0.99911, USDC $0.999787, DAI $1.0000, FDUSD $0.997251, PYUSD $1.0000, TUSD $0.997797). No depegs or volume spikes.
 - Polished dashboard.html to v1.7: refined spacing, stronger visual hierarchy, improved peg-bar contrast.

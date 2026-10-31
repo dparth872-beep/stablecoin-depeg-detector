@@ -17,7 +17,7 @@ COINBASE_PAIRS = {
     "DAI": "DAI-USD",
     "PYUSD": "PYUSD-USD",
 }
-LOWER, UPPER = 0.99, 1.01
+LOWER, UPPER = 0.995, 1.005
 
 def fetch_coingecko(ids):
     url = f"https://api.coingecko.com/api/v3/simple/price?ids={','.join(ids)}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true"
@@ -101,7 +101,7 @@ def main():
         chg_s = f" 24h={chg:+.2f}%" if chg is not None else ""
         print(f"{status:6} {symbol}: ${price:.4f}  ({note}) [{source}]{vol_s}{chg_s}")
     print("=" * 70)
-    print("Verification complete. All reachable prices checked against $0.99-$1.01.")
+    print("Verification complete. All reachable prices checked against $0.995-$1.005.")
 
 if __name__ == "__main__":
     main()

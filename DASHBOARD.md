@@ -13,7 +13,7 @@ python depeg_detector.py --dashboard
 - ANSI colors: green OK, red DEPEG, yellow NO DATA / volume spikes
 - Timestamp in UTC
 - Integrates VolumeTracker for live spike alerts printed above the board
-- Thresholds and exit instructions displayed at bottom
+- Thresholds and exit instructions displayed at bottom (price band $0.995–$1.005, 24h spike, and 5-minute velocity)
 - Ctrl+C to exit cleanly
 
 Verified operational as of 2026-10-23. Complements the zero-code web dashboard for technical users. One-line-per-coin board meets the requirement.

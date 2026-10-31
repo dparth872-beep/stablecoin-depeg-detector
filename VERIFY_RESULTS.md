@@ -1,5 +1,7 @@
 # Price Verification — 2026-10-30 17:05 MDT
 
+Historical snapshot. Scored that day against the $0.99–$1.01 band. As of v1.8.0 the alert band is $0.995–$1.005. Every price in the table below is also inside that tighter band.
+
 Live snapshot via CoinGecko free API. All six stablecoins within $0.99–$1.01 band. No depegs detected.
 
 | Coin   | Price     | Status | Notes                  |

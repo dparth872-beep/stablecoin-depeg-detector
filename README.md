@@ -68,6 +68,6 @@ Production-ready. Live verification (2026-10-30 21:03 MDT via DefiLlama):
 - PYUSD $1.0003 (OK)
 - TUSD $0.9988 (OK)
 
-All within $0.99–$1.01 band. No depegs. No volume spikes detected. 14/14 unit tests pass. dashboard.html (v1.9) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with distinct volume/depeg banners, health bar + peg health percentage, market cap, dynamic peg bar with safe-zone highlight, monospaced prices, price sparklines, relative timestamps, depeg pulse, local recent alerts log, loading state on refresh, plus graceful handling of free-tier rate limits.
+All within $0.99–$1.01 band. No depegs. No volume spikes detected. 14/14 unit tests pass. dashboard.html (v2.0) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with distinct volume/depeg banners, health bar + peg health percentage, market cap, dynamic peg bar with safe-zone highlight, monospaced prices, price sparklines, relative timestamps, depeg pulse, local recent alerts log, loading state on refresh, plus graceful handling of free-tier rate limits.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

@@ -110,7 +110,7 @@ body {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 18px;
-  padding: 20px 20px 18px;
+  padding: 22px 22px 20px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
   overflow: hidden;
@@ -139,7 +139,7 @@ body {
 .coin-name { font-size: 0.92rem; font-weight: 500; color: var(--text-muted); }
 .coin-symbol { font-size: 1.12rem; font-weight: 700; }
 .price {
-  font-size: 2.35rem;
+  font-size: 2.45rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   letter-spacing: -1.4px;
@@ -185,7 +185,7 @@ body {
 }
 .peg-bar {
   height: 9px;
-  background: linear-gradient(to right, #151c28 0%, #151c28 25%, rgba(0,217,163,0.25) 25%, rgba(0,217,163,0.25) 75%, #151c28 75%, #151c28 100%);
+  background: linear-gradient(to right, #121820 0%, #121820 25%, rgba(0,217,163,0.32) 25%, rgba(0,217,163,0.32) 75%, #121820 75%, #121820 100%);
   border-radius: 5px;
   position: relative;
   margin-top: 7px;
@@ -270,7 +270,10 @@ body {
 <div class="health-bar" id="health-bar"></div>
 <div class="meta">
   <span id="last-updated">Last updated: —</span>
-  <button class="refresh-btn" id="refresh-btn" onclick="fetchPrices()">Refresh now</button>
+  <div style="display:flex;gap:10px;">
+    <button class="refresh-btn" id="copy-btn" onclick="copySummary()">Copy summary</button>
+    <button class="refresh-btn" id="refresh-btn" onclick="fetchPrices()">Refresh now</button>
+  </div>
 </div>
 <div class="banners" id="banners"></div>
 <div class="grid" id="cards"></div>
@@ -282,26 +285,28 @@ body {
   <h2>How to use</h2>
   <ol>
     <li>Bookmark this page. Open it any time in any browser (including iPhone Safari).</li>
-    <li>The six cards show live prices, 24h change, market cap, and status for USDT, USDC, DAI, FDUSD, PYUSD, and TUSD.</li>
+    <li>The eight cards show live prices, 24h change, market cap, peg deviation, and status for USDT, USDC, DAI, USDe, FDUSD, PYUSD, USDD, and TUSD.</li>
     <li>Green badge = OK (inside $0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data. Cards pulse on depeg.</li>
     <li>Volume spike banners appear if 24h volume jumps more than 3× recent median (tracked locally). Depeg alerts show in red.</li>
     <li>Data refreshes every 30 seconds from CoinGecko. No install, no login, no code required. Last-good data shown on rate limits or errors. Peg bar highlights the safe $0.99–$1.01 zone.</li>
   </ol>
 </div>
 <div class="footer">
-  Stablecoin Depeg Detector · Zero-code client surface · Free CoinGecko data · Production-grade signals · v1.9
+  Stablecoin Depeg Detector · Zero-code client surface · Free CoinGecko data · Production-grade signals · v2.0
 </div>
 <script>
 const COINS = [
   { id: "tether", symbol: "USDT", name: "Tether" },
   { id: "usd-coin", symbol: "USDC", name: "USD Coin" },
   { id: "dai", symbol: "DAI", name: "Dai" },
+  { id: "ethena-usde", symbol: "USDe", name: "Ethena USDe" },
   { id: "first-digital-usd", symbol: "FDUSD", name: "First Digital USD" },
   { id: "paypal-usd", symbol: "PYUSD", name: "PayPal USD" },
+  { id: "usdd", symbol: "USDD", name: "USDD" },
   { id: "true-usd", symbol: "TUSD", name: "TrueUSD" }
 ];
 const LOWER = 0.99, UPPER = 1.01;
-const API = "https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coin,dai,first-digital-usd,paypal-usd,true-usd&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true";
+const API = "https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coin,dai,ethena-usde,first-digital-usd,paypal-usd,usdd,true-usd&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true";
 let volumeHistory = JSON.parse(localStorage.getItem("volHist") || "{}");
 let priceHistory = JSON.parse(localStorage.getItem("priceHist") || "{}");
 let lastGood = {};
@@ -363,7 +368,26 @@ function addToLog(msg) {
   alertLog.unshift(entry);
   if (alertLog.length > 8) alertLog.pop();
   localStorage.setItem("alertLog", JSON.stringify(alertLog));
-  renderLog();
+  
+function copySummary() {
+  const ok = document.querySelectorAll(".card.ok").length;
+  const total = COINS.length;
+  const lines = Array.from(document.querySelectorAll(".card")).map(c => {
+    const sym = c.querySelector(".symbol")?.textContent || "";
+    const pr = c.querySelector(".price")?.textContent || "—";
+    const st = c.querySelector(".badge")?.textContent || "";
+    return sym + " " + pr + " " + st;
+  }).join(" | ");
+  const text = `Stablecoin Peg Status (${ok}/${total} OK)\n${lines}\nUpdated ${new Date().toLocaleString()}`;
+  navigator.clipboard.writeText(text).then(() => {
+    const b = document.getElementById("copy-btn");
+    const orig = b.textContent;
+    b.textContent = "Copied";
+    setTimeout(() => b.textContent = orig, 1500);
+  }).catch(() => alert("Copy failed"));
+}
+
+renderLog();
 }
 
 function renderLog() {
@@ -417,6 +441,7 @@ function renderCards(data) {
     const chgCls = chg == null ? "neutral" : chg > 0 ? "positive" : chg < 0 ? "negative" : "neutral";
     const chgText = chg == null ? "—" : (chg >= 0 ? "+" : "") + chg.toFixed(2) + "%";
     const priceText = price == null ? "—" : "$" + price.toFixed(4);
+    const devText = price == null ? "" : ((price - 1) * 10000).toFixed(1) + " bps from peg";
     const volText = vol == null ? "" : "24h vol: $" + vol.toLocaleString(undefined, {maximumFractionDigits: 0});
     const mcapText = mcap == null ? "" : "MCap: $" + (mcap / 1e9).toFixed(2) + "B";
     const pos = pegPosition(price);
@@ -431,6 +456,7 @@ function renderCards(data) {
         <span class="badge ${st.badge}">${st.text}</span>
       </div>
       <div class="price">${priceText}</div>
+      <div class="deviation" style="font-size:0.82rem;color:var(--text-muted);margin:2px 0 6px;font-variant-numeric:tabular-nums;">${devText}</div>
       <div class="change ${chgCls}">24h ${chgText}</div>
       <div class="vol">${volText}</div>
       <div class="mcap">${mcapText}</div>
@@ -475,6 +501,25 @@ async function fetchPrices() {
     btn.classList.remove("loading");
     btn.textContent = "Refresh now";
   }
+}
+
+
+function copySummary() {
+  const ok = document.querySelectorAll(".card.ok").length;
+  const total = COINS.length;
+  const lines = Array.from(document.querySelectorAll(".card")).map(c => {
+    const sym = c.querySelector(".symbol")?.textContent || "";
+    const pr = c.querySelector(".price")?.textContent || "—";
+    const st = c.querySelector(".badge")?.textContent || "";
+    return sym + " " + pr + " " + st;
+  }).join(" | ");
+  const text = `Stablecoin Peg Status (${ok}/${total} OK)\n${lines}\nUpdated ${new Date().toLocaleString()}`;
+  navigator.clipboard.writeText(text).then(() => {
+    const b = document.getElementById("copy-btn");
+    const orig = b.textContent;
+    b.textContent = "Copied";
+    setTimeout(() => b.textContent = orig, 1500);
+  }).catch(() => alert("Copy failed"));
 }
 
 renderLog();

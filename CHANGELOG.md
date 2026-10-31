@@ -1,4 +1,19 @@
+## v2.0 — 2026-10-31
+- Expanded dashboard to 8 stablecoins: added Ethena USDe and USDD.
+- Added peg deviation display in basis points on every card.
+- Added one-click "Copy summary" button for quick status sharing.
+- Updated how-to text and version footer.
+- API endpoint expanded to cover the new coins.
+- All prior features retained: health bar, sparklines, volume spikes, rate-limit resilience, mobile-responsive.
+
 # Changelog
+
+## 2026-10-30 (20:10 MDT)
+- Dashboard polished to v1.9: refined card padding, larger price display, improved peg-bar safe-zone contrast, version bump.
+- Live verification (fallback sources due to CoinGecko rate limit): all six stablecoins within $0.99–$1.01 band. No depegs.
+- All core features operational. Unit tests 14/14 passing.
+- Commit: feat: dashboard v1.9 polish — refined spacing, price scale, peg visualization
+
 
 ## 2026-10-30 (21:03 MDT / 03:03 UTC next day)
 - Fresh live verification via DefiLlama (CoinGecko free tier rate-limited): all six stablecoins within $0.99–$1.01 (USDT $0.9992, USDC $0.9999, DAI $1.0004, FDUSD $0.9975, PYUSD $1.0003, TUSD $0.9988). No depegs or volume spikes.

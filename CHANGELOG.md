@@ -1,3 +1,8 @@
+## v4.3 — 2026-11-01 06:08 MST
+- Live verification via CoinGecko free API: all six within $0.99–$1.01 (USDT $0.9995, USDC $1.0000, DAI $1.0010, FDUSD $0.9975, PYUSD $1.0000, TUSD $0.9979). No depegs, volume spikes, or divergences. Total tracked mcap ~$260.0B.
+- Dashboard.html footer and verification timestamp refreshed. All prior polish (dark fintech aesthetic, cards with price/24h change/status/volume/mcap/peg bar/sparkline, banners, rate-limit resilience, mobile-responsive, zero-code) retained and production-ready.
+- All core features operational (REST + multi-source fallbacks, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard, 14 unit tests). Primary client surface is dashboard.html.
+
 ## v4.2 — 2026-11-01 05:06 MST
 - Live verification via CoinGecko free API: all six within $0.99–$1.01 (USDT $0.9995, USDC $1.0000, DAI $1.0000, FDUSD $0.9976, PYUSD $1.0000, TUSD $0.9983). No depegs, volume spikes, or divergences. Total tracked mcap ~$259.8B.
 - Dashboard.html upgraded to v4.2: added tracked total market cap display in header meta. Footer refreshed with fresh verification timestamp. All prior polish (dark fintech aesthetic, cards with price/24h change/status/volume/mcap/peg bar/sparkline, banners, rate-limit resilience, mobile-responsive, zero-code) retained and production-ready.

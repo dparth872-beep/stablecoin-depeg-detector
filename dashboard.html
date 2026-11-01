@@ -82,7 +82,7 @@ body {
   color: var(--green);
 }
 .overall.alert { color: var(--red); }
-.total-mcap {
+.total-mcap, .total-vol {
   font-size: 13px;
   font-weight: 600;
   margin-top: 2px;
@@ -296,6 +296,7 @@ body {
     <div class="live"><span class="dot"></span> Live</div>
     <div id="overall" class="overall">Checking...</div>
     <div id="total-mcap" class="total-mcap">Tracked mcap: —</div>
+    <div id="total-vol" class="total-vol">Total 24h vol: —</div>
     <div id="updated">Last updated: —</div>
     <div id="source" class="source">Source: CoinGecko + DefiLlama</div>
     <button class="refresh-btn" onclick="refresh()">Refresh now</button>
@@ -319,7 +320,7 @@ body {
   </ol>
 </div>
 <div class="footer">
-  <div>v4.8 · CoinGecko + DefiLlama · Thresholds $0.99–$1.01 · Volume spike 3× median · Divergence 50 bps · Verified 2026-11-01 11:04 MST</div>
+  <div>v4.9 · CoinGecko + DefiLlama · Thresholds $0.99–$1.01 · Volume spike 3× median · Divergence 50 bps · Verified 2026-11-01 12:04 MST</div>
   <div>Zero-code. Open this file in any browser. Done.</div>
 </div>
 <script>
@@ -339,6 +340,7 @@ const banners = document.getElementById('banners');
 const updatedEl = document.getElementById('updated');
 const overallEl = document.getElementById('overall');
 const totalMcapEl = document.getElementById('total-mcap');
+const totalVolEl = document.getElementById('total-vol');
 const sourceEl = document.getElementById('source');
 let volHistory = JSON.parse(localStorage.getItem('volHistory') || '{}');
 let priceHistory = JSON.parse(localStorage.getItem('priceHistory') || '{}');
@@ -432,6 +434,7 @@ function render(data, llamaPrices) {
   let okCount = 0;
   let total = 0;
   let totalMcap = 0;
+  let totalVol = 0;
   grid.innerHTML = COINS.map(coin => {
     const d = data[coin.id] || {};
     const price = d.usd;
@@ -439,6 +442,7 @@ function render(data, llamaPrices) {
     const vol = d.usd_24h_vol;
     const mcap = d.usd_market_cap;
     if (mcap) totalMcap += mcap;
+    if (vol) totalVol += vol;
     const status = getStatus(price);
     total++;
     if (status.cls === 'ok') okCount++;
@@ -483,6 +487,7 @@ function render(data, llamaPrices) {
   }).join('');
 
   totalMcapEl.textContent = 'Tracked mcap: ' + formatVol(totalMcap);
+  totalVolEl.textContent = 'Total 24h vol: ' + formatVol(totalVol);
 
   setTimeout(() => {
     COINS.forEach(coin => {

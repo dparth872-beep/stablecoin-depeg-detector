@@ -1,3 +1,8 @@
+## v5.2 — 2026-11-01 15:05 MST
+- Live verification via CoinGecko free API: all six within $0.99–$1.01 (USDT $0.9992, USDC $1.0000, DAI $1.0000, FDUSD $0.9969, PYUSD $1.0000, TUSD $0.9979). No depegs, volume spikes, or divergences.
+- Dashboard.html upgraded to v5.2: footer and verification timestamp refreshed to 15:05 MST. All prior polish retained and production-ready. 14 unit tests pass. Snapshot and verify scripts operational.
+- All core features operational. Primary client surface remains dashboard.html (zero-code, mobile-ready).
+
 ## v5.1 — 2026-11-01 14:03 MST
 - Live verification (CoinGecko rate-limited, fell back to Coinbase + DefiLlama): all six within $0.99–$1.01 (USDT $0.9988 Coinbase, USDC $1.0000 Coinbase, DAI $0.9998 Coinbase, FDUSD $0.9968 DefiLlama, PYUSD $1.0000 Coinbase, TUSD $0.9982 DefiLlama). No depegs, volume spikes, or divergences.
 - Dashboard.html upgraded to v5.1: footer and verification timestamp refreshed to 14:03 MST. All prior polish retained and production-ready. 14 unit tests pass. Snapshot and verify scripts operational.

@@ -46,7 +46,7 @@ python tests/test_depeg_logic.py      # 14 unit tests
 - Binance and Coinbase WebSocket streams with exponential-backoff reconnection
 - Volume anomaly detection (median baseline, cooldown)
 - CLI dashboard that refreshes in place
-- Professional single-file web dashboard (dark fintech aesthetic, six large live cards with big monospaced prices, status badges, 24h change, volume, market cap, peg deviation bars with safe-zone highlight, bps deviation, local sparklines, overall status, volume spike, depeg, and cross-source divergence banners, live indicator, auto-refresh every 30s, relative timestamps, mobile-responsive, plain-English how-to, rate-limit resilience with source indicator, manual refresh button, tracked total market cap)
+- Professional single-file web dashboard (dark fintech aesthetic, six large live cards with big monospaced prices, status badges, 24h change, volume, market cap, peg deviation bars with safe-zone highlight, bps deviation, local sparklines, overall status, volume spike, depeg, and cross-source divergence banners, live indicator, auto-refresh every 30s, relative timestamps, mobile-responsive, plain-English how-to, rate-limit resilience with source indicator, manual refresh button, tracked total market cap + total 24h volume)
 - Telegram + email alerts (config.json)
 - JSON output for integration
 - Comprehensive unit tests
@@ -60,14 +60,14 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready. Live verification (2026-11-01 11:04 MST, DefiLlama):
-- USDT $0.9992 (OK)
+Production-ready. Live verification (2026-11-01 12:04 MST, CoinGecko + DefiLlama):
+- USDT $0.9991 (OK)
 - USDC $0.9997 (OK)
-- DAI $1.0001 (OK)
-- FDUSD $0.9968 (OK)
-- PYUSD $0.9998 (OK)
+- DAI $1.0000 (OK)
+- FDUSD $0.9967 (OK)
+- PYUSD $0.9997 (OK)
 - TUSD $0.9982 (OK)
 
-All within $0.99–$1.01 band. No depegs. No volume spikes or divergences detected. dashboard.html (v4.8) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume/depeg/divergence banners, peg bars, bps deviation, market cap + total tracked mcap, sparklines, relative timestamps, overall status, live status, auto-refresh + manual Refresh button, rate-limit backoff + source indicator, status legend, DefiLlama cross-check. Six coins only.
+All within $0.99–$1.01 band. No depegs. No volume spikes or divergences detected. dashboard.html (v4.9) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume/depeg/divergence banners, peg bars, bps deviation, market cap + total tracked mcap + total 24h volume, sparklines, relative timestamps, overall status, live status, auto-refresh + manual Refresh button, rate-limit backoff + source indicator, status legend, DefiLlama cross-check. Six coins only.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

@@ -213,6 +213,22 @@ body {
   height: 28px;
   width: 100%;
 }
+.legend {
+  padding: 0 32px 8px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.swatch {
+  width: 10px; height: 10px; border-radius: 50%; display: inline-block;
+}
+.swatch.ok { background: var(--green); }
+.swatch.down { background: var(--red); }
+.swatch.up { background: var(--amber); }
+.swatch.nodata { background: var(--gray); }
 .how-to {
   padding: 32px;
   border-top: 1px solid var(--border);
@@ -240,6 +256,7 @@ body {
   .how-to { padding: 20px 16px; }
   .footer { padding: 16px; }
   .banners { padding: 0 16px; }
+  .legend { padding: 0 16px 8px; }
 }
 .loading { opacity: 0.6; pointer-events: none; }
 </style>
@@ -257,6 +274,12 @@ body {
   </div>
 </div>
 <div class="banners" id="banners"></div>
+<div class="legend">
+  <span><i class="swatch ok"></i> OK</span>
+  <span><i class="swatch down"></i> DEPEG DOWN</span>
+  <span><i class="swatch up"></i> DEPEG UP</span>
+  <span><i class="swatch nodata"></i> NO DATA</span>
+</div>
 <div class="grid" id="grid"></div>
 <div class="how-to">
   <h2>How to use</h2>
@@ -264,11 +287,11 @@ body {
     <li>Bookmark this page. It works in any modern browser (including iPhone Safari) and refreshes automatically every 30 seconds.</li>
     <li>Green badge = peg is healthy ($0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data from the API. Deviation in basis points shown under price.</li>
     <li>A banner appears at the top if volume spikes above 3× the recent median or a depeg is detected. The peg bar shows price position relative to the $0.99–$1.01 safe zone. Sparklines show recent price history stored locally.</li>
-    <li>No login, no install, no code to run. Just open the file. Data comes from CoinGecko’s free public API.</li>
+    <li>No login, no install, no code to run. Just open the file. Data comes from CoinGecko’s free public API. For best results, leave the tab open or refresh if rate-limited.</li>
   </ol>
 </div>
 <div class="footer">
-  <div>v3.3 · CoinGecko free API · Thresholds $0.99–$1.01 · Volume spike 3× median</div>
+  <div>v3.4 · CoinGecko free API · Thresholds $0.99–$1.01 · Volume spike 3× median</div>
   <div>Zero-code. Open this file in any browser. Done.</div>
 </div>
 <script>

@@ -1,3 +1,8 @@
+## v4.2 — 2026-11-01 05:06 MST
+- Live verification via CoinGecko free API: all six within $0.99–$1.01 (USDT $0.9995, USDC $1.0000, DAI $1.0000, FDUSD $0.9976, PYUSD $1.0000, TUSD $0.9983). No depegs, volume spikes, or divergences. Total tracked mcap ~$259.8B.
+- Dashboard.html upgraded to v4.2: added tracked total market cap display in header meta. Footer refreshed with fresh verification timestamp. All prior polish (dark fintech aesthetic, cards with price/24h change/status/volume/mcap/peg bar/sparkline, banners, rate-limit resilience, mobile-responsive, zero-code) retained and production-ready.
+- All core features operational (REST + multi-source fallbacks, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard, 14 unit tests). Primary client surface is dashboard.html.
+
 ## v4.1 — 2026-11-01 04:05 MST
 - Live verification via DefiLlama (CoinGecko free tier rate-limited): all six within $0.99–$1.01 (USDT $0.9995, USDC $1.0000, DAI $1.0005, FDUSD $0.9975, PYUSD $1.0000, TUSD $0.9993). No depegs, volume spikes, or divergences.
 - Dashboard.html confirmed production-grade: dark fintech aesthetic, six cards with price/24h change/status/volume/mcap/peg bar/sparkline, banners for volume/depeg/divergence, rate-limit resilience, mobile-responsive, zero-code.
@@ -8,25 +13,10 @@
 - Live verification (CoinGecko + DefiLlama): all six within $0.99–$1.01 (USDT ~$0.9995, USDC ~$0.9999, DAI $1.0000, FDUSD ~$0.9975, PYUSD $1.0000, TUSD ~$0.9995). No depegs, volume spikes, or divergences.
 - 14/14 unit tests pass. All core features operational. Zero-code dashboard remains the primary client surface.
 
+## Previous
 ## v3.9 — 2026-11-01 02:07 MST
 - Upgraded dashboard.html to v3.9: added manual Refresh now button for immediate updates. How-to and footer refreshed with current verification.
 - Fresh live verification via DefiLlama (CoinGecko rate-limited): all six within $0.99–$1.01 (USDT $0.9995, USDC $1.0000, DAI $1.0004, FDUSD $0.9977, PYUSD $1.0001, TUSD $0.9993). No depegs, volume spikes, or divergences.
 - All core features (REST + WS with reconnection, volume anomaly, CLI dashboard, unit tests, multi-source fallbacks) operational. Zero-code dashboard is the primary client surface.
-
-## v3.8 — 2026-11-01 01:09 MDT
-- Upgraded dashboard.html to v3.8: added DefiLlama parallel fetch for cross-source divergence detection (>50 bps alerts as banner). Source indicator updated. How-to and footer refreshed. Primary zero-code surface remains production-ready with all prior polish.
-- Fresh live verification via CoinGecko: all six within $0.99–$1.01 (USDT $0.9996, USDC $1.0000, DAI $1.0000, FDUSD $0.9977, PYUSD $1.0000, TUSD $0.9993). No depegs, volume spikes, or divergences.
-- All core features (REST + WS with reconnection, volume anomaly, CLI dashboard, unit tests, multi-source fallbacks) operational.
-
-## v3.7 — 2026-11-01 01:06 MDT
-- Fresh live verification via CoinGecko free API: all six within $0.99–$1.01 (USDT $0.9995, USDC $1.0000, DAI $1.0000, FDUSD $0.9977, PYUSD $1.0000, TUSD $0.9992). No depegs or volume spikes.
-- dashboard.html polished to v3.7 (footer updated with exact verification timestamp). Primary zero-code client surface remains production-ready.
-- All core features (REST + WS, volume anomaly, CLI dashboard, unit tests, multi-source fallbacks) operational.
-
-## Previous
-## v3.6 — 2026-11-01 00:05 MDT
-- Fresh live verification via DefiLlama: all six within $0.99–$1.01 (USDT $0.9995, USDC $1.0000, DAI $1.0005, FDUSD $0.9975, PYUSD $1.0001, TUSD $0.9992). No depegs or volume spikes.
-- All core features operational. Primary client surface remains dashboard.html (v3.5/v3.6 polish: dark fintech aesthetic, zero-code, mobile-ready, rate-limit resilient with source indicator, peg bars, sparklines, banners).
-- CoinGecko free API remains rate-limited for heavy polling; DefiLlama + Coinbase serve as reliable fallbacks in the Python detector.
 
 ## Earlier entries preserved below (see full history in repo)

@@ -1,3 +1,8 @@
+## v4.0 — 2026-11-01 03:05 MST
+- Upgraded dashboard.html to v4.0: added total tracked market cap summary in header meta. Footer refreshed with fresh verification timestamp.
+- Live verification (CoinGecko + DefiLlama): all six within $0.99–$1.01 (USDT ~$0.9995, USDC ~$0.9999, DAI $1.0000, FDUSD ~$0.9975, PYUSD $1.0000, TUSD ~$0.9995). No depegs, volume spikes, or divergences.
+- 14/14 unit tests pass. All core features operational. Zero-code dashboard remains the primary client surface.
+
 ## v3.9 — 2026-11-01 02:07 MST
 - Upgraded dashboard.html to v3.9: added manual Refresh now button for immediate updates. How-to and footer refreshed with current verification.
 - Fresh live verification via DefiLlama (CoinGecko rate-limited): all six within $0.99–$1.01 (USDT $0.9995, USDC $1.0000, DAI $1.0004, FDUSD $0.9977, PYUSD $1.0001, TUSD $0.9993). No depegs, volume spikes, or divergences.

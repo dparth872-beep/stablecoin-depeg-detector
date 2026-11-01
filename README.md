@@ -46,7 +46,7 @@ python tests/test_depeg_logic.py      # 14 unit tests
 - Binance and Coinbase WebSocket streams with exponential-backoff reconnection
 - Volume anomaly detection (median baseline, cooldown)
 - CLI dashboard that refreshes in place
-- Professional single-file web dashboard (dark fintech aesthetic, six large live cards with big monospaced prices, status badges, 24h change, volume, market cap, peg deviation bars with safe-zone highlight, bps deviation, local sparklines, overall status, volume spike and depeg banners, live indicator, auto-refresh every 30s, relative timestamps, mobile-responsive, plain-English how-to, rate-limit resilience)
+- Professional single-file web dashboard (dark fintech aesthetic, six large live cards with big monospaced prices, status badges, 24h change, volume, market cap, peg deviation bars with safe-zone highlight, bps deviation, local sparklines, overall status, volume spike and depeg banners, live indicator, auto-refresh every 30s, relative timestamps, mobile-responsive, plain-English how-to, rate-limit resilience with source indicator)
 - Telegram + email alerts (config.json)
 - JSON output for integration
 - Comprehensive unit tests
@@ -68,6 +68,6 @@ Production-ready. Live verification (2026-10-31 ~22:04 MDT via DefiLlama; CoinGe
 - PYUSD $1.0002 (OK)
 - TUSD $0.9990 (OK)
 
-All within $0.99–$1.01 band. No depegs. No volume spikes detected. 14/14 unit tests pass. dashboard.html (v3.4) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume/depeg banners, peg bars, bps deviation, market cap, sparklines, relative timestamps, overall status, live status, auto-refresh, rate-limit backoff, status legend. Six coins only.
+All within $0.99–$1.01 band. No depegs. No volume spikes detected. 14/14 unit tests pass. dashboard.html (v3.5) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume/depeg banners, peg bars, bps deviation, market cap, sparklines, relative timestamps, overall status, live status, auto-refresh, rate-limit backoff + source indicator, status legend. Six coins only.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

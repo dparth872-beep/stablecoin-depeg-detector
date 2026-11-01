@@ -82,6 +82,11 @@ body {
   color: var(--green);
 }
 .overall.alert { color: var(--red); }
+.source {
+  font-size: 11.5px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
 .banners {
   padding: 0 32px;
 }
@@ -102,6 +107,7 @@ body {
 .banner.volume { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(255,176,32,0.35); display: block; }
 .banner.depeg { background: var(--red-bg); color: var(--red); border: 1px solid rgba(255,77,106,0.35); display: block; }
 .banner.divergence { background: rgba(59,130,246,0.14); color: #60a5fa; border: 1px solid rgba(59,130,246,0.35); display: block; }
+.banner.rate { background: rgba(107,114,128,0.14); color: var(--text-dim); border: 1px solid rgba(107,114,128,0.35); display: block; }
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -271,6 +277,7 @@ body {
     <div class="live"><span class="dot"></span> Live</div>
     <div id="overall" class="overall">Checking...</div>
     <div id="updated">Last updated: —</div>
+    <div id="source" class="source">Source: CoinGecko</div>
   </div>
 </div>
 <div class="banners" id="banners"></div>
@@ -287,11 +294,11 @@ body {
     <li>Bookmark this page. It works in any modern browser (including iPhone Safari) and refreshes automatically every 30 seconds.</li>
     <li>Green badge = peg is healthy ($0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data from the API. Deviation in basis points shown under price.</li>
     <li>A banner appears at the top if volume spikes above 3× the recent median or a depeg is detected. The peg bar shows price position relative to the $0.99–$1.01 safe zone. Sparklines show recent price history stored locally.</li>
-    <li>No login, no install, no code to run. Just open the file. Data comes from CoinGecko’s free public API. For best results, leave the tab open or refresh if rate-limited.</li>
+    <li>No login, no install, no code to run. Just open the file. Data comes from CoinGecko’s free public API (with automatic backoff on rate limits). Leave the tab open; if you see a rate-limit note, wait a minute or refresh.</li>
   </ol>
 </div>
 <div class="footer">
-  <div>v3.4 · CoinGecko free API · Thresholds $0.99–$1.01 · Volume spike 3× median</div>
+  <div>v3.5 · CoinGecko free API · Thresholds $0.99–$1.01 · Volume spike 3× median</div>
   <div>Zero-code. Open this file in any browser. Done.</div>
 </div>
 <script>
@@ -309,11 +316,13 @@ const grid = document.getElementById('grid');
 const banners = document.getElementById('banners');
 const updatedEl = document.getElementById('updated');
 const overallEl = document.getElementById('overall');
+const sourceEl = document.getElementById('source');
 let volHistory = JSON.parse(localStorage.getItem('volHistory') || '{}');
 let priceHistory = JSON.parse(localStorage.getItem('priceHistory') || '{}');
 let lastPrices = {};
 let retryDelay = 1000;
 let lastUpdate = Date.now();
+let rateLimited = false;
 
 function getStatus(price) {
   if (price == null || isNaN(price)) return { text: 'NO DATA', cls: 'nodata' };
@@ -393,6 +402,7 @@ function render(data) {
   const now = new Date();
   lastUpdate = Date.now();
   updatedEl.textContent = 'Last updated: ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  sourceEl.textContent = rateLimited ? 'Source: CoinGecko (rate-limited, retrying)' : 'Source: CoinGecko';
   let volumeAlerts = [];
   let depegAlerts = [];
   let okCount = 0;
@@ -457,6 +467,12 @@ function render(data) {
   }
 
   banners.innerHTML = '';
+  if (rateLimited) {
+    const b = document.createElement('div');
+    b.className = 'banner rate';
+    b.textContent = 'CoinGecko rate limit hit — retrying with backoff. Data may be stale briefly.';
+    banners.appendChild(b);
+  }
   if (depegAlerts.length) {
     const b = document.createElement('div');
     b.className = 'banner depeg';
@@ -471,6 +487,7 @@ function render(data) {
   }
   lastPrices = data;
   retryDelay = 1000;
+  rateLimited = false;
 }
 
 async function refresh() {
@@ -478,12 +495,16 @@ async function refresh() {
     const r = await fetch(API);
     if (r.status === 429) {
       console.warn('Rate limited, backing off');
+      rateLimited = true;
+      sourceEl.textContent = 'Source: CoinGecko (rate-limited)';
+      if (Object.keys(lastPrices).length > 0) render(lastPrices);
       retryDelay = Math.min(60000, retryDelay * 2);
       setTimeout(refresh, retryDelay);
       return;
     }
     if (!r.ok) throw new Error(r.status);
     const data = await r.json();
+    rateLimited = false;
     render(data);
   } catch (e) {
     console.error('Fetch error:', e);

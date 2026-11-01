@@ -60,14 +60,14 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready. Live verification (2026-11-01 05:06 MST):
+Production-ready. Live verification (2026-11-01 06:08 MST):
 - USDT $0.9995 (OK)
 - USDC $1.0000 (OK)
-- DAI $1.0000 (OK)
-- FDUSD $0.9976 (OK)
+- DAI $1.0010 (OK)
+- FDUSD $0.9975 (OK)
 - PYUSD $1.0000 (OK)
-- TUSD $0.9983 (OK)
+- TUSD $0.9979 (OK)
 
-All within $0.99–$1.01 band. No depegs. No volume spikes or divergences detected. Total tracked mcap ~$259.8B. 14/14 unit tests pass. dashboard.html (v4.2) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume/depeg/divergence banners, peg bars, bps deviation, market cap + total tracked mcap, sparklines, relative timestamps, overall status, live status, auto-refresh + manual Refresh button, rate-limit backoff + source indicator, status legend, DefiLlama cross-check. Six coins only.
+All within $0.99–$1.01 band. No depegs. No volume spikes or divergences detected. Total tracked mcap ~$260.0B. 14/14 unit tests pass. dashboard.html (v4.3) is the primary client surface — polished dark fintech aesthetic (Bloomberg-meets-Apple), zero-code, mobile-ready, with volume/depeg/divergence banners, peg bars, bps deviation, market cap + total tracked mcap, sparklines, relative timestamps, overall status, live status, auto-refresh + manual Refresh button, rate-limit backoff + source indicator, status legend, DefiLlama cross-check. Six coins only.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

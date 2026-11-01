@@ -1,3 +1,8 @@
+## v3.3 — 2026-10-31 19:05 MDT
+- Fresh live verification via CoinGecko free API: all six within $0.99–$1.01 (USDT $0.9995, USDC $1.0000, DAI $1.0010, FDUSD $0.9979, PYUSD $1.0000, TUSD $0.9993). No depegs or volume spikes detected.
+- Detector snapshot and verify_prices.py confirmed clean OK output for all coins. All core features operational. Unit tests 14/14. Zero-code dashboard.html remains the primary client surface — polished dark fintech aesthetic, mobile-ready, zero-code.
+
+## Previous
 ## v3.2 — 2026-10-31 18:06 MDT
 - Fresh live verification via CoinGecko free API: all six within $0.99–$1.01 (USDT $0.9995, USDC $1.0000, DAI $1.0010, FDUSD $0.9979, PYUSD $1.0000, TUSD $0.9991). No depegs or volume spikes detected.
 - Detector snapshot confirmed clean OK output for all coins. All core features operational. Unit tests 14/14. Zero-code dashboard.html remains the primary client surface — polished dark fintech aesthetic, mobile-ready, zero-code.

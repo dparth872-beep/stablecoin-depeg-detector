@@ -277,7 +277,7 @@ body {
     <div class="live"><span class="dot"></span> Live</div>
     <div id="overall" class="overall">Checking...</div>
     <div id="updated">Last updated: —</div>
-    <div id="source" class="source">Source: CoinGecko</div>
+    <div id="source" class="source">Source: CoinGecko + DefiLlama</div>
   </div>
 </div>
 <div class="banners" id="banners"></div>
@@ -293,12 +293,12 @@ body {
   <ol>
     <li>Bookmark this page. It works in any modern browser (including iPhone Safari) and refreshes automatically every 30 seconds.</li>
     <li>Green badge = peg is healthy ($0.99–$1.01). Red = depeg down. Amber = depeg up. Gray = no data from the API. Deviation in basis points shown under price.</li>
-    <li>A banner appears at the top if volume spikes above 3× the recent median or a depeg is detected. The peg bar shows price position relative to the $0.99–$1.01 safe zone. Sparklines show recent price history stored locally.</li>
-    <li>No login, no install, no code to run. Just open the file. Data comes from CoinGecko’s free public API (with automatic backoff on rate limits). Leave the tab open; if you see a rate-limit note, wait a minute or refresh.</li>
+    <li>A banner appears at the top if volume spikes above 3× the recent median, a depeg is detected, or cross-source prices diverge by >50 bps. The peg bar shows price position relative to the $0.99–$1.01 safe zone. Sparklines show recent price history stored locally.</li>
+    <li>No login, no install, no code to run. Just open the file. Data comes from CoinGecko’s free public API (with DefiLlama cross-check) and automatic backoff on rate limits. Leave the tab open; if you see a rate-limit note, wait a minute or refresh.</li>
   </ol>
 </div>
 <div class="footer">
-  <div>v3.7 · CoinGecko free API · Thresholds $0.99–$1.01 · Volume spike 3× median · Verified 2026-11-01 01:06 MDT</div>
+  <div>v3.8 · CoinGecko + DefiLlama · Thresholds $0.99–$1.01 · Volume spike 3× median · Divergence 50 bps · Verified 2026-11-01 01:07 MDT</div>
   <div>Zero-code. Open this file in any browser. Done.</div>
 </div>
 <script>
@@ -312,6 +312,7 @@ const COINS = [
 ];
 const LOWER = 0.99, UPPER = 1.01;
 const API = 'https://api.coingecko.com/api/v3/simple/price?ids=' + COINS.map(c => c.id).join(',') + '&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true';
+const LLAMA = 'https://coins.llama.fi/prices/current/' + COINS.map(c => 'coingecko:' + c.id).join(',');
 const grid = document.getElementById('grid');
 const banners = document.getElementById('banners');
 const updatedEl = document.getElementById('updated');
@@ -398,13 +399,14 @@ function drawSpark(symbol, canvas) {
   ctx.stroke();
 }
 
-function render(data) {
+function render(data, llamaPrices) {
   const now = new Date();
   lastUpdate = Date.now();
   updatedEl.textContent = 'Last updated: ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  sourceEl.textContent = rateLimited ? 'Source: CoinGecko (rate-limited, retrying)' : 'Source: CoinGecko';
+  sourceEl.textContent = rateLimited ? 'Source: CoinGecko (rate-limited, retrying)' : 'Source: CoinGecko + DefiLlama';
   let volumeAlerts = [];
   let depegAlerts = [];
+  let divergenceAlerts = [];
   let okCount = 0;
   let total = 0;
   grid.innerHTML = COINS.map(coin => {
@@ -423,6 +425,14 @@ function render(data) {
     const volAlert = checkVolumeSpike(coin.symbol, vol);
     if (volAlert) volumeAlerts.push(volAlert);
     if (status.cls === 'down' || status.cls === 'up') depegAlerts.push(`${coin.symbol} ${status.text}: ${priceStr}`);
+    const llamaKey = 'coingecko:' + coin.id;
+    const llamaPrice = llamaPrices && llamaPrices[llamaKey] ? llamaPrices[llamaKey].price : null;
+    if (price != null && llamaPrice != null) {
+      const diffBps = Math.abs(price - llamaPrice) / Math.max(price, llamaPrice) * 10000;
+      if (diffBps > 50) {
+        divergenceAlerts.push(`${coin.symbol}: $${price.toFixed(4)} vs $${llamaPrice.toFixed(4)} (${Math.round(diffBps)} bps)`);
+      }
+    }
     updatePriceHistory(coin.symbol, price);
     const pos = pegPosition(price);
     return `
@@ -455,7 +465,7 @@ function render(data) {
     });
   }, 10);
 
-  if (depegAlerts.length === 0 && volumeAlerts.length === 0 && okCount === total && total > 0) {
+  if (depegAlerts.length === 0 && volumeAlerts.length === 0 && divergenceAlerts.length === 0 && okCount === total && total > 0) {
     overallEl.textContent = `All ${total} clear`;
     overallEl.className = 'overall';
   } else if (depegAlerts.length > 0) {
@@ -479,6 +489,12 @@ function render(data) {
     b.textContent = 'DEPEG ALERT: ' + depegAlerts.join(' · ');
     banners.appendChild(b);
   }
+  if (divergenceAlerts.length) {
+    const b = document.createElement('div');
+    b.className = 'banner divergence';
+    b.textContent = 'CROSS-SOURCE DIVERGENCE: ' + divergenceAlerts.join(' · ');
+    banners.appendChild(b);
+  }
   if (volumeAlerts.length) {
     const b = document.createElement('div');
     b.className = 'banner volume';
@@ -492,24 +508,32 @@ function render(data) {
 
 async function refresh() {
   try {
-    const r = await fetch(API);
-    if (r.status === 429) {
+    const [cgRes, llamaRes] = await Promise.all([
+      fetch(API),
+      fetch(LLAMA).catch(() => null)
+    ]);
+    if (cgRes.status === 429) {
       console.warn('Rate limited, backing off');
       rateLimited = true;
       sourceEl.textContent = 'Source: CoinGecko (rate-limited)';
-      if (Object.keys(lastPrices).length > 0) render(lastPrices);
+      if (Object.keys(lastPrices).length > 0) render(lastPrices, {});
       retryDelay = Math.min(60000, retryDelay * 2);
       setTimeout(refresh, retryDelay);
       return;
     }
-    if (!r.ok) throw new Error(r.status);
-    const data = await r.json();
+    if (!cgRes.ok) throw new Error(cgRes.status);
+    const data = await cgRes.json();
+    let llamaPrices = {};
+    if (llamaRes && llamaRes.ok) {
+      const lj = await llamaRes.json();
+      llamaPrices = lj.coins || {};
+    }
     rateLimited = false;
-    render(data);
+    render(data, llamaPrices);
   } catch (e) {
     console.error('Fetch error:', e);
     if (Object.keys(lastPrices).length === 0) {
-      render({});
+      render({}, {});
     }
     retryDelay = Math.min(60000, retryDelay * 1.5);
   }

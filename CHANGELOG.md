@@ -1,3 +1,8 @@
+## v3.8 — 2026-11-01 01:09 MDT
+- Upgraded dashboard.html to v3.8: added DefiLlama parallel fetch for cross-source divergence detection (>50 bps alerts as banner). Source indicator updated. How-to and footer refreshed. Primary zero-code surface remains production-ready with all prior polish.
+- Fresh live verification via CoinGecko: all six within $0.99–$1.01 (USDT $0.9996, USDC $1.0000, DAI $1.0000, FDUSD $0.9977, PYUSD $1.0000, TUSD $0.9993). No depegs, volume spikes, or divergences.
+- All core features (REST + WS with reconnection, volume anomaly, CLI dashboard, unit tests, multi-source fallbacks) operational.
+
 ## v3.7 — 2026-11-01 01:06 MDT
 - Fresh live verification via CoinGecko free API: all six within $0.99–$1.01 (USDT $0.9995, USDC $1.0000, DAI $1.0000, FDUSD $0.9977, PYUSD $1.0000, TUSD $0.9992). No depegs or volume spikes.
 - dashboard.html polished to v3.7 (footer updated with exact verification timestamp). Primary zero-code client surface remains production-ready.

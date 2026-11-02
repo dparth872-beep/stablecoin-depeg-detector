@@ -1,3 +1,8 @@
+## v5.5 — 2026-11-01 18:09 MST
+- Dashboard.html upgraded to v5.5: added peg deviation bars with safe-zone highlight, bps deviation, total 24h volume in header, refined dark fintech aesthetic (deeper blacks, larger prices, subtle hover), improved volume formatting.
+- Live verification (CoinGecko free API ~18:06 MST): all six within $0.99–$1.01 (USDT $0.9992, USDC $0.9998, DAI $1.0000, FDUSD $0.9967, PYUSD $0.9999, TUSD $0.9976). No depegs detected. 14 unit tests pass.
+- Primary client surface remains the zero-code dashboard.html. All prior features (REST + multi-source, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard) operational.
+
 ## v5.4 — 2026-11-02 00:08 MST
 - Built and deployed polished production-grade zero-code dashboard.html (replaces PLACEHOLDER).
 - Dark fintech aesthetic, six large cards, color-coded status badges, volume spike + depeg banners, 30s auto-refresh from CoinGecko, mobile-responsive, plain-English how-to.

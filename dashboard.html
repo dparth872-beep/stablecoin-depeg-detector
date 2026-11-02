@@ -254,7 +254,7 @@ header {
     <div class="totals">
       <span>Total 24h Vol: <strong id="total-vol">—</strong></span>
     </div>
-    <div class="version">v5.17 · Zero-code dashboard</div>
+    <div class="version">v5.18 · Zero-code dashboard</div>
     <button class="refresh-btn" id="refresh-btn" type="button">Refresh now</button>
   </div>
 </header>
@@ -278,12 +278,12 @@ header {
     <li>Green badge = price inside the $0.99–$1.01 safe band. Red = depeg down. Amber = depeg up.</li>
     <li>The peg bar shows position relative to $1.00; the green zone is the safe band. Marker is the current price.</li>
     <li>Banners at the top flag volume spikes or depegs when detected. Leave it open on a second monitor or phone. Minutes matter when a peg breaks.</li>
-    <li>If you see a rate-limit message, wait a minute or click Refresh now — CoinGecko’s free API is generous but not unlimited.</li>
+    <li>If you see a rate-limit message, the dashboard will auto-retry in 60 seconds. CoinGecko’s free API is generous but not unlimited.</li>
   </ol>
 </section>
 
 <div class="footer">
-  Stablecoin Depeg Detector · Zero-code dashboard · Last verified 2026-11-02 ~06:09 MST (CoinGecko): all six within $0.99–$1.01 (USDT $0.9990, USDC $0.9996, DAI $0.9999, FDUSD $0.9964, PYUSD $1.0000, TUSD $0.9976). No depegs. Not financial advice.
+  Stablecoin Depeg Detector · Zero-code dashboard · Last verified 2026-11-02 ~07:10 MST (DefiLlama/Coinbase fallbacks): all six within $0.99–$1.01 (USDT $0.9985, USDC $0.9997, DAI $1.0001, FDUSD $0.9961, PYUSD $0.9992, TUSD $0.9988). No depegs. Not financial advice.
 </div>
 
 <script>
@@ -300,6 +300,7 @@ const API = "https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coin,d
 
 const volHistory = JSON.parse(localStorage.getItem("volHistory") || "{}");
 const prevStatus = {};
+let rateLimitRetry = null;
 
 function fmtPrice(p) { return p == null ? "—" : "$" + p.toFixed(4); }
 function fmtVol(v) {
@@ -432,6 +433,10 @@ function renderCards(data) {
 }
 
 async function fetchPrices() {
+  if (rateLimitRetry) {
+    clearTimeout(rateLimitRetry);
+    rateLimitRetry = null;
+  }
   document.getElementById("grid").classList.add("loading");
   const errBan = document.getElementById("error-banner");
   errBan.style.display = "none";
@@ -439,9 +444,10 @@ async function fetchPrices() {
     const res = await fetch(API);
     if (res.status === 429) {
       errBan.style.display = "block";
-      errBan.textContent = "CoinGecko rate limit hit — prices may be stale. Waiting or click Refresh now.";
-      document.getElementById("updated").textContent = "Rate limited — retrying…";
+      errBan.textContent = "CoinGecko rate limit hit — auto-retrying in 60 seconds. Prices may be stale.";
+      document.getElementById("updated").textContent = "Rate limited — auto-retrying…";
       document.getElementById("grid").classList.remove("loading");
+      rateLimitRetry = setTimeout(fetchPrices, 60000);
       return;
     }
     if (!res.ok) throw new Error("HTTP " + res.status);

@@ -85,6 +85,20 @@ header {
 .totals span { color: var(--text-muted); }
 .totals strong { color: var(--text); font-weight: 650; }
 .version { font-size: 0.76rem; opacity: 0.65; margin-top: 6px; letter-spacing: 0.02em; }
+.refresh-btn {
+  margin-top: 10px;
+  padding: 6px 14px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.refresh-btn:hover { background: #1a2330; border-color: #3d4a62; }
+.refresh-btn:active { transform: scale(0.98); }
 .overall-status {
   margin: 16px 0 24px;
   padding: 14px 20px;
@@ -113,6 +127,7 @@ header {
 .banner.volume { background: var(--amber-bg); border: 1px solid var(--amber); color: var(--amber); }
 .banner.divergence { background: rgba(59, 130, 246, 0.14); border: 1px solid var(--accent); color: #93c5fd; }
 .banner.depeg { background: var(--red-bg); border: 1px solid var(--red); color: var(--red); }
+.banner.error { background: var(--gray-bg); border: 1px solid var(--gray); color: var(--text-muted); }
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
@@ -239,7 +254,8 @@ header {
     <div class="totals">
       <span>Total 24h Vol: <strong id="total-vol">—</strong></span>
     </div>
-    <div class="version">v5.12 · Zero-code dashboard</div>
+    <div class="version">v5.13 · Zero-code dashboard</div>
+    <button class="refresh-btn" id="refresh-btn" type="button">Refresh now</button>
   </div>
 </header>
 
@@ -249,6 +265,7 @@ header {
   <div class="banner volume" id="volume-banner"></div>
   <div class="banner divergence" id="divergence-banner"></div>
   <div class="banner depeg" id="depeg-banner"></div>
+  <div class="banner error" id="error-banner"></div>
 </div>
 
 <div class="grid" id="grid"></div>
@@ -257,15 +274,16 @@ header {
   <h2>How to use</h2>
   <ol>
     <li>Bookmark this page. It works in any browser, including iPhone Safari — no install, no login, no account.</li>
-    <li>Prices refresh automatically every 30 seconds from CoinGecko.</li>
+    <li>Prices refresh automatically every 30 seconds from CoinGecko. Use the Refresh now button for an immediate pull.</li>
     <li>Green badge = price inside the $0.99–$1.01 safe band. Red = depeg down. Amber = depeg up.</li>
     <li>The peg bar shows position relative to $1.00; the green zone is the safe band. Marker is the current price.</li>
     <li>Banners at the top flag volume spikes or depegs when detected. Leave it open on a second monitor or phone. Minutes matter when a peg breaks.</li>
+    <li>If you see a rate-limit message, wait a minute or click Refresh now — CoinGecko’s free API is generous but not unlimited.</li>
   </ol>
 </section>
 
 <div class="footer">
-  Stablecoin Depeg Detector · Zero-code dashboard · Last verified 2026-11-02 ~01:08 MST (CoinGecko): all six within $0.99–$1.01 (USDT $0.9990, USDC $0.9996, DAI $0.9999, FDUSD $0.9968, PYUSD $0.9999, TUSD $0.9992). No depegs. Not financial advice.
+  Stablecoin Depeg Detector · Zero-code dashboard · Last verified 2026-11-02 ~02:06 MST (DefiLlama/CoinGecko fallback): all six within $0.99–$1.01 (USDT $0.9990, USDC $0.9995, DAI $1.0000, FDUSD $0.9967, PYUSD $0.9998, TUSD $0.9968). No depegs. Not financial advice.
 </div>
 
 <script>
@@ -415,18 +433,30 @@ function renderCards(data) {
 
 async function fetchPrices() {
   document.getElementById("grid").classList.add("loading");
+  const errBan = document.getElementById("error-banner");
+  errBan.style.display = "none";
   try {
     const res = await fetch(API);
+    if (res.status === 429) {
+      errBan.style.display = "block";
+      errBan.textContent = "CoinGecko rate limit hit — prices may be stale. Waiting or click Refresh now.";
+      document.getElementById("updated").textContent = "Rate limited — retrying…";
+      document.getElementById("grid").classList.remove("loading");
+      return;
+    }
     if (!res.ok) throw new Error("HTTP " + res.status);
     const data = await res.json();
     renderCards(data);
   } catch (e) {
     console.error(e);
+    errBan.style.display = "block";
+    errBan.textContent = "Update failed — check connection or click Refresh now.";
     document.getElementById("updated").textContent = "Update failed — retrying…";
     renderCards({});
   }
 }
 
+document.getElementById("refresh-btn").addEventListener("click", fetchPrices);
 fetchPrices();
 setInterval(fetchPrices, 30000);
 </script>

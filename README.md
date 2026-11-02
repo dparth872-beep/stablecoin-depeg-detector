@@ -46,7 +46,7 @@ python tests/test_depeg_logic.py      # 14 unit tests
 - Binance and Coinbase WebSocket streams with exponential-backoff reconnection
 - Volume anomaly detection (median baseline, cooldown)
 - CLI dashboard that refreshes in place
-- Professional single-file web dashboard (dark fintech aesthetic, six large live cards, status badges, 24h change, volume, auto-refresh every 30s from CoinGecko, mobile-responsive, plain-English how-to, client-side volume spike detection)
+- Professional single-file web dashboard (dark fintech aesthetic, six large live cards with big monospaced prices, status badges, 24h change, volume, peg deviation bars with safe-zone highlight, bps deviation, total 24h volume, volume spike and depeg banners, live indicator, auto-refresh every 30s, manual Refresh now button, rate-limit error banner with auto-retry, mobile-responsive, plain-English how-to, status-flash animations, overall peg status indicator)
 - Telegram + email alerts (config.json)
 - JSON output for integration
 - Comprehensive unit tests
@@ -60,14 +60,14 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready. Live verification (2026-11-02 ~15:05 MST, CoinGecko free API):
-- USDT $0.998578 (OK)
-- USDC $0.999262 (OK)
-- DAI $0.999839 (OK)
-- FDUSD $0.995598 (OK)
-- PYUSD $0.999880 (OK)
-- TUSD $0.998843 (OK)
+Production-ready. Live verification (2026-11-02 ~16:05 MST, CoinGecko free API):
+- USDT $0.998586 (OK)
+- USDC $0.999268 (OK)
+- DAI $0.999841 (OK)
+- FDUSD $0.995685 (OK)
+- PYUSD $0.999837 (OK)
+- TUSD $0.997695 (OK)
 
-All within $0.99–$1.01 band. No depegs detected. dashboard.html is the primary client surface — polished dark Bloomberg/Apple fintech aesthetic (Inter + JetBrains Mono), zero-code, mobile-ready for iPhone Safari, auto-refresh every 30s, status badges (OK / DEPEG DOWN / DEPEG UP / NO DATA) with color coding, 24h change and volume, client-side volume spike banners (3× recent average via localStorage), plain-English how-to. Six coins only.
+All within $0.99–$1.01 band. No depegs detected. dashboard.html is the primary client surface — polished dark Bloomberg/Apple fintech aesthetic (Inter + JetBrains Mono), zero-code, mobile-ready for iPhone Safari, auto-refresh every 30s, status badges (OK / DEPEG DOWN / DEPEG UP / NO DATA) with color coding, 24h change and volume, peg deviation bars, bps, client-side volume spike banners (3× recent average via localStorage), live indicator, manual refresh, plain-English how-to. Six coins only.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

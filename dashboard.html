@@ -38,15 +38,16 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
-  padding: 24px 20px 80px;
+  padding: 24px 20px 100px;
   -webkit-font-smoothing: antialiased;
 }
 .header {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
+  position: relative;
 }
 .header h1 {
-  font-size: 1.75rem;
+  font-size: 1.8rem;
   font-weight: 700;
   letter-spacing: -0.6px;
   background: linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%);
@@ -60,6 +61,52 @@ body {
   margin-top: 6px;
   font-weight: 500;
 }
+.live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--green-text);
+  font-weight: 600;
+}
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.2); }
+}
+.summary {
+  max-width: 1200px;
+  margin: 0 auto 20px;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.summary .ok { color: var(--green); font-weight: 700; }
+.summary .alert { color: var(--red); font-weight: 700; }
+.controls {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn:hover { background: var(--card-hover); border-color: var(--border-subtle); }
 .banners {
   margin-bottom: 20px;
   max-width: 1200px;
@@ -104,7 +151,7 @@ body {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 2px;
+  height: 3px;
   background: transparent;
   transition: background 0.3s;
 }
@@ -169,6 +216,39 @@ body {
   margin-top: 10px;
   font-weight: 500;
 }
+.bps {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.peg-bar {
+  margin-top: 12px;
+  height: 6px;
+  background: #1c2533;
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+.peg-safe {
+  position: absolute;
+  left: 0%;
+  right: 0%;
+  height: 100%;
+  background: rgba(16, 185, 129, 0.15);
+  border-left: 1px solid rgba(16, 185, 129, 0.4);
+  border-right: 1px solid rgba(16, 185, 129, 0.4);
+}
+.peg-marker {
+  position: absolute;
+  top: -2px;
+  width: 2px;
+  height: 10px;
+  background: #f1f5f9;
+  border-radius: 1px;
+  transform: translateX(-50%);
+  transition: left 0.4s ease;
+}
 .how-to {
   max-width: 720px;
   margin: 40px auto 0;
@@ -200,7 +280,7 @@ body {
   border: 1px solid var(--border);
 }
 @media (max-width: 640px) {
-  body { padding: 16px 14px 70px; }
+  body { padding: 16px 14px 90px; }
   .header h1 { font-size: 1.45rem; }
   .price { font-size: 1.9rem; }
   .grid { grid-template-columns: 1fr; gap: 14px; }
@@ -213,6 +293,15 @@ body {
 <div class="header">
   <h1>Stablecoin Depeg Intelligence</h1>
   <p class="tagline">Real-time peg monitoring for funds, prop desks, and fintech teams</p>
+  <div class="live-indicator">
+    <span class="live-dot"></span>
+    <span>Live • auto-refresh 30s</span>
+  </div>
+</div>
+
+<div class="summary" id="summary">Loading…</div>
+<div class="controls">
+  <button class="btn" id="refresh-btn">Refresh now</button>
 </div>
 
 <div class="banners" id="banners"></div>
@@ -221,7 +310,7 @@ body {
 
 <div class="how-to">
   <h2>How to use</h2>
-  <p>Open this file in any browser (including iPhone Safari). It refreshes every 30 seconds from CoinGecko. Green badges mean the coin is within $0.99–$1.01. Red means a depeg down; amber means a depeg up. Volume spikes (current volume more than 3	imes the recent average) appear as a highlighted banner at the top. Bookmark it. No install, no login, no code required. Just open and watch.</p>
+  <p>Open this file in any browser (including iPhone Safari). It refreshes every 30 seconds from CoinGecko. Green badges mean the coin is within $0.99–$1.01. Red means a depeg down; amber means a depeg up. The bar under each price shows peg deviation (safe zone highlighted). Volume spikes (current volume more than 3× the recent average) appear as a highlighted banner at the top. Bookmark it. No install, no login, no code required. Just open and watch.</p>
 </div>
 
 <div id="last-updated"></div>
@@ -237,7 +326,7 @@ const COINS = [
 ];
 const LOWER = 0.99, UPPER = 1.01;
 const API = "https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coin,dai,first-digital-usd,paypal-usd,true-usd&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true";
-const VOL_KEY = "scdd_vol_history_v1";
+const VOL_KEY = "scdd_vol_history_v2";
 const VOL_WINDOW = 12;
 
 function statusFor(price) {
@@ -253,6 +342,17 @@ function fmtChg(n) {
   if (n == null || isNaN(n)) return { text: "—", cls: "flat" };
   const sign = n >= 0 ? "+" : "";
   return { text: sign + n.toFixed(2) + "%", cls: n > 0.01 ? "pos" : n < -0.01 ? "neg" : "flat" };
+}
+function bps(price) {
+  if (price == null || isNaN(price)) return "—";
+  return ((price - 1) * 10000).toFixed(1) + " bps";
+}
+function pegPosition(price) {
+  if (price == null || isNaN(price)) return 50;
+  // map 0.97–1.03 to 0–100%
+  const min = 0.97, max = 1.03;
+  const clamped = Math.max(min, Math.min(max, price));
+  return ((clamped - min) / (max - min)) * 100;
 }
 
 function loadVolHistory() {
@@ -282,16 +382,19 @@ function updateVolHistory(symbol, vol, history) {
   return history;
 }
 
+let retryTimeout = null;
 async function refresh() {
   const bannersEl = document.getElementById("banners");
+  const summaryEl = document.getElementById("summary");
   try {
     const r = await fetch(API);
-    if (!r.ok) throw new Error("HTTP " + r.status);
+    if (!r.ok) throw new Error("HTTP " + r.status + (r.status === 429 ? " (rate limited)" : ""));
     const data = await r.json();
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
     const banners = [];
     let volHistory = loadVolHistory();
+    let okCount = 0, alertCount = 0, totalVol = 0;
 
     COINS.forEach(c => {
       const d = data[c.id] || {};
@@ -300,12 +403,15 @@ async function refresh() {
       const vol = d.usd_24h_vol;
       const st = statusFor(price);
       const chgFmt = fmtChg(chg);
+      if (st.cls === "ok") okCount++; else if (st.cls === "down" || st.cls === "up") alertCount++;
+      if (vol) totalVol += vol;
 
       const spike = checkVolumeSpike(c.symbol, vol, volHistory);
       if (spike) banners.push(`<div class="banner volume">⚠ ${spike}</div>`);
 
       volHistory = updateVolHistory(c.symbol, vol, volHistory);
 
+      const pos = pegPosition(price);
       const card = document.createElement("div");
       card.className = `card ${st.card}`;
       card.innerHTML = `
@@ -318,6 +424,11 @@ async function refresh() {
         </div>
         <div class="price">$${fmt(price)}</div>
         <div class="change ${chgFmt.cls}">${chgFmt.text} 24h</div>
+        <div class="bps">Peg: ${bps(price)}</div>
+        <div class="peg-bar">
+          <div class="peg-safe"></div>
+          <div class="peg-marker" style="left:${pos}%"></div>
+        </div>
         <div class="vol">24h volume: ${fmtVol(vol)}</div>
       `;
       grid.appendChild(card);
@@ -329,13 +440,20 @@ async function refresh() {
 
     saveVolHistory(volHistory);
     bannersEl.innerHTML = banners.join("");
+    const totalVolStr = totalVol > 0 ? " • Total 24h vol $" + Math.round(totalVol).toLocaleString() : "";
+    summaryEl.innerHTML = alertCount > 0
+      ? `<span class="alert">${alertCount} DEPEG</span> • ${okCount} OK${totalVolStr}`
+      : `<span class="ok">All ${okCount} within peg</span>${totalVolStr}`;
     document.getElementById("last-updated").textContent = "Updated " + new Date().toLocaleTimeString();
   } catch (e) {
-    bannersEl.innerHTML = `<div class="banner error">Fetch error: ${e.message}. Retrying in 30s…</div>`;
+    bannersEl.innerHTML = `<div class="banner error">Fetch error: ${e.message}. Retrying…</div>`;
     document.getElementById("last-updated").textContent = "Update failed " + new Date().toLocaleTimeString();
+    if (retryTimeout) clearTimeout(retryTimeout);
+    retryTimeout = setTimeout(refresh, 8000);
   }
 }
 
+document.getElementById("refresh-btn").addEventListener("click", refresh);
 refresh();
 setInterval(refresh, 30000);
 </script>

@@ -85,6 +85,19 @@ header {
 .totals span { color: var(--text-muted); }
 .totals strong { color: var(--text); font-weight: 650; }
 .version { font-size: 0.76rem; opacity: 0.65; margin-top: 6px; letter-spacing: 0.02em; }
+.overall-status {
+  margin: 16px 0 24px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.overall-status.ok { border-color: var(--green); color: var(--green); }
+.overall-status.alert { border-color: var(--red); color: var(--red); }
 .banners { margin-bottom: 24px; }
 .banner {
   padding: 18px 22px;
@@ -226,9 +239,11 @@ header {
     <div class="totals">
       <span>Total 24h Vol: <strong id="total-vol">—</strong></span>
     </div>
-    <div class="version">v5.11 · Zero-code dashboard</div>
+    <div class="version">v5.12 · Zero-code dashboard</div>
   </div>
 </header>
+
+<div id="overall" class="overall-status">Checking pegs…</div>
 
 <div class="banners" id="banners">
   <div class="banner volume" id="volume-banner"></div>
@@ -250,7 +265,7 @@ header {
 </section>
 
 <div class="footer">
-  Stablecoin Depeg Detector · Zero-code dashboard · Last verified 2026-11-02 ~00:07 MST (DefiLlama + Coinbase; CoinGecko free API rate-limited): all six within $0.99–$1.01 (USDT ~$0.9990, USDC ~$0.9996, DAI ~$1.0000, FDUSD ~$0.9968, PYUSD ~$0.9999, TUSD ~$0.9987). No depegs. Not financial advice.
+  Stablecoin Depeg Detector · Zero-code dashboard · Last verified 2026-11-02 ~01:08 MST (CoinGecko): all six within $0.99–$1.01 (USDT $0.9990, USDC $0.9996, DAI $0.9999, FDUSD $0.9968, PYUSD $0.9999, TUSD $0.9992). No depegs. Not financial advice.
 </div>
 
 <script>
@@ -304,6 +319,8 @@ function renderCards(data) {
   const depegAlerts = [];
   const volumeAlerts = [];
   let totalVol = 0;
+  let anyDepeg = false;
+  let allOk = true;
 
   COINS.forEach(coin => {
     const d = data[coin.id] || {};
@@ -312,10 +329,12 @@ function renderCards(data) {
     const vol = d.usd_24h_vol;
     const st = statusFor(price);
     if (vol) totalVol += vol;
-
     if (st.key === "down" || st.key === "up") {
+      anyDepeg = true;
+      allOk = false;
       depegAlerts.push(`${coin.symbol} ${st.label} ${fmtPrice(price)}`);
     }
+    if (st.key === "nodata") allOk = false;
 
     if (vol != null) {
       if (!volHistory[coin.id]) volHistory[coin.id] = [];
@@ -362,6 +381,18 @@ function renderCards(data) {
 
   localStorage.setItem("volHistory", JSON.stringify(volHistory));
   document.getElementById("total-vol").textContent = fmtVol(totalVol);
+
+  const overall = document.getElementById("overall");
+  if (anyDepeg) {
+    overall.className = "overall-status alert";
+    overall.textContent = "ALERT: One or more stablecoins outside safe band";
+  } else if (allOk) {
+    overall.className = "overall-status ok";
+    overall.textContent = "All pegs intact — prices within $0.99–$1.01";
+  } else {
+    overall.className = "overall-status";
+    overall.textContent = "Partial data — some coins unavailable";
+  }
 
   const volBan = document.getElementById("volume-banner");
   if (volumeAlerts.length) {

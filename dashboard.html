@@ -117,6 +117,8 @@ header {
   box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 }
 .card:hover { border-color: #3d4a62; transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.35); }
+.card.status-flash { animation: flash 0.6s ease; }
+@keyframes flash { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.3); } 100% { box-shadow: 0 4px 16px rgba(0,0,0,0.2); } }
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -132,6 +134,7 @@ header {
   font-weight: 720;
   letter-spacing: 0.07em;
   text-transform: uppercase;
+  transition: background 0.3s, color 0.3s;
 }
 .badge.ok { background: var(--green-bg); color: var(--green); }
 .badge.down { background: var(--red-bg); color: var(--red); }
@@ -143,7 +146,7 @@ header {
   font-weight: 720;
   letter-spacing: -0.045em;
   margin: 10px 0 14px;
-  transition: color 0.35s;
+  transition: color 0.35s, transform 0.2s;
 }
 .price.ok { color: var(--green); }
 .price.down { color: var(--red); }
@@ -199,6 +202,7 @@ header {
   color: var(--text-muted);
   line-height: 1.6;
 }
+.loading { opacity: 0.6; }
 @media (max-width: 680px) {
   .price { font-size: 2.2rem; }
   header { flex-direction: column; }
@@ -222,7 +226,7 @@ header {
     <div class="totals">
       <span>Total 24h Vol: <strong id="total-vol">—</strong></span>
     </div>
-    <div class="version">v5.10 · Zero-code dashboard</div>
+    <div class="version">v5.11 · Zero-code dashboard</div>
   </div>
 </header>
 
@@ -246,7 +250,7 @@ header {
 </section>
 
 <div class="footer">
-  Stablecoin Depeg Detector · Zero-code dashboard · Last verified 2026-11-01 ~23:06 MST (DefiLlama fallback; CoinGecko free API rate-limited): all six within $0.99–$1.01 (USDT $0.9989, USDC $0.9995, DAI $0.9998, FDUSD $0.9968, PYUSD $0.9998, TUSD $0.9987). No depegs. Not financial advice.
+  Stablecoin Depeg Detector · Zero-code dashboard · Last verified 2026-11-02 ~00:07 MST (DefiLlama + Coinbase; CoinGecko free API rate-limited): all six within $0.99–$1.01 (USDT ~$0.9990, USDC ~$0.9996, DAI ~$1.0000, FDUSD ~$0.9968, PYUSD ~$0.9999, TUSD ~$0.9987). No depegs. Not financial advice.
 </div>
 
 <script>
@@ -262,6 +266,7 @@ const LOWER = 0.99, UPPER = 1.01, PEG = 1.0;
 const API = "https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coin,dai,first-digital-usd,paypal-usd,true-usd&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true";
 
 const volHistory = JSON.parse(localStorage.getItem("volHistory") || "{}");
+const prevStatus = {};
 
 function fmtPrice(p) { return p == null ? "—" : "$" + p.toFixed(4); }
 function fmtVol(v) {
@@ -315,8 +320,8 @@ function renderCards(data) {
     if (vol != null) {
       if (!volHistory[coin.id]) volHistory[coin.id] = [];
       volHistory[coin.id].push(vol);
-      if (volHistory[coin.id].length > 8) volHistory[coin.id].shift();
-      if (volHistory[coin.id].length >= 4) {
+      if (volHistory[coin.id].length > 12) volHistory[coin.id].shift();
+      if (volHistory[coin.id].length >= 5) {
         const sorted = [...volHistory[coin.id]].sort((a,b)=>a-b);
         const median = sorted[Math.floor(sorted.length/2)];
         if (vol > median * 3 && median > 0) {
@@ -327,6 +332,10 @@ function renderCards(data) {
 
     const card = document.createElement("div");
     card.className = "card";
+    if (prevStatus[coin.id] && prevStatus[coin.id] !== st.key) {
+      card.classList.add("status-flash");
+    }
+    prevStatus[coin.id] = st.key;
     const changeCls = change == null ? "flat" : (change > 0 ? "pos" : change < 0 ? "neg" : "flat");
     const mPos = markerPos(price);
     card.innerHTML = `
@@ -370,9 +379,11 @@ function renderCards(data) {
 
   const now = new Date();
   document.getElementById("updated").textContent = "Last updated: " + now.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit", second:"2-digit"});
+  document.getElementById("grid").classList.remove("loading");
 }
 
 async function fetchPrices() {
+  document.getElementById("grid").classList.add("loading");
   try {
     const res = await fetch(API);
     if (!res.ok) throw new Error("HTTP " + res.status);

@@ -1,1 +1,213 @@
-$(cat /tmp/dashboard_update.html)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stablecoin Depeg Intelligence</title>
+<style>
+:root {
+  --bg: #0a0e17;
+  --card: #121826;
+  --border: #1e293b;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --green: #10b981;
+  --red: #ef4444;
+  --amber: #f59e0b;
+  --gray: #64748b;
+  --accent: #3b82f6;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 20px;
+}
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+.header p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-top: 4px;
+}
+.banners {
+  margin-bottom: 16px;
+}
+.banner {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.banner.volume { background: #422006; color: #fbbf24; border: 1px solid #f59e0b; }
+.banner.depeg { background: #450a0a; color: #fca5a5; border: 1px solid #ef4444; }
+.banner.divergence { background: #1e1b4b; color: #c4b5fd; border: 1px solid #8b5cf6; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.symbol { font-size: 1.1rem; font-weight: 700; }
+.name { color: var(--muted); font-size: 0.85rem; }
+.price {
+  font-size: 2.2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1px;
+  margin: 8px 0;
+}
+.change {
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+}
+.change.pos { color: var(--green); }
+.change.neg { color: var(--red); }
+.status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.status.ok { background: #064e3b; color: #6ee7b7; }
+.status.down { background: #7f1d1d; color: #fca5a5; }
+.status.up { background: #78350f; color: #fcd34d; }
+.status.nodata { background: #334155; color: #cbd5e1; }
+.vol {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
+.footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-top: 32px;
+}
+.how-to {
+  max-width: 700px;
+  margin: 32px auto;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+.how-to h2 { font-size: 1.1rem; margin-bottom: 8px; }
+.how-to p { line-height: 1.5; color: var(--muted); }
+#last-updated { position: fixed; bottom: 12px; right: 16px; font-size: 0.75rem; color: var(--muted); }
+@media (max-width: 600px) {
+  .price { font-size: 1.8rem; }
+  .header h1 { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Stablecoin Depeg Intelligence</h1>
+  <p>Real-time peg monitoring for funds, prop desks, and fintech teams</p>
+</div>
+
+<div class="banners" id="banners"></div>
+
+<div class="grid" id="grid"></div>
+
+<div class="how-to">
+  <h2>How to use</h2>
+  <p>Open this file in any browser (including iPhone Safari). It refreshes every 30 seconds from CoinGecko. Green badges mean the coin is within $0.99–$1.01. Red or amber means a depeg. Volume spikes and cross-source issues appear as banners at the top. Bookmark it. No install, no login, no code required.</p>
+</div>
+
+<div id="last-updated"></div>
+
+<script>
+const COINS = [
+  { id: "tether", symbol: "USDT", name: "Tether" },
+  { id: "usd-coin", symbol: "USDC", name: "USD Coin" },
+  { id: "dai", symbol: "DAI", name: "Dai" },
+  { id: "first-digital-usd", symbol: "FDUSD", name: "First Digital USD" },
+  { id: "paypal-usd", symbol: "PYUSD", name: "PayPal USD" },
+  { id: "true-usd", symbol: "TUSD", name: "TrueUSD" }
+];
+const LOWER = 0.99, UPPER = 1.01;
+const API = "https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coin,dai,first-digital-usd,paypal-usd,true-usd&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true";
+
+function statusFor(price) {
+  if (price == null) return { text: "NO DATA", cls: "nodata" };
+  if (price < LOWER) return { text: "DEPEG DOWN", cls: "down" };
+  if (price > UPPER) return { text: "DEPEG UP", cls: "up" };
+  return { text: "OK", cls: "ok" };
+}
+
+function fmt(n, d=4) { return n == null ? "—" : Number(n).toFixed(d); }
+function fmtVol(n) { return n == null ? "—" : "$" + Math.round(n).toLocaleString(); }
+function fmtChg(n) { return n == null ? "—" : (n >= 0 ? "+" : "") + n.toFixed(2) + "%"; }
+
+async function refresh() {
+  try {
+    const r = await fetch(API);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const data = await r.json();
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+    const banners = [];
+    COINS.forEach(c => {
+      const d = data[c.id] || {};
+      const price = d.usd;
+      const chg = d.usd_24h_change;
+      const vol = d.usd_24h_vol;
+      const st = statusFor(price);
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="card-header">
+          <div>
+            <div class="symbol">${c.symbol}</div>
+            <div class="name">${c.name}</div>
+          </div>
+          <span class="status ${st.cls}">${st.text}</span>
+        </div>
+        <div class="price">$${fmt(price)}</div>
+        <div class="change ${chg >= 0 ? "pos" : "neg"}">${fmtChg(chg)} 24h</div>
+        <div class="vol">24h vol: ${fmtVol(vol)}</div>
+      `;
+      grid.appendChild(card);
+      if (st.cls === "down" || st.cls === "up") {
+        banners.push(`<div class="banner depeg">${st.text} ${c.symbol}: $${fmt(price)}</div>`);
+      }
+    });
+    document.getElementById("banners").innerHTML = banners.join("");
+    document.getElementById("last-updated").textContent = "Updated " + new Date().toLocaleTimeString();
+  } catch (e) {
+    document.getElementById("banners").innerHTML = `<div class="banner depeg">Fetch error: ${e.message}. Retrying…</div>`;
+  }
+}
+
+refresh();
+setInterval(refresh, 30000);
+</script>
+</body>
+</html>

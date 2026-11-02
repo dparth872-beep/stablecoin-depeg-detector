@@ -1,3 +1,8 @@
+## v5.8 — 2026-11-01 21:04 MST
+- Dashboard.html upgraded to v5.8: refined dark fintech aesthetic with radial gradient background, deeper surface gradients on cards, larger monospaced prices (2.65rem), enhanced hover shadows and transitions, improved badge and peg-marker styling, tighter mobile grid. Zero-code surface preserved.
+- Live verification (~21:04 MST, DefiLlama; CoinGecko free API rate-limited): all six within $0.99–$1.01 (USDT $0.9990, USDC $0.9995, DAI $0.9999, FDUSD $0.9968, PYUSD $0.9998, TUSD $0.9988). No depegs detected. 14 unit tests pass.
+- Primary client surface remains the zero-code dashboard.html. All prior features (REST + multi-source fallbacks, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard) operational.
+
 ## v5.7 — 2026-11-01 20:03 MST
 - Dashboard.html upgraded to v5.7: refreshed verification timestamp in footer, version badge updated. Zero-code, dark fintech aesthetic preserved with all prior polish (peg bars, bps, total volume, banners, mobile-responsive).
 - Live verification (CoinGecko free API ~20:03 MST): all six within $0.99–$1.01 (USDT $0.9990, USDC $0.9996, DAI $0.9999, FDUSD $0.9967, PYUSD $0.9998, TUSD $0.9985). No depegs detected. 14 unit tests pass.

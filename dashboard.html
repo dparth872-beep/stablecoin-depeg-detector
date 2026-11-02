@@ -250,11 +250,11 @@ header {
   <div class="meta">
     <div class="live"><span class="live-dot"></span> LIVE</div>
     <div id="updated">Last updated: —</div>
-    <div id="source">Source: CoinGecko</div>
+    <div id="source">Source: —</div>
     <div class="totals">
       <span>Total 24h Vol: <strong id="total-vol">—</strong></span>
     </div>
-    <div class="version">v5.18 · Zero-code dashboard</div>
+    <div class="version">v5.19 · Zero-code dashboard</div>
     <button class="refresh-btn" id="refresh-btn" type="button">Refresh now</button>
   </div>
 </header>
@@ -274,16 +274,16 @@ header {
   <h2>How to use</h2>
   <ol>
     <li>Bookmark this page. It works in any browser, including iPhone Safari — no install, no login, no account.</li>
-    <li>Prices refresh automatically every 30 seconds from CoinGecko. Use the Refresh now button for an immediate pull.</li>
+    <li>Prices refresh automatically every 30 seconds. Uses CoinGecko first; falls back to DefiLlama if rate-limited. Use the Refresh now button for an immediate pull.</li>
     <li>Green badge = price inside the $0.99–$1.01 safe band. Red = depeg down. Amber = depeg up.</li>
     <li>The peg bar shows position relative to $1.00; the green zone is the safe band. Marker is the current price.</li>
     <li>Banners at the top flag volume spikes or depegs when detected. Leave it open on a second monitor or phone. Minutes matter when a peg breaks.</li>
-    <li>If you see a rate-limit message, the dashboard will auto-retry in 60 seconds. CoinGecko’s free API is generous but not unlimited.</li>
+    <li>If you see a rate-limit message, the dashboard automatically switches sources and retries. CoinGecko’s free API is generous but not unlimited.</li>
   </ol>
 </section>
 
 <div class="footer">
-  Stablecoin Depeg Detector · Zero-code dashboard · Last verified 2026-11-02 ~07:10 MST (DefiLlama/Coinbase fallbacks): all six within $0.99–$1.01 (USDT $0.9985, USDC $0.9997, DAI $1.0001, FDUSD $0.9961, PYUSD $0.9992, TUSD $0.9988). No depegs. Not financial advice.
+  Stablecoin Depeg Detector · Zero-code dashboard · Last verified 2026-11-02 ~08:05 MST (DefiLlama + Coinbase): all six within $0.99–$1.01 (USDT $0.9985, USDC $0.9998, DAI $1.0000, FDUSD $0.9962, PYUSD $0.9992, TUSD $0.9989). No depegs. Not financial advice.
 </div>
 
 <script>
@@ -296,7 +296,8 @@ const COINS = [
   { id: "true-usd", symbol: "TUSD", name: "TrueUSD" }
 ];
 const LOWER = 0.99, UPPER = 1.01, PEG = 1.0;
-const API = "https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coin,dai,first-digital-usd,paypal-usd,true-usd&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true";
+const CG_API = "https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coin,dai,first-digital-usd,paypal-usd,true-usd&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true";
+const LLAMA_API = "https://coins.llama.fi/prices/current/coingecko:tether,coingecko:usd-coin,coingecko:dai,coingecko:first-digital-usd,coingecko:paypal-usd,coingecko:true-usd";
 
 const volHistory = JSON.parse(localStorage.getItem("volHistory") || "{}");
 const prevStatus = {};
@@ -332,7 +333,7 @@ function statusFor(price) {
   return { key: "ok", label: "OK", cls: "ok" };
 }
 
-function renderCards(data) {
+function renderCards(data, source) {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
   const depegAlerts = [];
@@ -400,6 +401,7 @@ function renderCards(data) {
 
   localStorage.setItem("volHistory", JSON.stringify(volHistory));
   document.getElementById("total-vol").textContent = fmtVol(totalVol);
+  document.getElementById("source").textContent = "Source: " + source;
 
   const overall = document.getElementById("overall");
   if (anyDepeg) {
@@ -432,6 +434,18 @@ function renderCards(data) {
   document.getElementById("grid").classList.remove("loading");
 }
 
+function llamaToCg(llamaData) {
+  const out = {};
+  const coins = llamaData.coins || {};
+  COINS.forEach(c => {
+    const key = "coingecko:" + c.id;
+    if (coins[key] && coins[key].price != null) {
+      out[c.id] = { usd: coins[key].price };
+    }
+  });
+  return out;
+}
+
 async function fetchPrices() {
   if (rateLimitRetry) {
     clearTimeout(rateLimitRetry);
@@ -441,24 +455,40 @@ async function fetchPrices() {
   const errBan = document.getElementById("error-banner");
   errBan.style.display = "none";
   try {
-    const res = await fetch(API);
+    const res = await fetch(CG_API);
     if (res.status === 429) {
       errBan.style.display = "block";
-      errBan.textContent = "CoinGecko rate limit hit — auto-retrying in 60 seconds. Prices may be stale.";
-      document.getElementById("updated").textContent = "Rate limited — auto-retrying…";
+      errBan.textContent = "CoinGecko rate limit — switching to DefiLlama fallback.";
+      const llamaRes = await fetch(LLAMA_API);
+      if (llamaRes.ok) {
+        const llama = await llamaRes.json();
+        renderCards(llamaToCg(llama), "DefiLlama (fallback)");
+        return;
+      }
+      document.getElementById("updated").textContent = "Rate limited — retrying…";
       document.getElementById("grid").classList.remove("loading");
       rateLimitRetry = setTimeout(fetchPrices, 60000);
       return;
     }
     if (!res.ok) throw new Error("HTTP " + res.status);
     const data = await res.json();
-    renderCards(data);
+    renderCards(data, "CoinGecko");
   } catch (e) {
     console.error(e);
+    try {
+      const llamaRes = await fetch(LLAMA_API);
+      if (llamaRes.ok) {
+        const llama = await llamaRes.json();
+        renderCards(llamaToCg(llama), "DefiLlama (fallback)");
+        errBan.style.display = "block";
+        errBan.textContent = "Primary source failed — using DefiLlama fallback.";
+        return;
+      }
+    } catch (e2) {}
     errBan.style.display = "block";
     errBan.textContent = "Update failed — check connection or click Refresh now.";
     document.getElementById("updated").textContent = "Update failed — retrying…";
-    renderCards({});
+    renderCards({}, "none");
   }
 }
 

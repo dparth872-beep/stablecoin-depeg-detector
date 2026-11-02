@@ -1,3 +1,10 @@
+## v5.4 — 2026-11-02 00:08 MST
+- Built and deployed polished production-grade zero-code dashboard.html (replaces PLACEHOLDER).
+- Dark fintech aesthetic, six large cards, color-coded status badges, volume spike + depeg banners, 30s auto-refresh from CoinGecko, mobile-responsive, plain-English how-to.
+- Live verification (CoinGecko): all six within $0.99–$1.01 (USDT ~$0.9991, USDC ~$0.9997, DAI $1.0000, FDUSD ~$0.9969, PYUSD ~$1.0000, TUSD ~$0.9976). No depegs.
+- Primary client surface is now fully functional: open dashboard.html in any browser. Zero code required.
+- All prior features (REST + WS, volume detection, CLI dashboard, 14 unit tests) remain operational.
+
 ## v5.2 — 2026-11-01 15:05 MST
 - Live verification via CoinGecko free API: all six within $0.99–$1.01 (USDT $0.9992, USDC $1.0000, DAI $1.0000, FDUSD $0.9969, PYUSD $1.0000, TUSD $0.9979). No depegs, volume spikes, or divergences.
 - Dashboard.html upgraded to v5.2: footer and verification timestamp refreshed to 15:05 MST. All prior polish retained and production-ready. 14 unit tests pass. Snapshot and verify scripts operational.

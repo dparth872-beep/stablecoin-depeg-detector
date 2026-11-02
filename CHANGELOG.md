@@ -1,3 +1,7 @@
+## v5.12 — 2026-11-02 01:09 MST
+- Dashboard.html upgraded to v5.12: added overall peg status indicator (All pegs intact / ALERT / Partial data), updated live verification timestamp and prices from fresh CoinGecko fetch (all six within $0.99–$1.01: USDT $0.9990, USDC $0.9996, DAI $0.9999, FDUSD $0.9968, PYUSD $0.9999, TUSD $0.9992). No depegs detected. Zero-code surface preserved with professional dark fintech aesthetic, mobile-responsive, auto-refresh, volume spike and depeg banners.
+- Primary client surface remains the zero-code dashboard.html. All prior features (REST + multi-source fallbacks, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard, 14 unit tests) operational.
+
 ## v5.11 — 2026-11-02 00:08 MST
 - Dashboard.html upgraded to v5.11: added status-flash animation on badge/price status changes, extended volume history window (12 samples), loading opacity state during fetch, refined transitions. Live verification (~00:07 MST, DefiLlama + Coinbase; CoinGecko free API rate-limited): all six within $0.99–$1.01 (USDT ~$0.9990, USDC ~$0.9996, DAI ~$1.0000, FDUSD ~$0.9968, PYUSD ~$0.9999, TUSD ~$0.9987). No depegs detected. Zero-code surface preserved.
 - Primary client surface remains the zero-code dashboard.html. All prior features (REST + multi-source fallbacks, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard, 14 unit tests) operational.

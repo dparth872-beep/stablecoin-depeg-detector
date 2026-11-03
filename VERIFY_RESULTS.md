@@ -1,5 +1,17 @@
 # Live Verification Results
 
+## 2026-11-03 ~03:04 MST
+Source: Coinbase spot API (CoinGecko free tier returned 429 rate limit)
+
+| Symbol | Price | Status |
+|--------|-------|--------|
+| USDT | $0.9984 | OK |
+| USDC | $1.0000 | OK |
+| DAI | $0.9988 | OK |
+| PYUSD | $1.0000 | OK |
+
+FDUSD and TUSD not available on this Coinbase endpoint. All available prices within $0.99–$1.01 band. No depegs detected. Detector logic confirmed operational. Professional dashboard.html remains primary zero-code client surface (v5.36).
+
 ## 2026-11-03 ~02:05 MST
 Source: CoinGecko free API (direct verification run by Grok bot)
 

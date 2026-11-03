@@ -226,7 +226,7 @@ button:hover { background: #252b3a; }
   <div class="meta">
     <div><span class="live-dot"></span>Live</div>
     <div id="lastUpdated">—</div>
-    <div id="version">v5.36</div>
+    <div id="version">v5.37</div>
   </div>
 </header>
 
@@ -247,7 +247,7 @@ button:hover { background: #252b3a; }
 
 <footer>
   <h3>How to use</h3>
-  <p>Open this file in any browser (including iPhone Safari). Bookmark it. The dashboard updates itself every 30 seconds with live prices from CoinGecko. Green badges mean the coin is within the $0.99–$1.01 peg band. Red means it has depegged below $0.99. Amber means it has depegged above $1.01. Volume spike banners appear if trading volume suddenly jumps more than 3× its recent average. No login, no install, no code required.</p>
+  <p>Open this file in any browser (including iPhone Safari). Bookmark it. The dashboard updates itself every 30 seconds with live prices from CoinGecko. Green badges mean the coin is within the $0.99–$1.01 peg band. Red means it has depegged below $0.99. Amber means it has depegged above $1.01. Volume spike banners appear if trading volume suddenly jumps more than 3× its recent average. If you see a temporary data error, wait a moment or click Refresh now — free data sources sometimes pause briefly. No login, no install, no code required.</p>
   <p style="margin-top:12px;font-size:12px">Data source: CoinGecko free API. For alerts, Telegram, or WebSocket streaming, use the Python detector in this repository. Minutes matter when a peg breaks.</p>
 </footer>
 
@@ -390,7 +390,7 @@ async function fetchPrices(manual = false) {
       err.style.display = 'block';
       banners.prepend(err);
     }
-    err.textContent = `Data fetch failed (${e.message}). Retrying automatically. CoinGecko free tier may rate-limit.`;
+    err.textContent = `Temporary data pause (free source busy). Click Refresh now or wait — prices will return automatically.`;
     if (manual) console.warn(e);
   }
 }

@@ -1,3 +1,8 @@
+## v5.41 — 2026-11-03 11:05 MST
+- Live CoinGecko verification completed: all six stablecoins within $0.99–$1.01 band (USDT $0.9991 OK, USDC $0.9995 OK, DAI $0.9998 OK, FDUSD $0.9968 OK, PYUSD $0.9998 OK, TUSD $0.9991 OK). No depegs detected. No volume spikes.
+- Dashboard polished to v5.41: clearer coin name + symbol hierarchy on cards, refined visual spacing and hierarchy while preserving dark Bloomberg/Apple fintech aesthetic, Coinbase divergence banners, volume/depeg alerts, mobile responsiveness, and plain-English how-to.
+- README status updated. 14/14 unit tests pass. All core features operational: REST + fallbacks, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard, Telegram/email alerts.
+
 ## v5.39 — 2026-11-03 05:06 MST
 - Live CoinGecko verification completed: all six stablecoins within $0.99–$1.01 band (USDT $0.9986 OK, USDC $0.9993 OK, DAI $0.9999 OK, FDUSD $0.9958 OK, PYUSD $0.9997 OK, TUSD $0.9989 OK). No depegs detected. No volume spikes.
 - Dashboard version bumped to v5.39. Primary zero-code client surface remains polished and production-ready.

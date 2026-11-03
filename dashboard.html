@@ -104,9 +104,9 @@ grid {
   border-radius: 16px;
   padding: 20px;
   box-shadow: var(--shadow);
-  transition: transform 0.2s, border-color 0.3s;
+  transition: transform 0.2s, border-color 0.3s, box-shadow 0.2s;
 }
-.card:hover { transform: translateY(-2px); }
+.card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -125,6 +125,7 @@ grid {
   padding: 4px 10px;
   border-radius: 20px;
   text-transform: uppercase;
+  transition: all 0.3s ease;
 }
 .badge.ok { background: var(--green-bg); color: var(--green); }
 .badge.depeg-down { background: var(--red-bg); color: var(--red); }
@@ -136,6 +137,7 @@ grid {
   font-weight: 700;
   letter-spacing: -1px;
   margin: 4px 0 8px;
+  transition: color 0.3s;
 }
 .change {
   font-size: 14px;
@@ -206,9 +208,10 @@ button {
   border-radius: 8px;
   font-size: 13px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.1s;
 }
 button:hover { background: #252b3a; }
+button:active { transform: scale(0.98); }
 @media (max-width: 640px) {
   .price { font-size: 32px; }
   header { flex-direction: column; }
@@ -226,7 +229,7 @@ button:hover { background: #252b3a; }
   <div class="meta">
     <div><span class="live-dot"></span>Live</div>
     <div id="lastUpdated">—</div>
-    <div id="version">v5.37</div>
+    <div id="version">v5.38</div>
   </div>
 </header>
 

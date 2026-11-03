@@ -128,10 +128,21 @@ header {
   align-items: center;
   margin-bottom: 14px;
 }
+.coin-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 .coin-name {
   font-size: 15px;
   font-weight: 600;
+  color: var(--text);
+}
+.coin-symbol {
+  font-size: 12px;
+  font-weight: 500;
   color: var(--text-muted);
+  letter-spacing: 0.5px;
 }
 .badge {
   font-size: 11px;
@@ -253,7 +264,7 @@ button:active { transform: scale(0.97); }
   <div class="meta">
     <div><span class="live-dot"></span>Live</div>
     <div id="lastUpdated">—</div>
-    <div id="version">v5.40</div>
+    <div id="version">v5.41</div>
   </div>
 </header>
 
@@ -387,7 +398,10 @@ function renderCards(data) {
     card.className = 'card';
     card.innerHTML = `
       <div class="card-header">
-        <div class="coin-name">${coin.name}</div>
+        <div class="coin-info">
+          <div class="coin-name">${coin.name}</div>
+          <div class="coin-symbol">${coin.symbol}</div>
+        </div>
         <div class="badge ${status.cls}">${status.text}</div>
       </div>
       <div class="price">${formatPrice(price)}</div>

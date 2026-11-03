@@ -60,9 +60,9 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready (v5.40). Latest verification (2026-11-03 ~09:05 MST):
-- Prices remain within band (USDT ~$0.998, USDC ~$1.000, DAI ~$0.9997, FDUSD ~$0.996, PYUSD ~$1.000, TUSD ~$0.998). No depegs.
-- dashboard.html enhanced with Coinbase secondary prices for real-time divergence detection (>50 bps), improved visual polish (subtle gradient, better shadows, live indicator glow), and clearer secondary price display on cards.
-- 14/14 unit tests pass. All core features (REST, WS, volume, CLI, alerts) operational.
+Production-ready (v5.41). Latest verification (2026-11-03 ~11:05 MST):
+- Prices remain within band (USDT $0.9991 OK, USDC $0.9995 OK, DAI $0.9998 OK, FDUSD $0.9968 OK, PYUSD $0.9998 OK, TUSD $0.9991 OK). No depegs. No volume spikes.
+- dashboard.html polished to v5.41: clearer coin name + symbol hierarchy on cards, refined spacing and visual hierarchy while preserving dark fintech aesthetic, Coinbase divergence, banners, and mobile responsiveness.
+- 14/14 unit tests pass. All core features (REST + fallbacks, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard, Telegram/email alerts) operational.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

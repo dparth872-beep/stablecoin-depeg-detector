@@ -40,6 +40,8 @@ body {
   min-height: 100vh;
   padding: 24px 20px 100px;
   -webkit-font-smoothing: antialiased;
+  background-image: radial-gradient(ellipse at 20% 0%, rgba(59,130,246,0.04) 0%, transparent 50%),
+                    radial-gradient(ellipse at 80% 100%, rgba(16,185,129,0.03) 0%, transparent 50%);
 }
 .header {
   text-align: center;
@@ -232,12 +234,12 @@ body {
 }
 .peg-safe {
   position: absolute;
-  left: 0%;
-  right: 0%;
+  left: 33.33%;
+  right: 33.33%;
   height: 100%;
-  background: rgba(16, 185, 129, 0.15);
-  border-left: 1px solid rgba(16, 185, 129, 0.4);
-  border-right: 1px solid rgba(16, 185, 129, 0.4);
+  background: rgba(16, 185, 129, 0.18);
+  border-left: 1px solid rgba(16, 185, 129, 0.5);
+  border-right: 1px solid rgba(16, 185, 129, 0.5);
 }
 .peg-marker {
   position: absolute;
@@ -248,6 +250,14 @@ body {
   border-radius: 1px;
   transform: translateX(-50%);
   transition: left 0.4s ease;
+}
+.peg-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-top: 3px;
+  font-variant-numeric: tabular-nums;
 }
 .how-to {
   max-width: 720px;
@@ -279,6 +289,14 @@ body {
   border-radius: 8px;
   border: 1px solid var(--border);
 }
+.version {
+  position: fixed;
+  bottom: 16px;
+  left: 20px;
+  font-size: 0.7rem;
+  color: var(--muted);
+  opacity: 0.7;
+}
 @media (max-width: 640px) {
   body { padding: 16px 14px 90px; }
   .header h1 { font-size: 1.45rem; }
@@ -286,6 +304,7 @@ body {
   .grid { grid-template-columns: 1fr; gap: 14px; }
   .card { padding: 18px 16px; }
   #last-updated { bottom: 12px; right: 12px; }
+  .version { bottom: 12px; left: 12px; }
 }
 </style>
 </head>
@@ -310,10 +329,11 @@ body {
 
 <div class="how-to">
   <h2>How to use</h2>
-  <p>Open this file in any browser (including iPhone Safari). It refreshes every 30 seconds from CoinGecko. Green badges mean the coin is within $0.99–$1.01. Red means a depeg down; amber means a depeg up. The bar under each price shows peg deviation (safe zone highlighted). Volume spikes (current volume more than 3× the recent average) appear as a highlighted banner at the top. Bookmark it. No install, no login, no code required. Just open and watch.</p>
+  <p>Open this file in any browser (including iPhone Safari). It refreshes every 30 seconds from CoinGecko. Green badges mean the coin is within $0.99–$1.01. Red means a depeg down; amber means a depeg up. The bar under each price shows peg deviation (safe zone $0.99–$1.01 highlighted). Volume spikes (current volume more than 3× the recent average) appear as a highlighted banner at the top. Bookmark it. No install, no login, no code required. Just open and watch.</p>
 </div>
 
 <div id="last-updated"></div>
+<div class="version">v5.28</div>
 
 <script>
 const COINS = [
@@ -349,7 +369,6 @@ function bps(price) {
 }
 function pegPosition(price) {
   if (price == null || isNaN(price)) return 50;
-  // map 0.97–1.03 to 0–100%
   const min = 0.97, max = 1.03;
   const clamped = Math.max(min, Math.min(max, price));
   return ((clamped - min) / (max - min)) * 100;
@@ -429,6 +448,7 @@ async function refresh() {
           <div class="peg-safe"></div>
           <div class="peg-marker" style="left:${pos}%"></div>
         </div>
+        <div class="peg-labels"><span>0.97</span><span>0.99</span><span>1.01</span><span>1.03</span></div>
         <div class="vol">24h volume: ${fmtVol(vol)}</div>
       `;
       grid.appendChild(card);

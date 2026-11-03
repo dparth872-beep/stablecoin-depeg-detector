@@ -1,3 +1,8 @@
+## v5.33 — 2026-11-02 23:05 MST
+- Dashboard polished and version bumped to v5.33. Minor refinements to summary and version indicator.
+- Live CoinGecko verification (all six coins): USDT $0.9986 (OK, -13.8 bps), USDC $0.9993 (OK, -7.2 bps), DAI $1.0000 (OK, -0.2 bps), FDUSD $0.9959 (OK, -41.0 bps), PYUSD $0.9997 (OK, -3.4 bps), TUSD $0.9981 (OK, -19.3 bps). No depegs detected. All within $0.99–$1.01 band.
+- No volume spikes. Core features operational. Production-ready zero-code dashboard remains primary client surface.
+
 ## v5.32 — 2026-11-02 22:06 MST
 - Dashboard version bumped to v5.32 after live verification.
 - Latest check (Coinbase fallback due to CoinGecko rate limit): USDT $0.9983 (OK), USDC $1.0000 (OK), DAI $0.9998 (OK), PYUSD $1.0000 (OK). No depegs detected. FDUSD/TUSD unavailable on Coinbase spot.

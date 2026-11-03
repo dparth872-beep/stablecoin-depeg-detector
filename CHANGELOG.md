@@ -1,3 +1,8 @@
+## v5.31 — 2026-11-02 21:06 MST
+- Dashboard now falls back to Coinbase spot prices when CoinGecko free API is rate-limited (HTTP 429). Price-only mode for available pairs (USDT, USDC, DAI, PYUSD); volume/24h change may be unavailable in fallback. Explicit banner shown. Version bumped to v5.31.
+- Live verification via Coinbase: USDT $0.9984 (OK), USDC $1.0000 (OK), DAI $0.9991 (OK). No depegs detected. FDUSD/TUSD not on Coinbase spot in this check.
+- All core features remain operational.
+
 ## v5.30 — 2026-11-02 20:04 MST
 - Live CoinGecko verification completed: all six stablecoins within $0.99–$1.01 band (USDT $0.9988, USDC $0.9993, DAI $0.9999, FDUSD $0.9961, PYUSD $0.9998, TUSD $0.9986). No depegs or volume spikes detected.
 - Dashboard.html version bumped to v5.30. Primary zero-code client surface remains polished and production-ready.

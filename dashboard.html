@@ -129,6 +129,7 @@ body {
 .banner.volume { background: #422006; color: #fbbf24; border: 1px solid #f59e0b; }
 .banner.depeg { background: #450a0a; color: #fca5a5; border: 1px solid #ef4444; }
 .banner.error { background: #1e293b; color: #cbd5e1; border: 1px solid #475569; }
+.banner.fallback { background: #1e3a5f; color: #93c5fd; border: 1px solid #3b82f6; }
 @keyframes slideIn {
   from { opacity: 0; transform: translateY(-8px); }
   to { opacity: 1; transform: translateY(0); }
@@ -329,23 +330,23 @@ body {
 
 <div class="how-to">
   <h2>How to use</h2>
-  <p>Open this file in any browser (including iPhone Safari). It refreshes every 30 seconds from CoinGecko. Green badges mean the coin is within $0.99–$1.01. Red means a depeg down; amber means a depeg up. The bar under each price shows peg deviation (safe zone $0.99–$1.01 highlighted). Volume spikes (current volume more than 3× the recent average) appear as a highlighted banner at the top. Bookmark it. No install, no login, no code required. Just open and watch.</p>
+  <p>Open this file in any browser (including iPhone Safari). It refreshes every 30 seconds from CoinGecko, with automatic Coinbase spot fallback if the free API is rate-limited. Green badges mean the coin is within $0.99–$1.01. Red means a depeg down; amber means a depeg up. The bar under each price shows peg deviation (safe zone $0.99–$1.01 highlighted). Volume spikes (current volume more than 3× the recent average) appear as a highlighted banner at the top. Bookmark it. No install, no login, no code required. Just open and watch.</p>
 </div>
 
 <div id="last-updated"></div>
-<div class="version">v5.30</div>
+<div class="version">v5.31</div>
 
 <script>
 const COINS = [
-  { id: "tether", symbol: "USDT", name: "Tether" },
-  { id: "usd-coin", symbol: "USDC", name: "USD Coin" },
-  { id: "dai", symbol: "DAI", name: "Dai" },
-  { id: "first-digital-usd", symbol: "FDUSD", name: "First Digital USD" },
-  { id: "paypal-usd", symbol: "PYUSD", name: "PayPal USD" },
-  { id: "true-usd", symbol: "TUSD", name: "TrueUSD" }
+  { id: "tether", symbol: "USDT", name: "Tether", cb: "USDT-USD" },
+  { id: "usd-coin", symbol: "USDC", name: "USD Coin", cb: "USDC-USD" },
+  { id: "dai", symbol: "DAI", name: "Dai", cb: "DAI-USD" },
+  { id: "first-digital-usd", symbol: "FDUSD", name: "First Digital USD", cb: null },
+  { id: "paypal-usd", symbol: "PYUSD", name: "PayPal USD", cb: "PYUSD-USD" },
+  { id: "true-usd", symbol: "TUSD", name: "TrueUSD", cb: null }
 ];
 const LOWER = 0.99, UPPER = 1.01;
-const API = "https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coin,dai,first-digital-usd,paypal-usd,true-usd&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true";
+const CG_API = "https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coin,dai,first-digital-usd,paypal-usd,true-usd&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true";
 const VOL_KEY = "scdd_vol_history_v2";
 const VOL_WINDOW = 12;
 
@@ -401,76 +402,104 @@ function updateVolHistory(symbol, vol, history) {
   return history;
 }
 
+async function fetchCoinbaseFallback() {
+  const results = {};
+  for (const c of COINS) {
+    if (!c.cb) continue;
+    try {
+      const r = await fetch(`https://api.coinbase.com/v2/prices/${c.cb}/spot`);
+      if (r.ok) {
+        const j = await r.json();
+        const price = parseFloat(j.data.amount);
+        results[c.id] = { usd: price };
+      }
+    } catch {}
+  }
+  return results;
+}
+
 let retryTimeout = null;
 async function refresh() {
   const bannersEl = document.getElementById("banners");
   const summaryEl = document.getElementById("summary");
+  let data = {};
+  let usingFallback = false;
   try {
-    const r = await fetch(API);
+    const r = await fetch(CG_API);
     if (!r.ok) throw new Error("HTTP " + r.status + (r.status === 429 ? " (rate limited)" : ""));
-    const data = await r.json();
-    const grid = document.getElementById("grid");
-    grid.innerHTML = "";
-    const banners = [];
-    let volHistory = loadVolHistory();
-    let okCount = 0, alertCount = 0, totalVol = 0;
-
-    COINS.forEach(c => {
-      const d = data[c.id] || {};
-      const price = d.usd;
-      const chg = d.usd_24h_change;
-      const vol = d.usd_24h_vol;
-      const st = statusFor(price);
-      const chgFmt = fmtChg(chg);
-      if (st.cls === "ok") okCount++; else if (st.cls === "down" || st.cls === "up") alertCount++;
-      if (vol) totalVol += vol;
-
-      const spike = checkVolumeSpike(c.symbol, vol, volHistory);
-      if (spike) banners.push(`<div class="banner volume">⚠ ${spike}</div>`);
-
-      volHistory = updateVolHistory(c.symbol, vol, volHistory);
-
-      const pos = pegPosition(price);
-      const card = document.createElement("div");
-      card.className = `card ${st.card}`;
-      card.innerHTML = `
-        <div class="card-header">
-          <div>
-            <div class="symbol">${c.symbol}</div>
-            <div class="name">${c.name}</div>
-          </div>
-          <span class="status ${st.cls}">${st.text}</span>
-        </div>
-        <div class="price">$${fmt(price)}</div>
-        <div class="change ${chgFmt.cls}">${chgFmt.text} 24h</div>
-        <div class="bps">Peg: ${bps(price)}</div>
-        <div class="peg-bar">
-          <div class="peg-safe"></div>
-          <div class="peg-marker" style="left:${pos}%"></div>
-        </div>
-        <div class="peg-labels"><span>0.97</span><span>0.99</span><span>1.01</span><span>1.03</span></div>
-        <div class="vol">24h volume: ${fmtVol(vol)}</div>
-      `;
-      grid.appendChild(card);
-
-      if (st.cls === "down" || st.cls === "up") {
-        banners.push(`<div class="banner depeg">${st.text} ${c.symbol}: $${fmt(price)}</div>`);
-      }
-    });
-
-    saveVolHistory(volHistory);
-    bannersEl.innerHTML = banners.join("");
-    const totalVolStr = totalVol > 0 ? " • Total 24h vol $" + Math.round(totalVol).toLocaleString() : "";
-    summaryEl.innerHTML = alertCount > 0
-      ? `<span class="alert">${alertCount} DEPEG</span> • ${okCount} OK${totalVolStr}`
-      : `<span class="ok">All ${okCount} within peg</span>${totalVolStr}`;
-    document.getElementById("last-updated").textContent = "Updated " + new Date().toLocaleTimeString();
+    data = await r.json();
   } catch (e) {
-    bannersEl.innerHTML = `<div class="banner error">Fetch error: ${e.message}. Retrying…</div>`;
-    document.getElementById("last-updated").textContent = "Update failed " + new Date().toLocaleTimeString();
-    if (retryTimeout) clearTimeout(retryTimeout);
-    retryTimeout = setTimeout(refresh, 8000);
+    // Fallback to Coinbase for price-only
+    usingFallback = true;
+    data = await fetchCoinbaseFallback();
+    if (Object.keys(data).length === 0) {
+      bannersEl.innerHTML = `<div class="banner error">Fetch error: ${e.message}. No fallback data. Retrying…</div>`;
+      document.getElementById("last-updated").textContent = "Update failed " + new Date().toLocaleTimeString();
+      if (retryTimeout) clearTimeout(retryTimeout);
+      retryTimeout = setTimeout(refresh, 8000);
+      return;
+    }
   }
+
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  const banners = [];
+  if (usingFallback) {
+    banners.push(`<div class="banner fallback">Using Coinbase fallback (CoinGecko rate-limited). Volume and 24h change unavailable for some coins.</div>`);
+  }
+  let volHistory = loadVolHistory();
+  let okCount = 0, alertCount = 0, totalVol = 0;
+
+  COINS.forEach(c => {
+    const d = data[c.id] || {};
+    const price = d.usd;
+    const chg = d.usd_24h_change;
+    const vol = d.usd_24h_vol;
+    const st = statusFor(price);
+    const chgFmt = fmtChg(chg);
+    if (st.cls === "ok") okCount++; else if (st.cls === "down" || st.cls === "up") alertCount++;
+    if (vol) totalVol += vol;
+
+    const spike = checkVolumeSpike(c.symbol, vol, volHistory);
+    if (spike) banners.push(`<div class="banner volume">⚠ ${spike}</div>`);
+
+    volHistory = updateVolHistory(c.symbol, vol, volHistory);
+
+    const pos = pegPosition(price);
+    const card = document.createElement("div");
+    card.className = `card ${st.card}`;
+    card.innerHTML = `
+      <div class="card-header">
+        <div>
+          <div class="symbol">${c.symbol}</div>
+          <div class="name">${c.name}</div>
+        </div>
+        <span class="status ${st.cls}">${st.text}</span>
+      </div>
+      <div class="price">$${fmt(price)}</div>
+      <div class="change ${chgFmt.cls}">${chgFmt.text} 24h</div>
+      <div class="bps">Peg: ${bps(price)}</div>
+      <div class="peg-bar">
+        <div class="peg-safe"></div>
+        <div class="peg-marker" style="left:${pos}%"></div>
+      </div>
+      <div class="peg-labels"><span>0.97</span><span>0.99</span><span>1.01</span><span>1.03</span></div>
+      <div class="vol">24h volume: ${fmtVol(vol)}</div>
+    `;
+    grid.appendChild(card);
+
+    if (st.cls === "down" || st.cls === "up") {
+      banners.push(`<div class="banner depeg">${st.text} ${c.symbol}: $${fmt(price)}</div>`);
+    }
+  });
+
+  saveVolHistory(volHistory);
+  bannersEl.innerHTML = banners.join("");
+  const totalVolStr = totalVol > 0 ? " • Total 24h vol $" + Math.round(totalVol).toLocaleString() : "";
+  summaryEl.innerHTML = alertCount > 0
+    ? `<span class="alert">${alertCount} DEPEG</span> • ${okCount} OK${totalVolStr}`
+    : `<span class="ok">All ${okCount} within peg</span>${totalVolStr}`;
+  document.getElementById("last-updated").textContent = (usingFallback ? "Fallback • " : "") + "Updated " + new Date().toLocaleTimeString();
 }
 
 document.getElementById("refresh-btn").addEventListener("click", refresh);

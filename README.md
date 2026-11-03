@@ -46,7 +46,7 @@ python tests/test_depeg_logic.py      # 14 unit tests
 - Binance and Coinbase WebSocket streams with exponential-backoff reconnection
 - Volume anomaly detection (median baseline, cooldown)
 - CLI dashboard that refreshes in place
-- Professional single-file web dashboard (dark fintech aesthetic, six large live cards with big monospaced prices, status badges, 24h change, volume, peg deviation bars, bps deviation, total 24h volume, volume spike and depeg banners, live indicator, auto-refresh every 30s, manual Refresh now button, rate-limit error banner, mobile-responsive, plain-English how-to)
+- Professional single-file web dashboard (dark fintech aesthetic, six large live cards with big monospaced prices, status badges, 24h change, volume, peg deviation bars, bps deviation, total 24h volume, volume spike / depeg / divergence banners, Coinbase cross-check, live indicator, auto-refresh every 30s, manual Refresh now button, rate-limit error banner, mobile-responsive, plain-English how-to)
 - Telegram + email alerts (config.json)
 - JSON output for integration
 - Comprehensive unit tests
@@ -60,14 +60,9 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready (v5.39). Latest verification (2026-11-03 ~05:06 MST, CoinGecko free API):
-- USDT $0.9986 (OK)
-- USDC $0.9993 (OK)
-- DAI $0.9999 (OK)
-- FDUSD $0.9958 (OK)
-- PYUSD $0.9997 (OK)
-- TUSD $0.9989 (OK)
-
-All prices within $0.99–$1.01 band. No depegs detected. 14/14 unit tests pass. dashboard.html is the primary client surface — polished dark Bloomberg/Apple fintech aesthetic (Inter + JetBrains Mono), zero-code, mobile-ready for iPhone Safari, auto-refresh every 30s, status badges (OK / DEPEG DOWN / DEPEG UP / NO DATA) with color coding, 24h change and volume, peg deviation bars, bps, client-side volume spike banners (3× recent average via localStorage), live indicator, manual refresh, plain-English how-to with rate-limit guidance. Six coins only.
+Production-ready (v5.40). Latest verification (2026-11-03 ~09:05 MST):
+- Prices remain within band (USDT ~$0.998, USDC ~$1.000, DAI ~$0.9997, FDUSD ~$0.996, PYUSD ~$1.000, TUSD ~$0.998). No depegs.
+- dashboard.html enhanced with Coinbase secondary prices for real-time divergence detection (>50 bps), improved visual polish (subtle gradient, better shadows, live indicator glow), and clearer secondary price display on cards.
+- 14/14 unit tests pass. All core features (REST, WS, volume, CLI, alerts) operational.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

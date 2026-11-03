@@ -9,53 +9,55 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0a0c10;
-  --surface: #12161e;
-  --surface-elevated: #1a1f2b;
-  --border: #2a3142;
-  --text: #e8eaed;
-  --text-muted: #8b93a7;
-  --green: #00d4aa;
-  --green-bg: rgba(0, 212, 170, 0.12);
-  --red: #ff4d6a;
-  --red-bg: rgba(255, 77, 106, 0.12);
-  --amber: #ffb020;
-  --amber-bg: rgba(255, 176, 32, 0.12);
+  --bg: #07090d;
+  --surface: #0f141c;
+  --surface-elevated: #161c27;
+  --border: #252d3d;
+  --text: #f0f2f5;
+  --text-muted: #8a93a6;
+  --green: #00e0b0;
+  --green-bg: rgba(0, 224, 176, 0.12);
+  --red: #ff5a7a;
+  --red-bg: rgba(255, 90, 122, 0.12);
+  --amber: #ffc040;
+  --amber-bg: rgba(255, 192, 64, 0.12);
   --gray: #6b7280;
   --gray-bg: rgba(107, 114, 128, 0.12);
   --accent: #3b82f6;
-  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow: 0 8px 32px rgba(0,0,0,0.5);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg);
+  background: radial-gradient(ellipse at top, #10151e 0%, var(--bg) 70%);
   color: var(--text);
   min-height: 100vh;
-  padding: 20px;
-  padding-bottom: 40px;
+  padding: 24px 20px 48px;
 }
 header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 16px;
 }
 .logo {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.6px;
+  background: linear-gradient(90deg, #fff, #a0aec0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .tagline {
   color: var(--text-muted);
   font-size: 14px;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 .meta {
   text-align: right;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 .live-dot {
@@ -66,52 +68,65 @@ header {
   border-radius: 50%;
   margin-right: 6px;
   animation: pulse 2s infinite;
+  box-shadow: 0 0 8px var(--green);
 }
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.9); }
 }
 .banners {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 .banner {
-  padding: 12px 16px;
-  border-radius: 10px;
+  padding: 14px 18px;
+  border-radius: 12px;
   font-weight: 600;
   font-size: 14px;
   display: none;
-  animation: slideIn 0.3s ease;
+  animation: slideIn 0.4s ease;
+  backdrop-filter: blur(8px);
 }
-.banner.volume { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(255,176,32,0.3); }
-.banner.depeg { background: var(--red-bg); color: var(--red); border: 1px solid rgba(255,77,106,0.3); }
-.banner.error { background: rgba(255,77,106,0.08); color: #ff8a9a; border: 1px solid rgba(255,77,106,0.2); }
+.banner.volume { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(255,192,64,0.35); }
+.banner.depeg { background: var(--red-bg); color: var(--red); border: 1px solid rgba(255,90,122,0.35); }
+.banner.divergence { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+.banner.error { background: rgba(255,90,122,0.08); color: #ff8a9a; border: 1px solid rgba(255,90,122,0.2); }
 @keyframes slideIn {
-  from { opacity: 0; transform: translateY(-8px); }
+  from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-grid {
+.grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-  margin-bottom: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 18px;
+  margin-bottom: 32px;
 }
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 20px;
+  border-radius: 18px;
+  padding: 22px;
   box-shadow: var(--shadow);
-  transition: transform 0.2s, border-color 0.3s, box-shadow 0.2s;
+  transition: transform 0.25s cubic-bezier(0.4,0,0.2,1), border-color 0.3s, box-shadow 0.25s;
+  position: relative;
+  overflow: hidden;
 }
-.card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--green), transparent);
+  opacity: 0.6;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.6); }
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 .coin-name {
   font-size: 15px;
@@ -121,8 +136,8 @@ grid {
 .badge {
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.5px;
-  padding: 4px 10px;
+  letter-spacing: 0.6px;
+  padding: 5px 12px;
   border-radius: 20px;
   text-transform: uppercase;
   transition: all 0.3s ease;
@@ -133,14 +148,14 @@ grid {
 .badge.no-data { background: var(--gray-bg); color: var(--gray); }
 .price {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 36px;
+  font-size: 38px;
   font-weight: 700;
-  letter-spacing: -1px;
-  margin: 4px 0 8px;
+  letter-spacing: -1.2px;
+  margin: 6px 0 10px;
   transition: color 0.3s;
 }
 .change {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
 }
 .change.positive { color: var(--green); }
@@ -148,75 +163,84 @@ grid {
 .vol {
   font-size: 13px;
   color: var(--text-muted);
-  margin-top: 6px;
+  margin-top: 8px;
 }
-.dev-bar-wrap {
-  margin-top: 12px;
-  height: 6px;
-  background: #1e2430;
-  border-radius: 3px;
-  overflow: hidden;
-  position: relative;
-}
-.dev-bar {
-  height: 100%;
-  width: 0%;
-  transition: width 0.4s ease, background 0.3s;
-  border-radius: 3px;
-}
-.bps {
+.secondary {
   font-size: 12px;
   color: var(--text-muted);
   margin-top: 4px;
   font-family: 'JetBrains Mono', monospace;
 }
+.dev-bar-wrap {
+  margin-top: 14px;
+  height: 6px;
+  background: #1a2030;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.dev-bar {
+  height: 100%;
+  width: 0%;
+  transition: width 0.5s ease, background 0.3s;
+  border-radius: 3px;
+}
+.bps {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  font-family: 'JetBrains Mono', monospace;
+}
 .summary {
   background: var(--surface-elevated);
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 24px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 28px;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 12px;
-  font-size: 13px;
+  gap: 16px;
+  font-size: 14px;
 }
-.summary strong { color: var(--text); }
+.summary strong { color: var(--text); font-weight: 600; }
 footer {
-  max-width: 800px;
+  max-width: 820px;
   margin: 0 auto;
   color: var(--text-muted);
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 footer h3 {
   color: var(--text);
-  font-size: 16px;
-  margin-bottom: 8px;
+  font-size: 17px;
+  margin-bottom: 10px;
 }
 .controls {
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
+  flex-wrap: wrap;
 }
 button {
   background: var(--surface-elevated);
   color: var(--text);
   border: 1px solid var(--border);
-  padding: 8px 14px;
-  border-radius: 8px;
+  padding: 9px 16px;
+  border-radius: 10px;
   font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
   transition: background 0.2s, transform 0.1s;
 }
-button:hover { background: #252b3a; }
-button:active { transform: scale(0.98); }
+button:hover { background: #1e2535; }
+button:active { transform: scale(0.97); }
 @media (max-width: 640px) {
-  .price { font-size: 32px; }
+  .price { font-size: 34px; }
   header { flex-direction: column; }
   .meta { text-align: left; }
-  grid { grid-template-columns: 1fr; }
+  .grid { grid-template-columns: 1fr; }
+  body { padding: 16px 14px 40px; }
 }
 </style>
 </head>
@@ -229,13 +253,13 @@ button:active { transform: scale(0.98); }
   <div class="meta">
     <div><span class="live-dot"></span>Live</div>
     <div id="lastUpdated">—</div>
-    <div id="version">v5.39</div>
+    <div id="version">v5.40</div>
   </div>
 </header>
 
 <div class="controls">
-  <button onclick="fetchPrices(true)">Refresh now</button>
-  <span style="color:var(--text-muted);font-size:13px">Auto-refresh every 30 seconds</span>
+  <button onclick="fetchAll(true)">Refresh now</button>
+  <span style="color:var(--text-muted);font-size:13px">Auto-refresh every 30 seconds · CoinGecko + Coinbase</span>
 </div>
 
 <div class="banners" id="banners"></div>
@@ -250,26 +274,28 @@ button:active { transform: scale(0.98); }
 
 <footer>
   <h3>How to use</h3>
-  <p>Open this file in any browser (including iPhone Safari). Bookmark it. The dashboard updates itself every 30 seconds with live prices from CoinGecko. Green badges mean the coin is within the $0.99–$1.01 peg band. Red means it has depegged below $0.99. Amber means it has depegged above $1.01. Volume spike banners appear if trading volume suddenly jumps more than 3× its recent average. If you see a temporary data error, wait a moment or click Refresh now — free data sources sometimes pause briefly. No login, no install, no code required.</p>
-  <p style="margin-top:12px;font-size:12px">Data source: CoinGecko free API. For alerts, Telegram, or WebSocket streaming, use the Python detector in this repository. Minutes matter when a peg breaks.</p>
+  <p>Open this file in any browser (including iPhone Safari). Bookmark it. The dashboard updates itself every 30 seconds with live prices from CoinGecko, cross-checked against Coinbase where available. Green badges mean the coin is within the $0.99–$1.01 peg band. Red means it has depegged below $0.99. Amber means it has depegged above $1.01. Volume spike banners appear if trading volume suddenly jumps more than 3× its recent average. Divergence banners flag when CoinGecko and Coinbase prices differ by more than 50 basis points. If you see a temporary data error, wait a moment or click Refresh now — free data sources sometimes pause briefly. No login, no install, no code required.</p>
+  <p style="margin-top:14px;font-size:12px">Data sources: CoinGecko free API (primary) + Coinbase public spot (secondary for divergence). For Telegram/email alerts or WebSocket streaming, use the Python detector in this repository. Minutes matter when a peg breaks.</p>
 </footer>
 
 <script>
 const COINS = [
-  { id: 'tether', name: 'Tether', symbol: 'USDT' },
-  { id: 'usd-coin', name: 'USD Coin', symbol: 'USDC' },
-  { id: 'dai', name: 'Dai', symbol: 'DAI' },
-  { id: 'first-digital-usd', name: 'First Digital USD', symbol: 'FDUSD' },
-  { id: 'paypal-usd', name: 'PayPal USD', symbol: 'PYUSD' },
-  { id: 'true-usd', name: 'TrueUSD', symbol: 'TUSD' }
+  { id: 'tether', name: 'Tether', symbol: 'USDT', cb: 'USDT-USD' },
+  { id: 'usd-coin', name: 'USD Coin', symbol: 'USDC', cb: 'USDC-USD' },
+  { id: 'dai', name: 'Dai', symbol: 'DAI', cb: 'DAI-USD' },
+  { id: 'first-digital-usd', name: 'First Digital USD', symbol: 'FDUSD', cb: null },
+  { id: 'paypal-usd', name: 'PayPal USD', symbol: 'PYUSD', cb: 'PYUSD-USD' },
+  { id: 'true-usd', name: 'TrueUSD', symbol: 'TUSD', cb: null }
 ];
 
 const LOWER = 0.99;
 const UPPER = 1.01;
 const VOL_MULTIPLIER = 3;
 const VOL_WINDOW = 12;
+const DIV_BPS = 50;
 
 let volumeHistory = JSON.parse(localStorage.getItem('volHistory') || '{}');
+let lastCoinbase = {};
 
 function formatVol(v) {
   if (!v) return '—';
@@ -306,6 +332,19 @@ function checkVolumeSpike(symbol, vol) {
   return null;
 }
 
+async function fetchCoinbasePrices() {
+  const promises = COINS.filter(c => c.cb).map(async coin => {
+    try {
+      const res = await fetch(`https://api.coinbase.com/v2/prices/${coin.cb}/spot`);
+      if (!res.ok) return;
+      const json = await res.json();
+      const price = parseFloat(json.data?.amount);
+      if (!isNaN(price)) lastCoinbase[coin.symbol] = price;
+    } catch (e) { /* ignore */ }
+  });
+  await Promise.all(promises);
+}
+
 function renderCards(data) {
   const container = document.getElementById('cards');
   container.innerHTML = '';
@@ -313,6 +352,7 @@ function renderCards(data) {
   let totalVol = 0;
   const volumeAlerts = [];
   const depegAlerts = [];
+  const divAlerts = [];
 
   COINS.forEach(coin => {
     const d = data[coin.id] || {};
@@ -328,6 +368,15 @@ function renderCards(data) {
     if (vAlert) volumeAlerts.push(vAlert);
     if (status.cls === 'depeg-down' || status.cls === 'depeg-up') {
       depegAlerts.push(`${status.text} ${coin.symbol}: ${formatPrice(price)}`);
+    }
+
+    const cbPrice = lastCoinbase[coin.symbol];
+    let divBps = null;
+    if (price != null && cbPrice != null) {
+      divBps = Math.round(Math.abs(price - cbPrice) / Math.max(price, cbPrice) * 10000);
+      if (divBps > DIV_BPS) {
+        divAlerts.push(`DIVERGENCE ${coin.symbol}: CG ${formatPrice(price)} vs CB ${formatPrice(cbPrice)} (${divBps} bps)`);
+      }
     }
 
     const bps = price != null ? Math.round((price - 1) * 10000) : null;
@@ -346,6 +395,7 @@ function renderCards(data) {
         ${change != null ? (change > 0 ? '+' : '') + change.toFixed(2) + '%' : '—'}
       </div>
       <div class="vol">24h vol: ${formatVol(vol)}</div>
+      ${cbPrice != null ? `<div class="secondary">Coinbase: ${formatPrice(cbPrice)}${divBps != null ? ` · Δ${divBps} bps` : ''}</div>` : ''}
       <div class="dev-bar-wrap"><div class="dev-bar" style="width:${barWidth}%;background:${barColor}"></div></div>
       <div class="bps">${bps != null ? (bps > 0 ? '+' : '') + bps + ' bps from peg' : ''}</div>
     `;
@@ -371,9 +421,17 @@ function renderCards(data) {
     b.textContent = volumeAlerts.join(' • ');
     banners.appendChild(b);
   }
+  if (divAlerts.length) {
+    const b = document.createElement('div');
+    b.className = 'banner divergence';
+    b.style.display = 'block';
+    b.textContent = divAlerts.join(' • ');
+    banners.appendChild(b);
+  }
 }
 
-async function fetchPrices(manual = false) {
+async function fetchAll(manual = false) {
+  await fetchCoinbasePrices();
   const ids = COINS.map(c => c.id).join(',');
   const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`;
   try {
@@ -398,8 +456,8 @@ async function fetchPrices(manual = false) {
   }
 }
 
-fetchPrices();
-setInterval(() => fetchPrices(), 30000);
+fetchAll();
+setInterval(() => fetchAll(), 30000);
 </script>
 </body>
 </html>

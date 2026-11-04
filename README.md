@@ -46,7 +46,7 @@ python tests/test_depeg_logic.py      # 14 unit tests
 - Binance and Coinbase WebSocket streams with exponential-backoff reconnection
 - Volume anomaly detection (median baseline, cooldown)
 - CLI dashboard that refreshes in place
-- Professional single-file web dashboard (dark fintech aesthetic, six large live cards with big monospaced prices, status badges, 24h change, volume, peg deviation bars, bps deviation, total 24h volume, volume spike / depeg / divergence banners, Coinbase cross-check, live indicator, auto-refresh every 30s, manual Refresh now button, rate-limit error banner, mobile-responsive, plain-English how-to)
+- Professional single-file web dashboard (dark fintech aesthetic, six large live cards with big monospaced prices, status badges, 24h change, volume, peg deviation bars, bps deviation, total 24h volume, volume spike / depeg / divergence banners, Coinbase cross-check, live indicator, auto-refresh every 30s, manual Refresh now button, rate-limit error banner, DefiLlama fallback when CoinGecko is throttled, mobile-responsive, plain-English how-to)
 - Telegram + email alerts (config.json)
 - JSON output for integration
 - Comprehensive unit tests
@@ -60,9 +60,9 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready (v5.55). Latest verification (2026-11-04 ~14:04 MST):
-- Prices remain within band (Coinbase/DefiLlama: USDT ~$0.9989 OK, USDC ~$1.0000 OK, DAI ~$0.9997 OK, FDUSD $0.9973 OK, PYUSD ~$0.9997 OK, TUSD $0.9987 OK). No depegs. No volume spikes. (CoinGecko rate-limited on this run; fallbacks used.)
-- dashboard.html at v5.55: dark Bloomberg/Apple fintech aesthetic, six large live cards, status badges, Coinbase divergence, banners, mobile responsiveness, and plain-English how-to.
+Production-ready (v5.55). Latest verification (2026-11-04 ~14:07 MST via DefiLlama after CoinGecko 429):
+- Prices remain within band (USDT $0.9989 OK, USDC $0.9998 OK, DAI $1.0001 OK, FDUSD $0.9973 OK, PYUSD $0.9994 OK, TUSD $0.9987 OK). No depegs.
+- dashboard.html at v5.55: dark Bloomberg/Apple fintech aesthetic, six large live cards, status badges, Coinbase divergence, banners, DefiLlama fallback for rate limits, mobile responsiveness, and plain-English how-to.
 - 14/14 unit tests pass. All core features (REST + fallbacks, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard, Telegram/email alerts) operational.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

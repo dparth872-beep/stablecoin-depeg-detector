@@ -270,7 +270,7 @@ button:active { transform: scale(0.97); }
 
 <div class="controls">
   <button onclick="fetchAll(true)">Refresh now</button>
-  <span style="color:var(--text-muted);font-size:13px">Auto-refresh every 30 seconds · CoinGecko + Coinbase</span>
+  <span style="color:var(--text-muted);font-size:13px">Auto-refresh every 30 seconds · CoinGecko + DefiLlama + Coinbase</span>
 </div>
 
 <div class="banners" id="banners"></div>
@@ -285,18 +285,18 @@ button:active { transform: scale(0.97); }
 
 <footer>
   <h3>How to use</h3>
-  <p>Open this file in any browser (including iPhone Safari). Bookmark it. The dashboard updates itself every 30 seconds with live prices from CoinGecko, cross-checked against Coinbase where available. Green badges mean the coin is within the $0.99–$1.01 peg band. Red means it has depegged below $0.99. Amber means it has depegged above $1.01. Volume spike banners appear if trading volume suddenly jumps more than 3× its recent average. Divergence banners flag when CoinGecko and Coinbase prices differ by more than 50 basis points. If you see a temporary data error, wait a moment or click Refresh now — free data sources sometimes pause briefly. No login, no install, no code required.</p>
-  <p style="margin-top:14px;font-size:12px">Data sources: CoinGecko free API (primary) + Coinbase public spot (secondary for divergence). For Telegram/email alerts or WebSocket streaming, use the Python detector in this repository. Minutes matter when a peg breaks. Last verified: 2026-11-04 14:04 MST — all six coins OK (via Coinbase/DefiLlama; CoinGecko rate-limited).</p>
+  <p>Open this file in any browser (including iPhone Safari). Bookmark it. The dashboard updates itself every 30 seconds with live prices. It prefers CoinGecko, falls back to DefiLlama when rate-limited, and cross-checks Coinbase where available. Green badges mean the coin is within the $0.99–$1.01 peg band. Red means it has depegged below $0.99. Amber means it has depegged above $1.01. Volume spike banners appear if trading volume suddenly jumps more than 3× its recent average. Divergence banners flag when prices differ by more than 50 basis points across sources. If you see a temporary data error, wait a moment or click Refresh now. No login, no install, no code required.</p>
+  <p style="margin-top:14px;font-size:12px">Data sources: CoinGecko free API (primary) + DefiLlama (fallback) + Coinbase public spot (secondary). For Telegram/email alerts or WebSocket streaming, use the Python detector in this repository. Minutes matter when a peg breaks. Last verified: 2026-11-04 ~14:07 MST — all six coins OK via DefiLlama.</p>
 </footer>
 
 <script>
 const COINS = [
-  { id: 'tether', name: 'Tether', symbol: 'USDT', cb: 'USDT-USD' },
-  { id: 'usd-coin', name: 'USD Coin', symbol: 'USDC', cb: 'USDC-USD' },
-  { id: 'dai', name: 'Dai', symbol: 'DAI', cb: 'DAI-USD' },
-  { id: 'first-digital-usd', name: 'First Digital USD', symbol: 'FDUSD', cb: null },
-  { id: 'paypal-usd', name: 'PayPal USD', symbol: 'PYUSD', cb: 'PYUSD-USD' },
-  { id: 'true-usd', name: 'TrueUSD', symbol: 'TUSD', cb: null }
+  { id: 'tether', name: 'Tether', symbol: 'USDT', cb: 'USDT-USD', llama: 'coingecko:tether' },
+  { id: 'usd-coin', name: 'USD Coin', symbol: 'USDC', cb: 'USDC-USD', llama: 'coingecko:usd-coin' },
+  { id: 'dai', name: 'Dai', symbol: 'DAI', cb: 'DAI-USD', llama: 'coingecko:dai' },
+  { id: 'first-digital-usd', name: 'First Digital USD', symbol: 'FDUSD', cb: null, llama: 'coingecko:first-digital-usd' },
+  { id: 'paypal-usd', name: 'PayPal USD', symbol: 'PYUSD', cb: 'PYUSD-USD', llama: 'coingecko:paypal-usd' },
+  { id: 'true-usd', name: 'TrueUSD', symbol: 'TUSD', cb: null, llama: 'coingecko:true-usd' }
 ];
 
 const LOWER = 0.99;
@@ -356,6 +356,21 @@ async function fetchCoinbasePrices() {
   await Promise.all(promises);
 }
 
+async function fetchDefiLlama() {
+  const ids = COINS.map(c => c.llama).join(',');
+  const res = await fetch(`https://coins.llama.fi/prices/current/${ids}`);
+  if (!res.ok) throw new Error(`Llama HTTP ${res.status}`);
+  const json = await res.json();
+  const data = {};
+  COINS.forEach(coin => {
+    const entry = json.coins?.[coin.llama];
+    if (entry && entry.price != null) {
+      data[coin.id] = { usd: entry.price, usd_24h_change: null, usd_24h_vol: null };
+    }
+  });
+  return data;
+}
+
 function renderCards(data) {
   const container = document.getElementById('cards');
   container.innerHTML = '';
@@ -386,7 +401,7 @@ function renderCards(data) {
     if (price != null && cbPrice != null) {
       divBps = Math.round(Math.abs(price - cbPrice) / Math.max(price, cbPrice) * 10000);
       if (divBps > DIV_BPS) {
-        divAlerts.push(`DIVERGENCE ${coin.symbol}: CG ${formatPrice(price)} vs CB ${formatPrice(cbPrice)} (${divBps} bps)`);
+        divAlerts.push(`DIVERGENCE ${coin.symbol}: CG/Llama ${formatPrice(price)} vs CB ${formatPrice(cbPrice)} (${divBps} bps)`);
       }
     }
 
@@ -448,26 +463,34 @@ async function fetchAll(manual = false) {
   await fetchCoinbasePrices();
   const ids = COINS.map(c => c.id).join(',');
   const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`;
+  let data = null;
+  let source = 'CoinGecko';
   try {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    renderCards(data);
-    document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString();
-    const err = document.querySelector('.banner.error');
-    if (err) err.remove();
+    data = await res.json();
   } catch (e) {
-    const banners = document.getElementById('banners');
-    let err = document.querySelector('.banner.error');
-    if (!err) {
-      err = document.createElement('div');
-      err.className = 'banner error';
-      err.style.display = 'block';
-      banners.prepend(err);
+    try {
+      data = await fetchDefiLlama();
+      source = 'DefiLlama (CoinGecko rate-limited)';
+    } catch (e2) {
+      const banners = document.getElementById('banners');
+      let err = document.querySelector('.banner.error');
+      if (!err) {
+        err = document.createElement('div');
+        err.className = 'banner error';
+        err.style.display = 'block';
+        banners.prepend(err);
+      }
+      err.textContent = `Temporary data pause (free sources busy). Click Refresh now or wait — prices will return automatically.`;
+      if (manual) console.warn(e, e2);
+      return;
     }
-    err.textContent = `Temporary data pause (free source busy). Click Refresh now or wait — prices will return automatically.`;
-    if (manual) console.warn(e);
   }
+  renderCards(data);
+  document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString() + ' · ' + source;
+  const err = document.querySelector('.banner.error');
+  if (err) err.remove();
 }
 
 fetchAll();

@@ -1,16 +1,16 @@
 # Verification Results
 
-**Date:** 2026-11-05 ~09:05 MST
+**Date:** 2026-11-05 ~11:05 MST
 **Source:** CoinGecko primary (HTTP 200)
 
 | Coin | Price | Status |
 |------|-------|--------|
-| USDT | $0.999315 | OK |
-| USDC | $0.999782 | OK |
+| USDT | $0.999158 | OK |
+| USDC | $0.999622 | OK |
 | DAI | $1.000000 | OK |
-| FDUSD | $0.996968 | OK |
-| PYUSD | $1.000000 | OK |
-| TUSD | $0.998821 | OK |
+| FDUSD | $0.996909 | OK |
+| PYUSD | $0.999994 | OK |
+| TUSD | $0.998649 | OK |
 
 All within $0.99-$1.01. No depegs.
 

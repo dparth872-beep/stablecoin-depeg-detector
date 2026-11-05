@@ -46,7 +46,7 @@ python tests/test_depeg_logic.py      # 14 unit tests
 - Binance and Coinbase WebSocket streams with exponential-backoff reconnection
 - Volume anomaly detection (median baseline, cooldown)
 - CLI dashboard that refreshes in place
-- Professional single-file web dashboard (dark fintech aesthetic, six large live cards with big monospaced prices, status badges, 24h change, volume, peg deviation bars, bps deviation, total 24h volume, volume spike / depeg / divergence banners, Coinbase cross-check, live indicator, auto-refresh every 30s, manual Refresh now button, rate-limit error banner, DefiLlama fallback when CoinGecko is throttled, mobile-responsive, plain-English how-to)
+- Professional single-file web dashboard (dark fintech aesthetic, six large live cards with big monospaced prices, status badges, 24h change, volume, peg deviation bars, bps deviation, total 24h volume, volume spike / depeg / divergence banners, Coinbase cross-check, live indicator, auto-refresh every 30s, manual Refresh now button, rate-limit error banner, DefiLlama fallback when CoinGecko is throttled, health status, mobile-responsive, plain-English how-to)
 - Telegram + email alerts (config.json)
 - JSON output for integration
 - Comprehensive unit tests
@@ -60,9 +60,9 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready (v5.69). Latest verification (2026-11-05 ~14:06 MST via DefiLlama + Coinbase; CoinGecko rate-limited):
-- Prices remain within band (USDT $0.99839 OK, USDC $0.99982 OK, DAI $1.00021 OK, FDUSD $0.99653 OK, PYUSD $0.99813 OK, TUSD $0.99893 OK). No depegs.
-- dashboard.html at v5.69: dark Bloomberg/Apple fintech aesthetic, six large live cards, status badges, Coinbase divergence, banners, DefiLlama fallback for rate limits, mobile responsiveness, and plain-English how-to.
+Production-ready (v5.70). Latest verification (2026-11-05 ~16:05 MST via Coinbase + DefiLlama; CoinGecko rate-limited):
+- Prices remain within band (USDT $0.9984 OK, USDC $1.0000 OK, DAI $0.9994 OK, FDUSD $0.9963 OK, PYUSD $1.0000 OK, TUSD $0.9989 OK). No depegs.
+- dashboard.html at v5.70: dark Bloomberg/Apple fintech aesthetic, six large live cards, status badges, Coinbase divergence, banners, DefiLlama fallback for rate limits, health indicator, mobile responsiveness, and plain-English how-to.
 - 14/14 unit tests pass. All core features (REST + fallbacks, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard, Telegram/email alerts) operational.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

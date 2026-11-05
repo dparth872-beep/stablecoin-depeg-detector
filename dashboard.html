@@ -43,7 +43,7 @@ header {
   gap: 16px;
 }
 .logo {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
   letter-spacing: -0.6px;
   background: linear-gradient(90deg, #fff, #a0aec0);
@@ -214,6 +214,11 @@ header {
   font-size: 14px;
 }
 .summary strong { color: var(--text); font-weight: 600; }
+.health {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--green);
+}
 footer {
   max-width: 820px;
   margin: 0 auto;
@@ -264,7 +269,7 @@ button:active { transform: scale(0.97); }
   <div class="meta">
     <div><span class="live-dot"></span>Live</div>
     <div id="lastUpdated">—</div>
-    <div id="version">v5.69</div>
+    <div id="version">v5.70</div>
   </div>
 </header>
 
@@ -278,6 +283,7 @@ button:active { transform: scale(0.97); }
 <div class="summary" id="summary">
   <div>Total 24h volume: <strong id="totalVol">—</strong></div>
   <div>Coins within band: <strong id="okCount">—</strong> / 6</div>
+  <div class="health" id="healthStatus">All systems nominal</div>
   <div>Thresholds: $0.99 – $1.01</div>
 </div>
 
@@ -286,7 +292,7 @@ button:active { transform: scale(0.97); }
 <footer>
   <h3>How to use</h3>
   <p>Open this file in any browser (including iPhone Safari). Bookmark it. The dashboard updates itself every 30 seconds with live prices. It prefers CoinGecko, falls back to DefiLlama when rate-limited, and cross-checks Coinbase where available. Green badges mean the coin is within the $0.99–$1.01 peg band. Red means it has depegged below $0.99. Amber means it has depegged above $1.01. Volume spike banners appear if trading volume suddenly jumps more than 3× its recent average. Divergence banners flag when prices differ by more than 50 basis points across sources. If you see a temporary data error, wait a moment or click Refresh now. No login, no install, no code required.</p>
-  <p style="margin-top:14px;font-size:12px">Data sources: CoinGecko free API (primary) + DefiLlama (fallback) + Coinbase public spot (secondary). For Telegram/email alerts or WebSocket streaming, use the Python detector in this repository. Minutes matter when a peg breaks. Last verified: 2026-11-05 ~14:06 MST — all six coins OK (USDT $0.99839, USDC $0.99982, DAI $1.00021, FDUSD $0.99653, PYUSD $0.99813, TUSD $0.99893 via DefiLlama + Coinbase). No depegs, volume spikes, or divergences.</p>
+  <p style="margin-top:14px;font-size:12px">Data sources: CoinGecko free API (primary) + DefiLlama (fallback) + Coinbase public spot (secondary). For Telegram/email alerts or WebSocket streaming, use the Python detector in this repository. Minutes matter when a peg breaks. Last verified: 2026-11-05 ~16:05 MST — all six coins OK (USDT $0.9984, USDC $1.0000, DAI $0.9994, FDUSD $0.9963, PYUSD $1.0000, TUSD $0.9989 via Coinbase + DefiLlama). No depegs, volume spikes, or divergences.</p>
 </footer>
 
 <script>
@@ -433,6 +439,17 @@ function renderCards(data) {
 
   document.getElementById('okCount').textContent = okCount;
   document.getElementById('totalVol').textContent = formatVol(totalVol);
+  const health = document.getElementById('healthStatus');
+  if (depegAlerts.length > 0) {
+    health.textContent = 'DEPEG ALERT';
+    health.style.color = 'var(--red)';
+  } else if (volumeAlerts.length > 0 || divAlerts.length > 0) {
+    health.textContent = 'Watching anomalies';
+    health.style.color = 'var(--amber)';
+  } else {
+    health.textContent = 'All systems nominal';
+    health.style.color = 'var(--green)';
+  }
 
   const banners = document.getElementById('banners');
   banners.innerHTML = '';

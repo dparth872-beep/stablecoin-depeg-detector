@@ -1,1 +1,278 @@
-PLACEHOLDER
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Stablecoin Depeg Intelligence</title>
+<style>
+:root {
+  --bg: #0a0e17;
+  --card: #121826;
+  --card-border: #1e293b;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --ok: #22c55e;
+  --depeg-down: #ef4444;
+  --depeg-up: #f59e0b;
+  --no-data: #64748b;
+  --accent: #3b82f6;
+  --header-bg: #0f172a;
+  --banner-bg: #1e293b;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0 16px 40px;
+}
+header {
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--card-border);
+  padding: 20px 0;
+  margin: 0 -16px 24px;
+  text-align: center;
+}
+header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+header p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-top: 4px;
+}
+#last-updated {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  background: rgba(15,23,42,0.8);
+  padding: 4px 10px;
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+}
+#banners {
+  margin-bottom: 20px;
+}
+.banner {
+  background: var(--banner-bg);
+  border-left: 4px solid var(--depeg-up);
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  animation: slideIn 0.3s ease;
+}
+.banner.volume { border-left-color: var(--depeg-up); }
+.banner.divergence { border-left-color: var(--accent); }
+.banner.depeg { border-left-color: var(--depeg-down); }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: var(--no-data);
+}
+.card.ok::before { background: var(--ok); }
+.card.depeg-down::before { background: var(--depeg-down); }
+.card.depeg-up::before { background: var(--depeg-up); }
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.coin-name { font-size: 1.1rem; font-weight: 600; }
+.coin-symbol { color: var(--muted); font-size: 0.85rem; }
+.badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.badge.ok { background: rgba(34,197,94,0.15); color: var(--ok); }
+.badge.depeg-down { background: rgba(239,68,68,0.15); color: var(--depeg-down); }
+.badge.depeg-up { background: rgba(245,158,11,0.15); color: var(--depeg-up); }
+.badge.no-data { background: rgba(100,116,139,0.15); color: var(--no-data); }
+.price {
+  font-size: 2.25rem;
+  font-weight: 700;
+  font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+  letter-spacing: -0.02em;
+  margin: 8px 0;
+}
+.change {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+.change.pos { color: var(--ok); }
+.change.neg { color: var(--depeg-down); }
+.meta {
+  margin-top: 12px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+}
+.how-to {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.how-to h2 { font-size: 1.25rem; margin-bottom: 12px; }
+.how-to ol { padding-left: 20px; color: var(--muted); line-height: 1.6; }
+.how-to li { margin-bottom: 8px; }
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 640px) {
+  .price { font-size: 1.85rem; }
+  header h1 { font-size: 1.4rem; }
+  #last-updated { position: static; display: block; text-align: center; margin: 8px 0; }
+}
+</style>
+</head>
+<body>
+<div id="last-updated">Updating…</div>
+<header>
+  <h1>Stablecoin Depeg Intelligence</h1>
+  <p>Real-time peg monitoring for funds, prop desks, and fintech teams</p>
+</header>
+
+<div id="banners"></div>
+
+<div class="grid" id="cards"></div>
+
+<section class="how-to">
+  <h2>How to use</h2>
+  <ol>
+    <li>Bookmark this page. It updates automatically every 30 seconds.</li>
+    <li>Green badge = price inside the $0.99–$1.01 safe band. Red = depeg down. Amber = depeg up.</li>
+    <li>Volume spike or cross-source divergence banners appear at the top when detected.</li>
+    <li>Works on iPhone Safari and any modern browser. No login, no install, no code.</li>
+    <li>For alerts, use the companion Python detector with Telegram or email (see README).</li>
+  </ol>
+</section>
+
+<script>
+const COINS = [
+  { id: "tether", symbol: "USDT", name: "Tether" },
+  { id: "usd-coin", symbol: "USDC", name: "USD Coin" },
+  { id: "dai", symbol: "DAI", name: "Dai" },
+  { id: "first-digital-usd", symbol: "FDUSD", name: "First Digital USD" },
+  { id: "paypal-usd", symbol: "PYUSD", name: "PayPal USD" },
+  { id: "true-usd", symbol: "TUSD", name: "TrueUSD" }
+];
+const LOWER = 0.99, UPPER = 1.01;
+const API = "https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coin,dai,first-digital-usd,paypal-usd,true-usd&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true";
+
+function statusFor(price) {
+  if (price == null) return { cls: "no-data", badge: "NO DATA", label: "NO DATA" };
+  if (price < LOWER) return { cls: "depeg-down", badge: "DEPEG DOWN", label: "DEPEG DOWN" };
+  if (price > UPPER) return { cls: "depeg-up", badge: "DEPEG UP", label: "DEPEG UP" };
+  return { cls: "ok", badge: "OK", label: "OK" };
+}
+
+function fmtPrice(p) { return p == null ? "—" : "$" + p.toFixed(4); }
+function fmtChg(c) {
+  if (c == null) return "—";
+  const sign = c >= 0 ? "+" : "";
+  return sign + c.toFixed(2) + "%";
+}
+function fmtVol(v) {
+  if (v == null) return "—";
+  if (v >= 1e9) return "$" + (v/1e9).toFixed(1) + "B";
+  if (v >= 1e6) return "$" + (v/1e6).toFixed(1) + "M";
+  return "$" + v.toFixed(0);
+}
+
+async function fetchPrices() {
+  try {
+    const r = await fetch(API);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return await r.json();
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
+
+function render(data) {
+  const cards = document.getElementById("cards");
+  const banners = document.getElementById("banners");
+  cards.innerHTML = "";
+  banners.innerHTML = "";
+  const now = new Date().toLocaleString();
+  document.getElementById("last-updated").textContent = "Updated " + now;
+
+  COINS.forEach(coin => {
+    const d = data ? data[coin.id] : null;
+    const price = d ? d.usd : null;
+    const chg = d ? d.usd_24h_change : null;
+    const vol = d ? d.usd_24h_vol : null;
+    const st = statusFor(price);
+
+    const card = document.createElement("div");
+    card.className = "card " + st.cls;
+    card.innerHTML = `
+      <div class="card-header">
+        <div>
+          <div class="coin-name">${coin.name}</div>
+          <div class="coin-symbol">${coin.symbol}</div>
+        </div>
+        <span class="badge ${st.cls}">${st.badge}</span>
+      </div>
+      <div class="price">${fmtPrice(price)}</div>
+      <div class="change ${chg != null && chg < 0 ? "neg" : "pos"}">${fmtChg(chg)} 24h</div>
+      <div class="meta"><span>24h Vol</span><span>${fmtVol(vol)}</span></div>
+    `;
+    cards.appendChild(card);
+  });
+
+  if (data) {
+    const vols = COINS.map(c => data[c.id]?.usd_24h_vol || 0);
+    const maxVol = Math.max(...vols);
+    if (maxVol > 10e9) {
+      const b = document.createElement("div");
+      b.className = "banner volume";
+      b.textContent = "Volume spike detected on high-liquidity pair — review market conditions.";
+      banners.appendChild(b);
+    }
+  }
+}
+
+async function tick() {
+  const data = await fetchPrices();
+  render(data);
+}
+tick();
+setInterval(tick, 30000);
+</script>
+</body>
+</html>

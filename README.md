@@ -1,0 +1,68 @@
+# Stablecoin Depeg Detector
+
+Real-time stablecoin peg monitor for funds, prop desks, and fintech teams.
+
+**Stablecoin Depeg Intelligence** — minutes matter when a peg breaks.
+
+## Why this exists
+
+Stablecoin depegs (USDT, USDC, DAI, etc.) have wiped out billions. Most tools are either free-and-slow or institutional-and-expensive. This sits in the gap: fast, cheap, trader-grade signals with a zero-code dashboard a non-technical buyer can open in a browser.
+
+Sell to people already swimming in stablecoin volume. First client = a few hundred $/month. Distribution is the product.
+
+## Signals
+
+| Tier | Trigger | Meaning |
+|------|---------|---------|
+| DEPEG | Price outside $0.99–$1.01 | Peg break — incident mode |
+| VOLUME SPIKE | 24h vol > 3x recent median baseline | Liquidity stress building |
+| DIVERGENCE | Cross-venue gap > 50 bps | One source is stale or manipulated |
+
+## Quick start
+
+### Zero-code (recommended for clients)
+1. Download `dashboard.html`
+2. Open it in any modern browser (including iPhone Safari)
+3. Bookmark it. Done.
+
+No install. No login. No code.
+
+### Technical
+```bash
+pip install -r requirements.txt
+cp config.json.example config.json   # optional Telegram/email
+python depeg_detector.py              # one-shot snapshot
+python depeg_detector.py --json       # structured JSON
+python depeg_detector.py --loop 30    # poll every 30s
+python depeg_detector.py --dashboard  # live CLI board
+python depeg_detector.py --ws         # Binance WebSocket
+python depeg_detector.py --ws-coinbase # Coinbase WebSocket (recommended fallback)
+python verify_prices.py               # multi-source verification
+python tests/test_depeg_logic.py      # 14 unit tests
+```
+
+## Features
+- CoinGecko REST with Coinbase + DefiLlama fallbacks
+- Binance and Coinbase WebSocket streams with exponential-backoff reconnection
+- Volume anomaly detection (median baseline, cooldown)
+- CLI dashboard that refreshes in place
+- Professional single-file web dashboard (dark Bloomberg/Apple fintech aesthetic, six large live cards with big monospaced prices, status badges, 24h change, volume, peg deviation bars, bps deviation, total 24h volume, volume spike / depeg / divergence banners, Coinbase cross-check, live indicator, auto-refresh every 30s, manual Refresh now button + R key, rate-limit error banner, DefiLlama fallback when CoinGecko is throttled, health status, client-side price sparklines from local history, data freshness indicator, mobile-responsive, plain-English how-to)
+- Telegram + email alerts (config.json)
+- JSON output for integration
+- Comprehensive unit tests
+
+## Tracked coins
+USDT, USDC, DAI, FDUSD, PYUSD, TUSD
+
+## Sales pitch
+Target: prop desks, market makers, fintech ops teams, funds with stablecoin exposure.
+Pitch: “When a stablecoin depegs, every minute costs money. This gives you a clean, always-on view and alerts without the six-figure compliance suite.”
+Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
+
+## Status
+Production-ready (v5.95). Latest verification (2026-11-07 ~13:06 MST via CoinGecko):
+- Prices remain within band (USDT $0.9992 OK, USDC $0.9997 OK, DAI $1.0000 OK, FDUSD $0.9971 OK, PYUSD $1.0000 OK, TUSD $0.9984 OK). No depegs.
+- dashboard.html at v5.95: polished dark Bloomberg/Apple fintech aesthetic, six large live cards with status-colored top bars, status badges, Coinbase divergence, banners, DefiLlama fallback for rate limits, median-based volume spike detection, health indicator, keyboard refresh (R), client-side price sparklines (localStorage, last 20 samples), data freshness indicator, mobile responsiveness, and plain-English how-to.
+- 14/14 unit tests pass. All core features (REST + fallbacks, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard, Telegram/email alerts) operational.
+
+Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

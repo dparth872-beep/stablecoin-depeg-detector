@@ -168,8 +168,13 @@ header {
   font-size: 42px;
   font-weight: 700;
   letter-spacing: -1.5px;
-  margin: 4px 0 12px;
+  margin: 4px 0 8px;
   transition: color 0.3s;
+}
+.sparkline {
+  height: 28px;
+  margin: 4px 0 10px;
+  opacity: 0.85;
 }
 .change {
   font-size: 16px;
@@ -276,7 +281,7 @@ button:active { transform: scale(0.97); }
   <div class="meta">
     <div><span class="live-dot"></span>Live</div>
     <div id="lastUpdated">—</div>
-    <div id="version">v5.93</div>
+    <div id="version">v5.94</div>
   </div>
 </header>
 
@@ -298,8 +303,8 @@ button:active { transform: scale(0.97); }
 
 <footer>
   <h3>How to use</h3>
-  <p>Open this file in any browser (including iPhone Safari). Bookmark it. The dashboard updates itself every 30 seconds with live prices. It prefers CoinGecko, falls back to DefiLlama when rate-limited, and cross-checks Coinbase where available. Green badges mean the coin is within the $0.99–$1.01 peg band. Red means it has depegged below $0.99. Amber means it has depegged above $1.01. Volume spike banners appear if trading volume suddenly jumps more than 3× its recent average. Divergence banners flag when prices differ by more than 50 basis points across sources. If you see a temporary data error, wait a moment or click Refresh now (or press R). No login, no install, no code required.</p>
-  <p style="margin-top:16px;font-size:12.5px">Data sources: CoinGecko free API (primary) + DefiLlama (fallback) + Coinbase public spot (secondary). For Telegram/email alerts or WebSocket streaming, use the Python detector in this repository. Minutes matter when a peg breaks. Last verified: 2026-11-07 ~11:04 MST — all six coins OK (CoinGecko: USDT $0.9992, USDC $0.9998, DAI $1.0000, FDUSD $0.9970, PYUSD $1.0000, TUSD $0.9996). No depegs.</p>
+  <p>Open this file in any browser (including iPhone Safari). Bookmark it. The dashboard updates itself every 30 seconds with live prices. It prefers CoinGecko, falls back to DefiLlama when rate-limited, and cross-checks Coinbase where available. Green badges mean the coin is within the $0.99–$1.01 peg band. Red means it has depegged below $0.99. Amber means it has depegged above $1.01. Volume spike banners appear if trading volume suddenly jumps more than 3× its recent average. Divergence banners flag when prices differ by more than 50 basis points across sources. Mini sparklines show recent price movement (stored locally in your browser). If you see a temporary data error, wait a moment or click Refresh now (or press R). No login, no install, no code required.</p>
+  <p style="margin-top:16px;font-size:12.5px">Data sources: CoinGecko free API (primary) + DefiLlama (fallback) + Coinbase public spot (secondary). For Telegram/email alerts or WebSocket streaming, use the Python detector in this repository. Minutes matter when a peg breaks. Last verified: 2026-11-07 ~12:08 MST — all six coins OK (DefiLlama: USDT $0.9987, USDC $0.9998, DAI $1.0003, FDUSD $0.9966, PYUSD $0.9996, TUSD $0.9996). No depegs. CoinGecko keyless API is rate-limited (~5-15 calls/min shared).</p>
 </footer>
 
 <script>
@@ -317,9 +322,12 @@ const UPPER = 1.01;
 const VOL_MULTIPLIER = 3;
 const VOL_WINDOW = 12;
 const DIV_BPS = 50;
+const PRICE_HISTORY_LEN = 20;
 
 let volumeHistory = JSON.parse(localStorage.getItem('volHistory') || '{}');
+let priceHistory = JSON.parse(localStorage.getItem('priceHistory') || '{}');
 let lastCoinbase = {};
+let lastFetchTime = 0;
 
 function formatVol(v) {
   if (!v) return '—';
@@ -338,6 +346,30 @@ function getStatus(price) {
   if (price < LOWER) return { text: 'DEPEG DOWN', cls: 'depeg-down' };
   if (price > UPPER) return { text: 'DEPEG UP', cls: 'depeg-up' };
   return { text: 'OK', cls: 'ok' };
+}
+
+function updatePriceHistory(symbol, price) {
+  if (price == null) return;
+  if (!priceHistory[symbol]) priceHistory[symbol] = [];
+  priceHistory[symbol].push(price);
+  if (priceHistory[symbol].length > PRICE_HISTORY_LEN) priceHistory[symbol].shift();
+  localStorage.setItem('priceHistory', JSON.stringify(priceHistory));
+}
+
+function renderSparkline(prices) {
+  if (!prices || prices.length < 2) return '';
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  const range = max - min || 0.0001;
+  const w = 200;
+  const h = 28;
+  const points = prices.map((p, i) => {
+    const x = (i / (prices.length - 1)) * w;
+    const y = h - ((p - min) / range) * h;
+    return `${x},${y}`;
+  }).join(' ');
+  const color = prices[prices.length-1] >= prices[0] ? 'var(--green)' : 'var(--red)';
+  return `<svg class="sparkline" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline fill="none" stroke="${color}" stroke-width="1.5" points="${points}"/></svg>`;
 }
 
 function checkVolumeSpike(symbol, vol) {
@@ -402,6 +434,8 @@ function renderCards(data) {
     const vol = d.usd_24h_vol;
     if (vol) totalVol += vol;
 
+    updatePriceHistory(coin.symbol, price);
+
     const status = getStatus(price);
     if (status.cls === 'ok') okCount++;
 
@@ -423,6 +457,7 @@ function renderCards(data) {
     const bps = price != null ? Math.round((price - 1) * 10000) : null;
     const barWidth = price != null ? Math.min(100, Math.max(0, Math.abs(price - 1) * 5000)) : 0;
     const barColor = status.cls === 'ok' ? 'var(--green)' : status.cls === 'depeg-down' ? 'var(--red)' : 'var(--amber)';
+    const spark = renderSparkline(priceHistory[coin.symbol] || []);
 
     const card = document.createElement('div');
     card.className = `card ${status.cls}`;
@@ -435,6 +470,7 @@ function renderCards(data) {
         <div class="badge ${status.cls}">${status.text}</div>
       </div>
       <div class="price">${formatPrice(price)}</div>
+      ${spark}
       <div class="change ${change > 0 ? 'positive' : change < 0 ? 'negative' : ''}">
         ${change != null ? (change > 0 ? '+' : '') + change.toFixed(2) + '%' : '—'}
       </div>
@@ -495,10 +531,12 @@ async function fetchAll(manual = false) {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     data = await res.json();
+    lastFetchTime = Date.now();
   } catch (e) {
     try {
       data = await fetchDefiLlama();
       source = 'DefiLlama (CoinGecko rate-limited)';
+      lastFetchTime = Date.now();
     } catch (e2) {
       const banners = document.getElementById('banners');
       let err = document.querySelector('.banner.error');
@@ -514,7 +552,9 @@ async function fetchAll(manual = false) {
     }
   }
   renderCards(data);
-  document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString() + ' · ' + source;
+  const age = lastFetchTime ? Math.round((Date.now() - lastFetchTime)/1000) : 0;
+  const fresh = age < 120 ? '' : ' (stale)';
+  document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString() + ' · ' + source + fresh;
   const err = document.querySelector('.banner.error');
   if (err) err.remove();
 }

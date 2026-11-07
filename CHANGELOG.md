@@ -1,3 +1,8 @@
+## v5.83 — 2026-11-06 ~18:07 MST
+- Live verification (CoinGecko primary): all six stablecoins within $0.99–$1.01 band (USDT $0.9991 OK, USDC $0.9997 OK, DAI $1.0000 OK, FDUSD $0.9969 OK, PYUSD $1.0000 OK, TUSD $0.9975 OK). No depegs detected. No volume spikes or divergences.
+- Dashboard version bumped to v5.83. Last-verified timestamp and source note updated in footer. DefiLlama fallback and Coinbase cross-check retained. Professional single-file HTML dashboard remains the primary zero-code product.
+- 14/14 unit tests pass. All core features (REST + fallbacks, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard, Telegram/email alerts, professional web dashboard) operational.
+
 ## v5.82 — 2026-11-06 ~15:06 MST
 - Live verification (CoinGecko primary): all six stablecoins within $0.99–$1.01 band (USDT $0.9990 OK, USDC $0.9996 OK, DAI $1.0000 OK, FDUSD $0.9967 OK, PYUSD $1.0000 OK, TUSD $0.9997 OK). No depegs detected. No volume spikes or divergences.
 - Dashboard version bumped to v5.82. Volume spike detection in the web dashboard now uses median (matching Python logic) instead of mean for robustness. Last-verified timestamp and source note updated in footer. DefiLlama fallback and Coinbase cross-check retained. Professional single-file HTML dashboard remains the primary zero-code product.

@@ -46,7 +46,7 @@ python tests/test_depeg_logic.py      # 14 unit tests
 - Binance and Coinbase WebSocket streams with exponential-backoff reconnection
 - Volume anomaly detection (median baseline, cooldown)
 - CLI dashboard that refreshes in place
-- Professional single-file web dashboard (dark Bloomberg/Apple fintech aesthetic, six large live cards with big monospaced prices, status badges, 24h change, volume, peg deviation bars, bps deviation, total 24h volume, volume spike / depeg / divergence banners, Coinbase cross-check, live indicator, auto-refresh every 30s, manual Refresh now button + R key, rate-limit error banner, DefiLlama fallback when CoinGecko is throttled, health status, client-side price sparklines from local history, data freshness indicator, mobile-responsive, plain-English how-to)
+- Professional single-file web dashboard (dark Bloomberg/Apple fintech aesthetic, six large live cards with big monospaced prices, status badges, 24h change, peg bps, volume, client-side sparklines from local history, volume spike detection, DefiLlama fallback, health status, manual refresh + R key, banners, mobile-responsive, plain-English how-to)
 - Telegram + email alerts (config.json)
 - JSON output for integration
 - Comprehensive unit tests
@@ -60,9 +60,9 @@ Pitch: “When a stablecoin depegs, every minute costs money. This gives you a c
 Price: $300–$800/month for the first few clients. Dashboard is the demo that closes.
 
 ## Status
-Production-ready (v5.97). Latest verification (2026-11-07 ~15:07 MST via CoinGecko):
-- Prices remain within band (USDT ~$0.9991 OK, USDC ~$0.9997 OK, DAI $1.0000 OK, FDUSD ~$0.9969 OK, PYUSD $1.0000 OK, TUSD ~$0.9984 OK). No depegs.
-- dashboard.html at v5.97: full polished dark Bloomberg/Apple fintech aesthetic restored, six large live cards with status-colored top bars, status badges, Coinbase divergence support, banners, DefiLlama fallback for rate limits, median-based volume spike detection, health indicator, keyboard refresh (R), client-side price sparklines (localStorage, last 20 samples), data freshness indicator, mobile responsiveness, and plain-English how-to.
+Production-ready (v5.98). Latest verification (2026-11-07 ~16:04 MST via DefiLlama, CoinGecko rate-limited):
+- Prices remain within band (USDT 0.9988 OK, USDC 0.9998 OK, DAI 0.9998 OK, FDUSD 0.9966 OK, PYUSD 0.9995 OK, TUSD 0.9986 OK). No depegs.
+- dashboard.html at v5.98: polished dark Bloomberg/Apple fintech aesthetic, six large live cards with status-colored top bars, status badges, sparklines, local volume-spike detection, DefiLlama fallback, health indicator, keyboard refresh (R), data freshness, mobile responsiveness, and plain-English how-to.
 - 14/14 unit tests pass. All core features (REST + fallbacks, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard, Telegram/email alerts) operational.
 
 Primary delivery for non-technical users: open dashboard.html in any browser. Bookmark it. Done.

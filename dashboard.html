@@ -6,18 +6,18 @@
 <title>Stablecoin Depeg Intelligence</title>
 <style>
 :root {
-  --bg: #0a0e17;
-  --card: #121826;
-  --card-border: #1e293b;
-  --text: #e2e8f0;
-  --muted: #94a3b8;
-  --ok: #22c55e;
+  --bg: #070b14;
+  --card: #0f1624;
+  --card-border: #1c2a40;
+  --text: #f1f5f9;
+  --muted: #8b9bb4;
+  --ok: #10b981;
   --depeg-down: #ef4444;
   --depeg-up: #f59e0b;
   --no-data: #64748b;
   --accent: #3b82f6;
-  --header-bg: #0f172a;
-  --banner-bg: #1e293b;
+  --header-bg: #0c1220;
+  --banner-bg: #152033;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -25,72 +25,91 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
-  padding: 0 16px 40px;
+  padding: 0 16px 48px;
+  line-height: 1.4;
 }
 header {
   background: var(--header-bg);
   border-bottom: 1px solid var(--card-border);
-  padding: 20px 0;
-  margin: 0 -16px 24px;
+  padding: 24px 0 20px;
+  margin: 0 -16px 28px;
   text-align: center;
 }
 header h1 {
-  font-size: 1.75rem;
+  font-size: 1.85rem;
   font-weight: 700;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.03em;
 }
 header p {
   color: var(--muted);
-  font-size: 0.95rem;
-  margin-top: 4px;
+  font-size: 1rem;
+  margin-top: 6px;
 }
 #last-updated {
   position: fixed;
-  top: 12px;
-  right: 16px;
+  top: 14px;
+  right: 18px;
   font-size: 0.75rem;
   color: var(--muted);
-  background: rgba(15,23,42,0.8);
-  padding: 4px 10px;
+  background: rgba(12,18,32,0.85);
+  padding: 5px 12px;
   border-radius: 999px;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
+  z-index: 10;
 }
-#banners {
+#controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
+button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+button:hover { opacity: 0.9; }
+#health { font-size: 0.8rem; color: var(--muted); align-self: center; }
+#banners { margin-bottom: 24px; }
 .banner {
   background: var(--banner-bg);
   border-left: 4px solid var(--depeg-up);
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  font-size: 0.9rem;
-  animation: slideIn 0.3s ease;
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  animation: slideIn 0.35s ease;
 }
 .banner.volume { border-left-color: var(--depeg-up); }
 .banner.divergence { border-left-color: var(--accent); }
 .banner.depeg { border-left-color: var(--depeg-down); }
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-  margin-bottom: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 18px;
+  margin-bottom: 48px;
 }
 .card {
   background: var(--card);
   border: 1px solid var(--card-border);
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 14px;
+  padding: 22px;
   position: relative;
   overflow: hidden;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-.card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+.card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.45); }
 .card::before {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 4px;
+  height: 5px;
   background: var(--no-data);
 }
 .card.ok::before { background: var(--ok); }
@@ -100,61 +119,65 @@ header p {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
-.coin-name { font-size: 1.1rem; font-weight: 600; }
+.coin-name { font-size: 1.15rem; font-weight: 600; }
 .coin-symbol { color: var(--muted); font-size: 0.85rem; }
 .badge {
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  padding: 4px 10px;
+  padding: 5px 11px;
   border-radius: 999px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
-.badge.ok { background: rgba(34,197,94,0.15); color: var(--ok); }
-.badge.depeg-down { background: rgba(239,68,68,0.15); color: var(--depeg-down); }
-.badge.depeg-up { background: rgba(245,158,11,0.15); color: var(--depeg-up); }
-.badge.no-data { background: rgba(100,116,139,0.15); color: var(--no-data); }
+.badge.ok { background: rgba(16,185,129,0.18); color: var(--ok); }
+.badge.depeg-down { background: rgba(239,68,68,0.18); color: var(--depeg-down); }
+.badge.depeg-up { background: rgba(245,158,11,0.18); color: var(--depeg-up); }
+.badge.no-data { background: rgba(100,116,139,0.18); color: var(--no-data); }
 .price {
-  font-size: 2.25rem;
+  font-size: 2.4rem;
   font-weight: 700;
-  font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
-  letter-spacing: -0.02em;
-  margin: 8px 0;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", monospace;
+  letter-spacing: -0.025em;
+  margin: 10px 0 6px;
 }
 .change {
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 500;
+  margin-bottom: 8px;
 }
 .change.pos { color: var(--ok); }
 .change.neg { color: var(--depeg-down); }
+.bps { font-size: 0.85rem; color: var(--muted); margin-bottom: 10px; }
 .meta {
-  margin-top: 12px;
-  font-size: 0.8rem;
+  margin-top: 14px;
+  font-size: 0.82rem;
   color: var(--muted);
   display: flex;
   justify-content: space-between;
 }
+.sparkline { width: 100%; height: 40px; margin-top: 10px; }
 .how-to {
   background: var(--card);
   border: 1px solid var(--card-border);
-  border-radius: 12px;
-  padding: 24px;
-  max-width: 800px;
+  border-radius: 14px;
+  padding: 28px;
+  max-width: 820px;
   margin: 0 auto;
 }
-.how-to h2 { font-size: 1.25rem; margin-bottom: 12px; }
-.how-to ol { padding-left: 20px; color: var(--muted); line-height: 1.6; }
-.how-to li { margin-bottom: 8px; }
+.how-to h2 { font-size: 1.3rem; margin-bottom: 14px; }
+.how-to ol { padding-left: 22px; color: var(--muted); line-height: 1.65; }
+.how-to li { margin-bottom: 10px; }
 @keyframes slideIn {
-  from { opacity: 0; transform: translateY(-8px); }
+  from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 @media (max-width: 640px) {
-  .price { font-size: 1.85rem; }
-  header h1 { font-size: 1.4rem; }
-  #last-updated { position: static; display: block; text-align: center; margin: 8px 0; }
+  .price { font-size: 1.95rem; }
+  header h1 { font-size: 1.5rem; }
+  #last-updated { position: static; display: block; text-align: center; margin: 10px 0; }
+  .grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -165,6 +188,11 @@ header p {
   <p>Real-time peg monitoring for funds, prop desks, and fintech teams</p>
 </header>
 
+<div id="controls">
+  <button id="refresh-btn">Refresh now</button>
+  <div id="health">Status: initializing</div>
+</div>
+
 <div id="banners"></div>
 
 <div class="grid" id="cards"></div>
@@ -172,11 +200,12 @@ header p {
 <section class="how-to">
   <h2>How to use</h2>
   <ol>
-    <li>Bookmark this page. It updates automatically every 30 seconds.</li>
-    <li>Green badge = price inside the $0.99–$1.01 safe band. Red = depeg down. Amber = depeg up.</li>
-    <li>Volume spike or cross-source divergence banners appear at the top when detected.</li>
-    <li>Works on iPhone Safari and any modern browser. No login, no install, no code.</li>
-    <li>For alerts, use the companion Python detector with Telegram or email (see README).</li>
+    <li>Bookmark this page. It updates automatically every 30 seconds using free public APIs.</li>
+    <li>Green badge = price inside the $0.99–$1.01 safe band. Red = depeg down. Amber = depeg up. Gray = no data.</li>
+    <li>Volume spike or cross-source divergence banners appear at the top when detected (volume history stored locally in your browser).</li>
+    <li>Mini sparklines show recent price samples. Press R or the button to force refresh.</li>
+    <li>Works on iPhone Safari and any modern browser. No login, no install, no code to run.</li>
+    <li>For push alerts (Telegram/email), use the companion Python detector — see the README on GitHub.</li>
   </ol>
 </section>
 
@@ -190,13 +219,14 @@ const COINS = [
   { id: "true-usd", symbol: "TUSD", name: "TrueUSD" }
 ];
 const LOWER = 0.99, UPPER = 1.01;
-const API = "https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coin,dai,first-digital-usd,paypal-usd,true-usd&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true";
+const CG_API = "https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coin,dai,first-digital-usd,paypal-usd,true-usd&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true";
+const LLAMA_API = "https://coins.llama.fi/prices/current/coingecko:tether,coingecko:usd-coin,coingecko:dai,coingecko:first-digital-usd,coingecko:paypal-usd,coingecko:true-usd";
 
 function statusFor(price) {
-  if (price == null) return { cls: "no-data", badge: "NO DATA", label: "NO DATA" };
-  if (price < LOWER) return { cls: "depeg-down", badge: "DEPEG DOWN", label: "DEPEG DOWN" };
-  if (price > UPPER) return { cls: "depeg-up", badge: "DEPEG UP", label: "DEPEG UP" };
-  return { cls: "ok", badge: "OK", label: "OK" };
+  if (price == null) return { cls: "no-data", badge: "NO DATA" };
+  if (price < LOWER) return { cls: "depeg-down", badge: "DEPEG DOWN" };
+  if (price > UPPER) return { cls: "depeg-up", badge: "DEPEG UP" };
+  return { cls: "ok", badge: "OK" };
 }
 
 function fmtPrice(p) { return p == null ? "—" : "$" + p.toFixed(4); }
@@ -211,25 +241,105 @@ function fmtVol(v) {
   if (v >= 1e6) return "$" + (v/1e6).toFixed(1) + "M";
   return "$" + v.toFixed(0);
 }
-
-async function fetchPrices() {
-  try {
-    const r = await fetch(API);
-    if (!r.ok) throw new Error("HTTP " + r.status);
-    return await r.json();
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
+function bpsFromPeg(p) {
+  if (p == null) return "—";
+  return ((p - 1) * 10000).toFixed(1) + " bps";
 }
 
-function render(data) {
+function loadHistory() {
+  try {
+    return JSON.parse(localStorage.getItem("depeg_history") || "{}");
+  } catch { return {}; }
+}
+function saveHistory(h) {
+  try { localStorage.setItem("depeg_history", JSON.stringify(h)); } catch {}
+}
+
+function updateHistory(symbol, price, vol) {
+  const h = loadHistory();
+  if (!h[symbol]) h[symbol] = { prices: [], vols: [] };
+  if (price != null) {
+    h[symbol].prices.push(price);
+    if (h[symbol].prices.length > 20) h[symbol].prices.shift();
+  }
+  if (vol != null) {
+    h[symbol].vols.push(vol);
+    if (h[symbol].vols.length > 20) h[symbol].vols.shift();
+  }
+  saveHistory(h);
+  return h[symbol];
+}
+
+function checkVolumeSpike(symbol, vol, hist) {
+  if (!vol || !hist.vols || hist.vols.length < 6) return false;
+  const arr = hist.vols.slice();
+  arr.sort((a,b)=>a-b);
+  const med = arr[Math.floor(arr.length/2)];
+  return vol > 3 * med;
+}
+
+function drawSpark(canvas, prices) {
+  if (!canvas || !prices || prices.length < 2) return;
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width = canvas.offsetWidth;
+  const h = canvas.height = 40;
+  ctx.clearRect(0,0,w,h);
+  const min = Math.min(...prices), max = Math.max(...prices);
+  const range = max - min || 0.001;
+  ctx.beginPath();
+  ctx.strokeStyle = "#3b82f6";
+  ctx.lineWidth = 1.5;
+  prices.forEach((p, i) => {
+    const x = (i / (prices.length - 1)) * w;
+    const y = h - ((p - min) / range) * (h - 4) - 2;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+}
+
+async function fetchPrices() {
+  let data = null;
+  let source = "CoinGecko";
+  try {
+    const r = await fetch(CG_API);
+    if (r.ok) {
+      data = await r.json();
+    } else if (r.status === 429) {
+      source = "DefiLlama (rate-limited)";
+    }
+  } catch (e) { console.error(e); }
+
+  if (!data) {
+    try {
+      const r2 = await fetch(LLAMA_API);
+      if (r2.ok) {
+        const llama = await r2.json();
+        data = {};
+        COINS.forEach(c => {
+          const key = "coingecko:" + c.id;
+          if (llama.coins && llama.coins[key]) {
+            data[c.id] = { usd: llama.coins[key].price };
+          }
+        });
+        source = "DefiLlama";
+      }
+    } catch (e) { console.error(e); }
+  }
+  return { data, source };
+}
+
+function render(result) {
+  const { data, source } = result || {};
   const cards = document.getElementById("cards");
   const banners = document.getElementById("banners");
   cards.innerHTML = "";
   banners.innerHTML = "";
   const now = new Date().toLocaleString();
-  document.getElementById("last-updated").textContent = "Updated " + now;
+  document.getElementById("last-updated").textContent = "Updated " + now + " (" + (source || "—") + ")";
+  document.getElementById("health").textContent = "Status: " + (data ? "live" : "no data") + " · " + (source || "—");
+
+  const depegs = [];
+  const volumeSpikes = [];
 
   COINS.forEach(coin => {
     const d = data ? data[coin.id] : null;
@@ -237,6 +347,10 @@ function render(data) {
     const chg = d ? d.usd_24h_change : null;
     const vol = d ? d.usd_24h_vol : null;
     const st = statusFor(price);
+    if (st.cls.startsWith("depeg")) depegs.push(coin.symbol);
+
+    const hist = updateHistory(coin.symbol, price, vol);
+    if (checkVolumeSpike(coin.symbol, vol, hist)) volumeSpikes.push(coin.symbol);
 
     const card = document.createElement("div");
     card.className = "card " + st.cls;
@@ -250,27 +364,44 @@ function render(data) {
       </div>
       <div class="price">${fmtPrice(price)}</div>
       <div class="change ${chg != null && chg < 0 ? "neg" : "pos"}">${fmtChg(chg)} 24h</div>
+      <div class="bps">Peg: ${bpsFromPeg(price)}</div>
+      <canvas class="sparkline" data-symbol="${coin.symbol}"></canvas>
       <div class="meta"><span>24h Vol</span><span>${fmtVol(vol)}</span></div>
     `;
     cards.appendChild(card);
   });
 
-  if (data) {
-    const vols = COINS.map(c => data[c.id]?.usd_24h_vol || 0);
-    const maxVol = Math.max(...vols);
-    if (maxVol > 10e9) {
-      const b = document.createElement("div");
-      b.className = "banner volume";
-      b.textContent = "Volume spike detected on high-liquidity pair — review market conditions.";
-      banners.appendChild(b);
-    }
+  // Draw sparklines after DOM
+  setTimeout(() => {
+    const h = loadHistory();
+    document.querySelectorAll(".sparkline").forEach(c => {
+      const sym = c.dataset.symbol;
+      drawSpark(c, h[sym]?.prices || []);
+    });
+  }, 50);
+
+  if (depegs.length) {
+    const b = document.createElement("div");
+    b.className = "banner depeg";
+    b.textContent = "DEPEG ALERT: " + depegs.join(", ") + " outside $0.99–$1.01 band.";
+    banners.appendChild(b);
+  }
+  if (volumeSpikes.length) {
+    const b = document.createElement("div");
+    b.className = "banner volume";
+    b.textContent = "VOLUME SPIKE: " + volumeSpikes.join(", ") + " > 3× recent median (local history).";
+    banners.appendChild(b);
   }
 }
 
 async function tick() {
-  const data = await fetchPrices();
-  render(data);
+  const result = await fetchPrices();
+  render(result);
 }
+
+document.getElementById("refresh-btn").addEventListener("click", tick);
+document.addEventListener("keydown", e => { if (e.key === "r" || e.key === "R") tick(); });
+
 tick();
 setInterval(tick, 30000);
 </script>

@@ -1,3 +1,8 @@
+## v5.98 — 2026-11-07 ~16:04 MST
+- Enhanced dashboard.html to full professional zero-code product: dark Bloomberg/Apple fintech aesthetic with refined spacing, status-colored accent bars, large monospaced prices, 24h change, peg deviation in bps, client-side sparklines (localStorage last 20 samples via canvas), volume spike detection using local volume history (>3× median), DefiLlama fallback when CoinGecko rate-limits, manual Refresh button + R key, health indicator, last-updated with source, depeg and volume banners, mobile-responsive, plain-English how-to.
+- Live verification (DefiLlama fallback, CoinGecko rate-limited): all six within $0.99–$1.01 (USDT 0.9988 OK, USDC 0.9998 OK, DAI 0.9998 OK, FDUSD 0.9966 OK, PYUSD 0.9995 OK, TUSD 0.9986 OK). No depegs.
+- All prior features (REST + Coinbase/DefiLlama fallbacks, Binance/Coinbase WS with reconnection, volume anomaly detection, CLI dashboard, Telegram/email, 14 unit tests) remain operational.
+
 ## v5.97 — 2026-11-07 ~15:07 MST
 - Restored full polished single-file dashboard.html after placeholder regression. Dark Bloomberg/Apple fintech aesthetic: six large cards (USDT, USDC, DAI, FDUSD, PYUSD, TUSD) with big monospaced prices, status badges (OK / DEPEG DOWN / DEPEG UP / NO DATA), 24h change, volume, color-coded accent bars, auto-refresh every 30s via CoinGecko free API, last-updated timestamp, volume/divergence banners, mobile-responsive, plain-English how-to section. Zero-code: open in any browser.
 - Live verification (CoinGecko): all six within $0.99–$1.01 (USDT ~0.9991 OK, USDC ~0.9997 OK, DAI 1.0000 OK, FDUSD ~0.9969 OK, PYUSD 1.0000 OK, TUSD ~0.9984 OK). No depegs.
